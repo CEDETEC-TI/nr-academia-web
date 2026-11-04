@@ -1,0 +1,109 @@
+---
+import Base from '../../layouts/Base.astro';
+import Media from '../../components/Media.astro';
+import Txt from '../../components/Txt.astro';
+import { clases, horarios, precios, pesos, waLink, academia } from '../../data/academia';
+import { url } from '../../utils';
+
+export function getStaticPaths() {
+  return clases.map((c) => ({ params: { slug: c.slug }, props: { clase: c } }));
+}
+const { clase } = Astro.props;
+const otras = clases.filter((c) => c.slug !== clase.slug);
+const wa = waLink(clase.mensajeWhatsApp);
+const lista = (items: string[]) => items;
+---
+<Base title={`Clases de pádel ${clase.nombre} en Formosa · NR Academia`} description={`${clase.corto} Clases de pádel ${clase.nombre.toLowerCase()} con Nacho Román en Le Club Formosa. Primera clase sin cargo.`} waMensaje={clase.mensajeWhatsApp}>
+  <section class="on-dark relative isolate flex min-h-[78svh] items-end overflow-hidden bg-bordo-hondo text-crema">
+    <Media name={clase.imagen} alt="" eager class="absolute inset-0 -z-20 size-full object-cover" sizes="100vw" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo via-bordo/55 to-bordo/30"></div>
+    <div class="wrap-in w-full pb-12 pt-32 sm:pb-16">
+      <a href={url('#clases')} class="mb-6 inline-flex min-h-11 items-center font-semibold underline underline-offset-4">Todas las clases</a>
+      <h1 class="display h-mega break-safe !text-[clamp(3rem,13vw,9rem)]"><span class="hero-line block overflow-hidden pb-[0.08em]"><span class="block">{clase.nombre}</span></span></h1>
+      <p class="lede hero-fade mt-5">{clase.corto}</p>
+      <a href={wa} target="_blank" rel="noopener" class="btn btn-wa hero-fade mt-8">Reservá esta clase por WhatsApp</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid gap-14 md:grid-cols-2 md:gap-20">
+      <div data-reveal>
+        <h2 class="display h-lg">Para quién es</h2>
+        <ul class="mt-6 space-y-3 text-lg">
+          {lista(clase.paraQuien).map((t) => <li class="flex gap-3"><span class="mt-[0.7em] size-2 shrink-0 rounded-full bg-bordo" aria-hidden="true"></span><span><Txt value={t} /></span></li>)}
+        </ul>
+      </div>
+      <div data-reveal>
+        <h2 class="display h-lg">Qué se trabaja</h2>
+        <ul class="mt-6 space-y-3 text-lg">
+          {clase.queSeTrabaja.map((t) => <li class="flex gap-3"><span class="mt-[0.7em] size-2 shrink-0 rounded-full bg-bordo" aria-hidden="true"></span><span>{t}</span></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-crema-oscura">
+    <div class="wrap grid gap-14 md:grid-cols-2 md:gap-20">
+      <div data-reveal>
+        <h2 class="display h-lg">Cómo es la clase</h2>
+        <ul class="mt-6 space-y-3 text-lg">
+          {clase.comoEs.map((t) => <li>{t}</li>)}
+        </ul>
+        <p class="mt-6 text-tinta-suave"><Txt value={clase.duracion} /></p>
+        <p class="mt-2 text-tinta-suave"><Txt value={clase.tamanoGrupo} /></p>
+      </div>
+      <div data-reveal class="rounded-[var(--radius-card)] bg-bordo p-8 text-crema on-dark">
+        <h2 class="display h-lg">Precio</h2>
+        <p class="display mt-6 text-[clamp(3rem,10vw,5rem)]">{pesos(precios.claseSuelta)}</p>
+        <p class="mt-1 opacity-90">por clase suelta</p>
+        <p class="mt-4">Mes de 8 clases: <strong>{pesos(precios.mes8Clases)}</strong></p>
+        <p>Cancha aparte: <strong>{pesos(precios.canchaHora)}</strong> la hora</p>
+        <p class="mt-4 rounded-2xl bg-crema/15 px-4 py-3 font-semibold">Clase de prueba: sin cargo.</p>
+        <p class="mt-4 text-sm opacity-90"><Txt value={clase.precioNota} /></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid gap-14 md:grid-cols-[1fr_1.4fr] md:gap-20">
+      <div data-reveal>
+        <h2 class="display h-lg">Horarios</h2>
+        <p class="mt-6 text-xl font-semibold">{horarios.dias}</p>
+        <ul class="mt-2 space-y-1 text-xl">{horarios.franjas.map((f) => <li>{f}</li>)}</ul>
+        <p class="mt-3 text-tinta-suave"><Txt value={horarios.finDeSemana} /></p>
+        <p class="mt-6 text-tinta-suave">En {academia.sede}.</p>
+      </div>
+      <div data-reveal>
+        <h2 class="display h-lg">Preguntas frecuentes</h2>
+        <div class="mt-6 divide-y divide-bordo/20 border-y border-bordo/20">
+          {clase.faq.map((f) => (
+            <details class="faq group">
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 text-lg font-bold">
+                <span class="break-safe">{f.p}</span>
+                <span class="faq-icon relative size-6 shrink-0" aria-hidden="true"><span class="absolute left-0 top-1/2 h-0.5 w-6 -translate-y-1/2 bg-bordo"></span><span class="faq-v absolute left-1/2 top-0 h-6 w-0.5 -translate-x-1/2 bg-bordo"></span></span>
+              </summary>
+              <p class="faq-body pb-5 text-lg text-tinta-suave"><Txt value={f.r} /></p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-dark bg-bordo-hondo text-center text-crema">
+    <div class="wrap">
+      <h2 class="display h-xl mx-auto max-w-4xl" data-reveal>Probá la clase {clase.nombre.toLowerCase()}</h2>
+      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho. La primera es sin cargo.</p>
+      <a data-reveal href={wa} target="_blank" rel="noopener" class="btn btn-wa mt-10 !min-h-14 !px-9 !text-xl">Reservá por WhatsApp</a>
+      <ul class="mt-14 flex flex-wrap justify-center gap-3" aria-label="Otras clases">
+        {otras.map((o) => <li><a class="btn btn-ghost" href={url(`clases/${o.slug}/`)}>{o.nombre}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+<style>
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq-v { transition: transform 240ms var(--ease-out-strong); }
+  .faq[open] .faq-v { transform: translateX(-50%) rotate(90deg); }
+  @media (prefers-reduced-motion: reduce) { .faq-v { transition: none; } }
+</style>

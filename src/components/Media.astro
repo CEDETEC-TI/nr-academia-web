@@ -1,0 +1,9 @@
+---
+import { Image } from 'astro:assets';
+import { getImg } from '../imgs';
+interface Props { name: string; alt: string; class?: string; sizes?: string; eager?: boolean; widths?: number[]; parallax?: boolean }
+const { name, alt, class: cls = '', sizes = '100vw', eager = false, widths = [480, 800, 1000], parallax = false } = Astro.props;
+const img = getImg(name);
+---
+{!img ? <div role="img" aria-label={alt || undefined} aria-hidden={alt ? undefined : 'true'} class={`${cls} bg-bordo`}></div> : <Image src={img} alt={alt} class={cls} sizes={sizes} widths={widths} format="webp" quality={75}
+  loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding={eager ? 'sync' : 'async'} data-parallax={parallax ? '' : undefined} />}

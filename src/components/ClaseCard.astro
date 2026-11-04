@@ -1,0 +1,22 @@
+---
+import Media from './Media.astro';
+import { pesos, precios, type Clase } from '../data/academia';
+import { url } from '../utils';
+const { clase, class: cls = '' } = Astro.props as { clase: Clase; class?: string };
+---
+<a href={url(`clases/${clase.slug}/`)} data-reveal class={`clase-card group relative isolate block aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-bordo-hondo text-crema sm:aspect-[5/6] ${cls}`}>
+  <Media name={clase.imagen} alt="" class="clase-img absolute inset-0 -z-10 size-full object-cover" sizes="(min-width:768px) 45vw, 100vw" />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo/90 via-bordo-hondo/20 to-transparent"></div>
+  <span class="corner-line" aria-hidden="true"></span>
+  <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+    <h3 class="display h-xl break-safe !text-[clamp(2.4rem,9vw,5rem)]">{clase.nombre}</h3>
+    <p class="mt-3 max-w-xs text-lg opacity-95">{clase.corto}</p>
+    <p class="mt-5 inline-flex min-h-11 items-center rounded-full bg-crema px-5 font-bold text-bordo-hondo">Ver clase · {pesos(precios.claseSuelta)}</p>
+  </div>
+</a>
+<style>
+  .clase-card { transition: transform 200ms var(--ease-out-strong); touch-action: manipulation; }
+  .clase-card:active { transform: scale(0.985); }
+  .clase-img { transition: transform 600ms var(--ease-out-strong); }
+  @media (hover: hover) and (pointer: fine) { .clase-card:hover .clase-img { transform: scale(1.05); } }
+</style>

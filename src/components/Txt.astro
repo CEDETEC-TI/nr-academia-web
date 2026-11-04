@@ -1,0 +1,6 @@
+---
+import { PENDIENTE } from '../data/academia';
+const { value } = Astro.props as { value: string };
+const parts = value.split(PENDIENTE);
+---
+{parts.map((p, i) => (<>{p}{i < parts.length - 1 && <span class="pendiente">{PENDIENTE}</span>}</>))}

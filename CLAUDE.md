@@ -1,0 +1,19 @@
+# NR Academia — web oficial
+
+Academia de pádel de Ignacio "Nacho" Román en Le Club Formosa (Formosa, Argentina).
+Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pages (repo CEDETEC-TI/nr-academia-web, base `/nr-academia-web`).
+
+## Reglas (respetar siempre)
+1. **Trabajar solo en esta carpeta.** No leer ni reutilizar proyectos ni plantillas de CEDETEC.
+2. **Datos en un solo archivo: `src/data/academia.ts`.** Nada de precios, horarios, teléfonos o textos de negocio hardcodeados en componentes.
+3. **No inventar datos.** Lo desconocido se escribe `[CONFIRMAR CON NACHO]` (constante `PENDIENTE`); se renderiza con `<Txt>`.
+4. **Diseño:** leer `DESIGN.md` antes de tocar estilos. Paleta bordó `#6D1A2A` + crema `#F5EBDD` + casi negro. **Nada rosado.** Bordes redondeados, títulos enormes, textos cortos, mucha foto y video. Celular primero (390px).
+5. **Movimiento:** respetar `prefers-reduced-motion` (sin Lenis, sin reveals, sin video, solo póster). Animar solo `transform`/`opacity`. Sin `transition: all`.
+6. **Materiales:** los originales viven en `~/Desktop/NR-ACADEMIA-CARGAR` y **nunca se tocan**. Se optimizan copias en `src/assets`: hero < 5 MB escritorio y < 2 MB celular; imágenes WebP/AVIF.
+7. **Imágenes provisorias** (libres Unsplash/Pexels, sin marcas) se anotan en `PROVISORIOS.md`.
+8. **Calidad:** probar con Playwright en 390px y 1440px sin errores de consola; Lighthouse ≥ 90 en rendimiento y accesibilidad (`npm run test:e2e`).
+9. Rutas internas con `url()` de `src/utils.ts` (respeta el base de GitHub Pages).
+10. No publicar ni pushear a repos públicos sin confirmación explícita del dueño.
+
+## Comandos
+`npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e`

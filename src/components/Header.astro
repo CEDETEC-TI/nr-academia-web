@@ -1,0 +1,41 @@
+---
+import { academia, waLink } from '../data/academia';
+import { url } from '../utils';
+const links = [
+  { href: url('#clases'), t: 'Clases' },
+  { href: url('#nacho'), t: 'Nacho' },
+  { href: url('#precios'), t: 'Precios' },
+  { href: url('#horarios'), t: 'Horarios' },
+];
+---
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] text-crema transition-[background-color,color,box-shadow] duration-300">
+  <div class="wrap-in flex h-16 items-center justify-between sm:h-20">
+    <a href={url()} class="display text-2xl sm:text-3xl" aria-label="NR Academia, inicio">NR<span class="font-medium tracking-normal opacity-80"> Academia</span></a>
+    <nav aria-label="Principal" class="hidden items-center gap-8 md:flex">
+      {links.map((l) => <a href={l.href} class="nav-link font-semibold">{l.t}</a>)}
+      <a href={waLink()} class="btn btn-wa !min-h-11 !px-5" target="_blank" rel="noopener">Reservá tu clase</a>
+    </nav>
+    <button id="menu-btn" class="grid size-11 place-items-center rounded-full md:hidden" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+      <span class="relative block h-3 w-6" aria-hidden="true"><span class="bar absolute left-0 top-0 h-0.5 w-6 bg-current"></span><span class="bar absolute bottom-0 left-0 h-0.5 w-6 bg-current"></span></span>
+    </button>
+  </div>
+  <div id="menu" hidden class="on-dark fixed inset-0 -z-10 flex flex-col justify-end bg-bordo px-[var(--gutter)] pb-10 pt-24 text-crema">
+    <nav aria-label="Menú" class="flex flex-col gap-1">
+      {links.map((l) => <a href={l.href} class="display h-lg block py-1">{l.t}</a>)}
+    </nav>
+    <a href={waLink()} class="btn mt-8" target="_blank" rel="noopener">Reservá tu clase</a>
+  </div>
+</header>
+<style>
+  #site-header[data-solid='true'] { background: rgb(245 235 221 / 0.94); color: var(--color-bordo-hondo); box-shadow: 0 1px 0 rgb(74 16 25 / 0.12); backdrop-filter: blur(10px); }
+  #site-header[data-open='true'] { background: transparent; box-shadow: none; backdrop-filter: none; color: var(--color-crema); }
+  .nav-link { position: relative; min-height: 2.75rem; display: inline-flex; align-items: center; }
+  .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: .55rem; height: 2px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 250ms var(--ease-out-strong); }
+  @media (hover: hover) { .nav-link:hover::after { transform: scaleX(1); } }
+  .bar { transition: transform 260ms var(--ease-in-out-strong), top 260ms, bottom 260ms; }
+  #site-header[data-open='true'] .bar:first-child { top: 5px; transform: rotate(45deg); }
+  #site-header[data-open='true'] .bar:last-child { bottom: 5px; transform: rotate(-45deg); }
+  #menu { opacity: 0; transition: opacity 220ms var(--ease-out-strong); }
+  #site-header[data-open='true'] #menu { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .bar { transition: none; } }
+</style>

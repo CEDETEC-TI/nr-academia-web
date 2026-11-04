@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../utils';
+---
+<Base title="Página no encontrada · NR Academia" noindex>
+  <section class="on-dark flex min-h-[100svh] items-center bg-bordo px-[var(--gutter)] pt-24 text-crema">
+    <div class="wrap">
+      <p class="display h-mega">404</p>
+      <h1 class="display h-lg mt-4">Esta pelota se fue afuera.</h1>
+      <p class="lede mt-5">La página que buscás no existe o cambió de lugar.</p>
+      <a href={url()} class="btn mt-8">Volver al inicio</a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/bricolage-grotesque/wdth.css';
+@import '@fontsource-variable/figtree/index.css';
+
+/* ── Sistema de diseño NR Academia (ver DESIGN.md) ───────────────── */
+@theme {
+  /* Color */
+  --color-bordo: #6d1a2a;
+  --color-bordo-hondo: #4a1019;
+  --color-crema: #f5ebdd;
+  --color-crema-oscura: #e9dac4;
+  --color-tinta: #1b1416;
+  --color-tinta-suave: #5a4a4d; /* texto secundario sobre crema: 7.4:1 */
+  --color-arcilla: #b5452f; /* solo detalles, nunca texto pequeño ni fondo */
+
+  /* Tipografía */
+  --font-display: 'Bricolage Grotesque Variable', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Figtree Variable', system-ui, sans-serif;
+
+  /* Radios */
+  --radius-card: 2rem;
+  --radius-media: 2.25rem;
+  --radius-pill: 999px;
+
+  /* Sombras: cálidas, tintadas de bordó, no grises */
+  --shadow-soft: 0 1px 2px rgb(74 16 25 / 0.08), 0 12px 32px -12px rgb(74 16 25 / 0.25);
+  --shadow-lift: 0 2px 4px rgb(74 16 25 / 0.1), 0 24px 48px -16px rgb(74 16 25 / 0.35);
+
+  /* Easing (Emil): ease-out fuerte para entradas, ease-in-out para movimiento en pantalla */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+:root {
+  /* Escala de espaciado de secciones, fluida */
+  --space-section: clamp(5rem, 12vw, 10rem);
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --tap: 2.75rem; /* 44px mínimo táctil */
+  scroll-padding-top: 5rem;
+}
+
+@layer base {
+  /* Grids de una sola columna que nunca se ensanchan por su contenido (los utilitarios grid-cols-* ganan sobre esto) */
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+html {
+  background: var(--color-crema);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+body { min-height: 100svh; overflow-x: clip; line-height: 1.55; font-size: 1.0625rem; }
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Foco visible AA */
+:focus-visible { outline: 3px solid var(--color-arcilla); outline-offset: 3px; border-radius: 6px; }
+.on-dark :focus-visible { outline-color: var(--color-crema); }
+
+/* Títulos */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 90%;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.h-mega { font-size: clamp(3.4rem, 15.5vw, 11rem); }
+.h-xl { font-size: clamp(2.6rem, 10vw, 7rem); }
+.h-lg { font-size: clamp(2.1rem, 7vw, 4.5rem); }
+.h-md { font-size: clamp(1.5rem, 4vw, 2.25rem); line-height: 1; }
+.lede { font-size: clamp(1.1rem, 2.4vw, 1.4rem); max-width: 34rem; line-height: 1.45; text-wrap: pretty; }
+p { text-wrap: pretty; }
+
+.section { padding-block: var(--space-section); padding-inline: var(--gutter); }
+.wrap { max-width: 88rem; margin-inline: auto; }
+.wrap-in { max-width: calc(88rem + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* Botones: píldora, 52px de alto, feedback al presionar */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
+  min-height: 3.25rem; padding: .5rem 1.75rem; text-align: center; border-radius: var(--radius-pill);
+  font-weight: 700; font-size: 1.0625rem; letter-spacing: -0.01em;
+  background: var(--color-crema); color: var(--color-bordo-hondo);
+  transition: transform 160ms var(--ease-out-strong), background-color 200ms, color 200ms;
+  -webkit-user-select: none; user-select: none; touch-action: manipulation;
+}
+.btn:active { transform: scale(0.97); }
+.btn-bordo { background: var(--color-bordo); color: var(--color-crema); }
+.btn-wa { background: #1f6b3f; color: #fff; } /* verde WhatsApp oscurecido: 6.2:1 con blanco */
+.btn-ghost { background: transparent; color: inherit; box-shadow: inset 0 0 0 2px currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: #fff; }
+  .btn-bordo:hover { background: var(--color-bordo-hondo); }
+  .btn-wa:hover { background: #17542f; }
+  .btn-ghost:hover { background: var(--color-crema); color: var(--color-bordo-hondo); }
+}
+
+/* Motivo de cancha: filete con marca en T (línea de saque) */
+.t-rule { position: relative; height: 1px; background: currentColor; opacity: .35; }
+.t-rule::after { content: ''; position: absolute; left: 50%; top: 0; width: 1px; height: 14px; background: currentColor; }
+/* Esquina de línea de cancha sobre tarjetas con imagen */
+.corner-line { position: absolute; inset: .85rem; pointer-events: none; border-top: 2px solid rgb(245 235 221 / .75); border-left: 2px solid rgb(245 235 221 / .75); border-top-left-radius: 1.4rem; width: 38%; height: 38%; }
+
+/* Placeholder de pendiente */
+.pendiente { display: inline; background: var(--color-crema-oscura); color: var(--color-bordo-hondo); border-radius: .5rem; padding: .05rem .45rem; font-size: .92em; font-weight: 600; }
+.on-dark .pendiente { background: rgb(245 235 221 / .16); color: var(--color-crema); }
+
+/* ── Movimiento ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] { opacity: 0; transform: translateY(28px); }
+  .js .hero-line > span { opacity: 0; }
+  .js .hero-fade { opacity: 0; transform: translateY(16px); }
+  /* Transición entre páginas (View Transitions, nativas, sin JS) */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: 180ms var(--ease-out-strong) both vt-out; }
+  ::view-transition-new(root) { animation: 280ms var(--ease-out-strong) 60ms both vt-in; }
+}
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(10px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* Texto largo y datos extremos */
+.break-safe { overflow-wrap: anywhere; hyphens: auto; }

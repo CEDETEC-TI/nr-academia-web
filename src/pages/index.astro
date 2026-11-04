@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import Media from '../components/Media.astro';
+import ClaseCard from '../components/ClaseCard.astro';
+import Txt from '../components/Txt.astro';
+import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, pesos, waLink } from '../data/academia';
+import heroDesktop from '../assets/video/hero-desktop.mp4';
+import heroMobile from '../assets/video/hero-mobile.mp4';
+import clipRed from '../assets/video/clip-red.mp4';
+import clipBag from '../assets/video/clip-bag.mp4';
+import { url } from '../utils';
+import { getImg } from '../imgs';
+
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(contacto.direccionMapa)}&output=embed`;
+const galeria = [
+  { tipo: 'img', name: 'accion', alt: 'Nacho en la cancha de Le Club Formosa' },
+  { tipo: 'video', src: clipRed, poster: 'net', alt: 'Cancha roja de Le Club junto a la red' },
+  { tipo: 'img', name: 'azul', alt: 'Cancha azul de Le Club Formosa' },
+  { tipo: 'img', name: 'red', alt: 'Red con la marca Le Club y pelotas' },
+  { tipo: 'video', src: clipBag, poster: 'nacho', alt: 'Nacho preparando la clase' },
+  { tipo: 'img', name: 'cancha', alt: 'Vista de las canchas techadas' },
+] as const;
+---
+<Base title="NR Academia · Clases de pádel en Formosa con Nacho Román" waMensaje="Hola Nacho! Quiero reservar mi clase de prueba sin cargo.">
+  <!-- HERO -->
+  <section class="on-dark relative isolate flex min-h-[100svh] items-end overflow-hidden bg-bordo-hondo text-crema" aria-label="Inicio">
+    <picture>
+      <source media="(min-width: 768px)" srcset={getImg('hero-poster-d')?.src} width="1280" height="640" />
+      <Media name="hero-poster" alt="" eager class="absolute inset-0 -z-20 size-full object-cover" widths={[480, 800, 1080]} sizes="100vw" />
+    </picture>
+    <video data-src={heroDesktop} data-src-mobile={heroMobile} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+      class="hero-video absolute inset-0 -z-20 size-full object-cover"></video>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo via-bordo-hondo/45 to-bordo-hondo/10"></div>
+    <div class="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-bordo-hondo/70 to-transparent"></div>
+    <div class="wrap-in w-full pb-28 pt-32 sm:pb-20">
+      <h1 class="display h-mega">
+        <span class="hero-line block overflow-hidden pb-[0.08em]"><span class="block">Pádel</span></span>
+        <span class="hero-line block overflow-hidden pb-[0.08em]"><span class="block">con Nacho.</span></span>
+      </h1>
+      <p class="hero-fade lede mt-6">Academia en Le Club Formosa. Clases para chicos, mujeres, principiantes y competidores.</p>
+      <div class="hero-fade mt-8 flex flex-wrap gap-3">
+        <a href={waLink()} target="_blank" rel="noopener" class="btn">Reservá tu clase</a>
+        <a href="#clases" class="btn btn-ghost">Ver clases</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATOS -->
+  <section class="on-dark bg-bordo px-[var(--gutter)] py-10 text-crema sm:py-14" aria-label="La academia en números">
+    <dl class="wrap grid grid-cols-3 gap-3 sm:gap-8">
+      {datos.map((d) => (
+        <div data-reveal class="min-w-0">
+          <dt class="order-2 mt-2 text-sm leading-tight opacity-90 sm:text-xl">{d.etiqueta}</dt>
+          <dd class="display text-[clamp(1.9rem,8vw,6rem)] !leading-[0.95]">
+            {'valor' in d ? <>{d.prefijo}<span data-count={d.valor}>{d.valor}</span></> : d.texto}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <!-- CLASES -->
+  <section id="clases" class="section">
+    <div class="wrap">
+      <h2 class="display h-xl" data-reveal>Elegí tu clase</h2>
+      <p class="lede mt-5" data-reveal>Cuatro formas de entrenar. La primera clase es de prueba, sin cargo.</p>
+      <div class="mt-12 grid gap-5 md:grid-cols-2 md:gap-6">
+        {clases.map((c) => <ClaseCard clase={c} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUÉ -->
+  <section id="porque" class="section bg-crema-oscura">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+      <div>
+        <h2 class="display h-xl" data-reveal>Por qué NR Academia</h2>
+        <p class="lede mt-6" data-reveal>Para todos: {academia.paraTodos.map((p) => p.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' y $1')}.</p>
+      </div>
+      <ul class="grid gap-0">
+        {diferencial.map((d) => (
+          <li data-reveal class="py-7 first:pt-0">
+            <h3 class="display h-lg">{d.titulo}</h3>
+            <p class="mt-3 max-w-md text-lg text-tinta-suave">{d.texto}</p>
+            <div class="t-rule mt-7 text-bordo"></div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- NACHO -->
+  <section id="nacho" class="section">
+    <div class="wrap grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal class="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-crema-oscura shadow-[var(--shadow-lift)]">
+        <Media name="nacho" alt="Nacho Román con el bolso y el carro de pelotas en Le Club Formosa" class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 40vw, 100vw" />
+      </div>
+      <div>
+        <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
+        <p class="lede mt-6" data-reveal>{nacho.intro}</p>
+        <p class="mt-4 max-w-lg text-tinta-suave" data-reveal><Txt value={nacho.trayectoria} /></p>
+        <a data-reveal href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo mt-8">TikTok {contacto.tiktok.usuario}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIOS -->
+  <section id="precios" class="section on-dark bg-bordo text-crema">
+    <div class="wrap">
+      <h2 class="display h-xl" data-reveal>Precios</h2>
+      <p class="lede mt-5" data-reveal>Sin letra chica. La clase de prueba es sin cargo.</p>
+      <div class="mt-12 grid gap-4 md:grid-cols-3">
+        {[
+          { n: 'Clase suelta', p: pesos(precios.claseSuelta), d: 'Una clase, cuando quieras.' },
+          { n: 'Mes de 8 clases', p: pesos(precios.mes8Clases), d: 'Para entrenar con continuidad.' },
+          { n: 'Cancha aparte', p: pesos(precios.canchaHora), d: 'Por hora. Se abona aparte de la clase.' },
+        ].map((x) => (
+          <div data-reveal class="flex flex-col justify-between rounded-[var(--radius-card)] bg-crema p-7 text-tinta sm:p-8">
+            <h3 class="font-bold text-bordo">{x.n}</h3>
+            <p class="display mt-6 text-[clamp(2.8rem,9vw,4.5rem)] text-bordo">{x.p}</p>
+            <p class="mt-4 text-tinta-suave">{x.d}</p>
+          </div>
+        ))}
+      </div>
+      <div data-reveal class="mt-4 flex flex-col items-start justify-between gap-5 rounded-[var(--radius-card)] border-2 border-crema/40 p-7 sm:flex-row sm:items-center sm:p-8">
+        <p class="display h-md">Clase de prueba: sin cargo.</p>
+        <a href={waLink()} target="_blank" rel="noopener" class="btn">Reservá tu clase</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section id="galeria" class="section overflow-hidden !px-0">
+    <div class="wrap px-[var(--gutter)]">
+      <h2 class="display h-xl" data-reveal>Así se entrena</h2>
+    </div>
+    <ul class="gal mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter)] pb-4" aria-label="Galería de fotos y videos">
+      {galeria.map((g) => (
+        <li class="w-[72vw] shrink-0 snap-center sm:w-[34vw] lg:w-[22vw]">
+          <figure class="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-media)] bg-bordo-hondo">
+            {g.tipo === 'img'
+              ? <Media name={g.name} alt={g.alt} class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 22vw, 72vw" widths={[480, 800]} />
+              : <>
+                  <Media name={g.poster} alt={g.alt} class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 22vw, 72vw" widths={[480, 800]} />
+                  <video data-src={g.src} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" class="vid absolute inset-0 size-full object-cover"></video>
+                </>}
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- HORARIOS Y UBICACIÓN -->
+  <section id="horarios" class="section bg-crema-oscura">
+    <div class="wrap grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="display h-xl" data-reveal>Horarios y ubicación</h2>
+        <div class="mt-10" data-reveal>
+          <p class="display h-md">{horarios.dias}</p>
+          <ul class="mt-3 space-y-1 text-xl">{horarios.franjas.map((f) => <li>{f}</li>)}</ul>
+          <p class="mt-3 text-tinta-suave"><Txt value={horarios.finDeSemana} /></p>
+        </div>
+        <div class="t-rule mt-8 text-bordo"></div>
+        <div class="mt-8" data-reveal>
+          <p class="display h-md">{academia.sede}</p>
+          <p class="mt-3 text-xl"><Txt value={contacto.direccion} /></p>
+          <a class="btn btn-bordo mt-6" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contacto.direccionMapa)}`} target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
+      </div>
+      <div data-reveal class="aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-crema shadow-[var(--shadow-soft)] sm:aspect-[4/3] lg:aspect-auto lg:min-h-[28rem]">
+        <iframe title="Mapa de NR Academia en Le Club Formosa" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="size-full border-0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="section on-dark bg-bordo-hondo text-center text-crema">
+    <div class="wrap">
+      <h2 class="display h-xl mx-auto max-w-4xl" data-reveal>¿Probamos una clase?</h2>
+      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho por WhatsApp. La primera es sin cargo.</p>
+      <a data-reveal href={waLink()} target="_blank" rel="noopener" class="btn btn-wa mt-10 !min-h-14 !px-9 !text-xl">Reservá por WhatsApp</a>
+    </div>
+  </section>
+</Base>
+<style is:global>
+  .hero-video, .vid { opacity: 0; transition: opacity 600ms var(--ease-out-strong); }
+  .hero-video.is-playing, .vid.is-playing { opacity: 1; }
+  .gal { scrollbar-width: none; }
+  .gal::-webkit-scrollbar { display: none; }
+</style>
