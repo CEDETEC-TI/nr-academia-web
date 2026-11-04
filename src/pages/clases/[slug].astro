@@ -59,7 +59,7 @@ const lista = (items: string[]) => items;
         <p class="mt-4">Mes de 8 clases: <strong>{pesos(precios.mes8Clases)}</strong></p>
         <p>Cancha aparte: <strong>{pesos(precios.canchaHora)}</strong> la hora</p>
         <p class="mt-4 rounded-2xl bg-crema/15 px-4 py-3 font-semibold">Clase de prueba: sin cargo.</p>
-        <p class="mt-4 text-sm opacity-90"><Txt value={clase.precioNota} /></p>
+        {clase.precioNota && <p class="mt-4 text-sm opacity-90"><Txt value={clase.precioNota} /></p>}
       </div>
     </div>
   </section>

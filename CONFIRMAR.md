@@ -1,20 +1,27 @@
-# Lista [CONFIRMAR CON NACHO]
-Todo está marcado en `src/data/academia.ts` (buscar `PENDIENTE`).
+# Pendientes con Nacho
 
-**Generales**
-1. Dirección: Freitas 768, Le Club Formosa (a confirmar).
-2. Horarios de sábado y domingo.
-3. Trayectoria de Nacho: años de experiencia, títulos, historia.
-4. Instagram (pendiente) y YouTube (próximamente): usuarios y enlaces.
-5. Logo oficial: el PNG recibido (`Recurso 2.png`) es verde/amarillo y no encaja con el bordó; ¿es el logo definitivo?
-6. Foto de retrato de Nacho y fotos de chicos entrenando.
-7. Equipamiento para la clase de prueba (¿hay que llevar paleta?).
-8. Política de cancelación y recuperación de clases.
+## Ya confirmado y aplicado
+- Duración: todas las clases duran 1 hora.
+- Grupos: individual o de 2, 3 o 4 personas como máximo.
+- Dirección: Freitas 768, Le Club Formosa.
+- Logo oficial: `Recurso 2.png` (nav, footer y favicon, sobre pastilla crema).
 
-**Por clase (Individuales, Grupales, Para chicos, Competencia)**
-9. Duración de cada clase.
-10. Cantidad de alumnos por grupo (Grupales, Para chicos, Competencia).
-11. Si el precio de cada tipo de clase difiere de la clase suelta ($10.000); hoy todas muestran los mismos precios.
-12. Para chicos: edad mínima, rango de edades y si los padres pueden mirar.
-13. Competencia: nivel mínimo requerido.
-14. Contenido de "qué se trabaja" y "cómo es la clase": está redactado en términos generales de pádel; que Nacho lo ajuste a su método.
+## Sigue sin confirmar (no se muestra como pendiente en la web: se oculta o dice "Consultanos por WhatsApp")
+1. Horarios de sábado y domingo (la web dice "consultanos por WhatsApp").
+2. Trayectoria de Nacho: años, títulos, historia (la sección no muestra nada).
+3. Instagram y YouTube (se ocultan del footer hasta cargar la URL en `src/data/academia.ts`).
+4. Equipamiento para la clase de prueba (FAQ: "consultanos por WhatsApp").
+5. Política de cancelación (FAQ: "avisanos por WhatsApp").
+6. Precio de cada tipo de clase: hoy todas muestran los precios generales.
+7. Edades de "Para chicos" (se pide consultar por WhatsApp).
+8. Nivel requerido en Competencia (se pide consultar por WhatsApp).
+9. Revisión de "qué se trabaja" y "cómo es la clase": redactado en términos generales de pádel.
+
+Para volver a marcar algo como pendiente: usar `PENDIENTE` en `src/data/academia.ts`; `<Txt>` lo resalta.
+
+## Imágenes provisorias (libres de Pexels)
+Reemplazar por fotos reales cuando existan:
+- Sección "Soy Nacho": foto de jugador de pádel sin cara, Pexels #1103829 — https://www.pexels.com/photo/person-holding-black-and-green-tennis-racket-1103829/
+- Tarjeta y portada de "Para chicos": chico jugando al tenis, Pexels #8224727 — https://www.pexels.com/photo/boy-playing-tennis-8224727/ (es tenis, no pádel; la raqueta casi queda fuera del recorte)
+
+Todo el resto son cuadros de los videos reales de Nacho en Le Club.

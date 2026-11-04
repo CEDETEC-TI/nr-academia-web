@@ -93,12 +93,12 @@ const galeria = [
   <section id="nacho" class="section">
     <div class="wrap grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
       <div data-reveal class="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-crema-oscura shadow-[var(--shadow-lift)]">
-        <Media name="nacho" alt="Nacho Román con el bolso y el carro de pelotas en Le Club Formosa" class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 40vw, 100vw" />
+        <Media name="nacho" alt="Jugador de pádel con la paleta en la mano sobre la cancha" class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 40vw, 100vw" />
       </div>
       <div>
         <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
         <p class="lede mt-6" data-reveal>{nacho.intro}</p>
-        <p class="mt-4 max-w-lg text-tinta-suave" data-reveal><Txt value={nacho.trayectoria} /></p>
+        {nacho.trayectoria && <p class="mt-4 max-w-lg text-tinta-suave" data-reveal><Txt value={nacho.trayectoria} /></p>}
         <a data-reveal href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo mt-8">TikTok {contacto.tiktok.usuario}</a>
       </div>
     </div>

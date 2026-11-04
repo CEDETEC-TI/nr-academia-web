@@ -20,11 +20,11 @@ export const academia = {
 
 export const contacto = {
   whatsapp: '5493704610720',
-  direccion: `Freitas 768, Le Club Formosa ${PENDIENTE}`,
+  direccion: 'Freitas 768, Le Club Formosa',
   direccionMapa: 'Freitas 768, Formosa, Argentina',
   tiktok: { usuario: '@NACHOROMAN637', url: 'https://www.tiktok.com/@nachoroman637' },
-  instagram: { usuario: 'Instagram: pendiente', url: '' },
-  youtube: { usuario: 'YouTube: próximamente', url: '' },
+  instagram: { usuario: '', url: '' }, // sin confirmar: no se muestra hasta tener URL
+  youtube: { usuario: '', url: '' }, // sin confirmar: no se muestra hasta tener URL
 };
 
 export const precios = {
@@ -37,7 +37,7 @@ export const precios = {
 export const horarios = {
   dias: 'Lunes a viernes',
   franjas: ['8 a 12 hs', '14 a 20 hs'],
-  finDeSemana: `Sábado y domingo: ${PENDIENTE}`,
+  finDeSemana: 'Sábados y domingos: consultanos por WhatsApp.',
 };
 
 export const datos = [
@@ -55,7 +55,7 @@ export const diferencial = [
 
 export const nacho = {
   intro: 'Soy Nacho, profe de pádel en Le Club Formosa. Enseño para que juegues mejor y disfrutes cada partido.',
-  trayectoria: `Trayectoria, años de experiencia y títulos: ${PENDIENTE}`,
+  trayectoria: '', // sin confirmar: la sección no muestra nada si está vacío
 };
 
 export interface Clase {
@@ -80,7 +80,7 @@ const faqComun = (nombreClase: string) => [
   },
   {
     p: '¿Necesito tener paleta?',
-    r: `Equipamiento para la clase de prueba: ${PENDIENTE}`,
+    r: 'Consultanos por WhatsApp qué traer a tu primera clase y te contamos.',
   },
   {
     p: '¿Cómo reservo?',
@@ -88,7 +88,7 @@ const faqComun = (nombreClase: string) => [
   },
   {
     p: '¿Qué pasa si no puedo ir?',
-    r: `Política de cancelación y recuperación de clases: ${PENDIENTE}`,
+    r: 'Avisanos por WhatsApp con tiempo y coordinamos cómo seguir.',
   },
 ];
 
@@ -101,9 +101,9 @@ export const clases: Clase[] = [
     paraQuien: ['Quien quiere avanzar rápido', 'Quien empieza y prefiere ir a su ritmo', 'Quien necesita corregir un golpe puntual'],
     queSeTrabaja: ['Golpes base: derecha, revés y volea', 'Saque y devolución', 'Posición y movimiento en la cancha', 'Bandeja y víbora'],
     comoEs: ['Clase uno a uno en cancha de Le Club Formosa.', 'Nacho arma el trabajo según tu nivel y tu objetivo.', 'Practicás con corrección en el momento.'],
-    duracion: `Duración de la clase: ${PENDIENTE}`,
-    tamanoGrupo: '1 alumno',
-    precioNota: `Precio de la clase individual (si difiere de la clase suelta): ${PENDIENTE}`,
+    duracion: 'Cada clase dura 1 hora.',
+    tamanoGrupo: 'Clase individual, uno a uno.',
+    precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel Individual. ¿Qué días y horarios tenés?',
     faq: [
       { p: '¿Sirve si nunca jugué?', r: 'Sí. Arrancás desde cero y vas a tu ritmo.' },
@@ -118,12 +118,12 @@ export const clases: Clase[] = [
     paraQuien: ['Quien quiere entrenar con amigos', 'Quien busca un ambiente divertido', 'Quien quiere practicar situaciones de partido'],
     queSeTrabaja: ['Golpes y juego en pareja', 'Ubicación y comunicación con tu compañero', 'Puntos y situaciones reales de partido', 'Ejercicios en equipo'],
     comoEs: ['Grupo reducido en cancha de Le Club Formosa.', 'Ejercicios de a dos y juego de puntos.', 'Nacho corrige y ordena el trabajo de todos.'],
-    duracion: `Duración de la clase: ${PENDIENTE}`,
-    tamanoGrupo: `Cantidad de alumnos por grupo: ${PENDIENTE}`,
-    precioNota: `Precio de la clase grupal (si difiere de la clase suelta): ${PENDIENTE}`,
+    duracion: 'Cada clase dura 1 hora.',
+    tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
+    precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel Grupal. ¿Qué grupos y horarios hay?',
     faq: [
-      { p: '¿Puedo ir con amigos?', r: `Sí, escribinos y armamos el grupo. Mínimo y máximo de alumnos: ${PENDIENTE}` },
+      { p: '¿Puedo ir con amigos?', r: 'Sí, escribinos y armamos el grupo. Los grupos son de 2, 3 o 4 personas como máximo.' },
       ...faqComun('grupal'),
     ],
   },
@@ -132,16 +132,15 @@ export const clases: Clase[] = [
     nombre: 'Para chicos',
     corto: 'Pádel con alegría, cuidado y valores.',
     imagen: 'chicos',
-    paraQuien: ['Chicos que se inician en el pádel', 'Familias que buscan deporte y valores', `Rango de edades: ${PENDIENTE}`],
+    paraQuien: ['Chicos que se inician en el pádel', 'Familias que buscan deporte y valores', 'Consultanos por WhatsApp según la edad de tu hijo/a'],
     queSeTrabaja: ['Coordinación y primeros golpes', 'Respeto, esfuerzo y compañerismo', 'Juego en equipo', 'Gusto por el deporte'],
     comoEs: ['Clase pensada para chicos, en cancha de Le Club Formosa.', 'Ejercicios de a poco y con juego.', 'Nacho cuida el ritmo y el clima de la clase.'],
-    duracion: `Duración de la clase: ${PENDIENTE}`,
-    tamanoGrupo: `Cantidad de chicos por grupo: ${PENDIENTE}`,
-    precioNota: `Precio de la clase para chicos (si difiere de la clase suelta): ${PENDIENTE}`,
+    duracion: 'Cada clase dura 1 hora.',
+    tamanoGrupo: 'Grupos de 2, 3 o 4 chicos como máximo.',
+    precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar una clase de prueba sin cargo de pádel para mi hijo/a. ¿Qué días y horarios tenés?',
     faq: [
-      { p: '¿Desde qué edad pueden venir?', r: `Edad mínima: ${PENDIENTE}` },
-      { p: '¿Pueden mirar los padres?', r: `Política de acompañamiento: ${PENDIENTE}` },
+      { p: '¿Desde qué edad pueden venir?', r: 'Consultanos por WhatsApp con la edad de tu hijo/a y te contamos.' },
       ...faqComun('para chicos'),
     ],
   },
@@ -153,12 +152,12 @@ export const clases: Clase[] = [
     paraQuien: ['Quien juega torneos', 'Quien quiere subir de categoría', 'Quien busca más intensidad'],
     queSeTrabaja: ['Táctica y lectura de juego', 'Golpes de definición', 'Preparación mental para partidos', 'Trabajo de situaciones de torneo'],
     comoEs: ['Entrenamiento exigente en cancha de Le Club Formosa.', 'Foco en tus puntos débiles y en tu estrategia.', 'Trabajo con objetivos claros.'],
-    duracion: `Duración de la clase: ${PENDIENTE}`,
-    tamanoGrupo: `Cantidad de alumnos por grupo: ${PENDIENTE}`,
-    precioNota: `Precio de la clase de competencia (si difiere de la clase suelta): ${PENDIENTE}`,
+    duracion: 'Cada clase dura 1 hora.',
+    tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
+    precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel de Competencia. ¿Qué nivel piden y qué horarios hay?',
     faq: [
-      { p: '¿Qué nivel necesito?', r: `Nivel mínimo requerido: ${PENDIENTE}` },
+      { p: '¿Qué nivel necesito?', r: 'Consultanos por WhatsApp y Nacho te orienta según tu nivel.' },
       ...faqComun('de competencia'),
     ],
   },

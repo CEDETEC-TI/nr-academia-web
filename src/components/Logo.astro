@@ -1,0 +1,11 @@
+---
+// Logo oficial (Recurso 2.png) sobre una pastilla crema: se lee igual sobre video, bordó o crema sin tocar sus colores.
+import { Image } from 'astro:assets';
+import { getImg } from '../imgs';
+const { size = 40 } = Astro.props as { size?: number };
+const logo = getImg('logo')!;
+const inner = Math.round(size * 0.68);
+---
+<span class="grid shrink-0 place-items-center rounded-[28%] bg-crema shadow-[0_1px_2px_rgb(74_16_25/0.2)]" style={`width:${size}px;height:${size}px`}>
+  <Image src={logo} alt="" width={inner} height={inner} widths={[inner, inner * 2]} sizes={`${inner}px`} format="webp" loading="eager" />
+</span>
