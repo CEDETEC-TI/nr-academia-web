@@ -16,7 +16,8 @@ for (const reduce of ['no-preference', 'reduce']) {
       const errs = [];
       page.on('console', (m) => ['error', 'warning'].includes(m.type()) && !/google\.com\/maps|Failed to load resource.*(404)/.test(m.text() + m.location().url) && errs.push(m.text()));
       page.on('pageerror', (e) => errs.push(String(e)));
-      page.on('requestfailed', (r) => !r.url().includes('google.com') && errs.push('requestfailed ' + r.url()));
+      // Las cancelaciones (ERR_ABORTED) de videos al cerrar la página o pausarlos fuera de vista son normales.
+      page.on('requestfailed', (r) => !r.url().includes('google.com') && !(r.url().endsWith('.mp4') && /ABORTED/.test(r.failure()?.errorText ?? '')) && errs.push('requestfailed ' + r.url()));
       const res = await page.goto(BASE + p, { waitUntil: 'networkidle' });
       // recorrer la página para disparar reveals
       const h = await page.evaluate(() => document.documentElement.scrollHeight);
