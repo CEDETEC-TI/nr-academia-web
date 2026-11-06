@@ -18,7 +18,8 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 ## Cuaderno de Pádel (`/cuaderno/`)
 - App de seguimiento de pádel integrada como página propia. Lógica en `src/scripts/cuaderno.js` (vanilla JS del original), estilos en `src/styles/cuaderno.css` acotados a `#cuaderno` con los tokens NR. Documentación original en `docs/CUADERNO.md`.
 - Guarda en `localStorage` (`padel-cuaderno-v1`): cada persona ve solo sus datos, en su navegador.
-- Reglas propias: el jugador juega de **revés** (nunca escribir "drive": usar "golpe de derecha" / "golpe de revés"); solo los entrenamientos cuentan como días entrenados; plan lunes a viernes 10:00.
+- Es para **cualquier alumno** de NR: nada personalizado a un jugador. El plan semanal y el horario los carga cada alumno en la Ficha (`plan1`…`plan5`, `horario`).
+- Reglas: nunca escribir "drive" (usar "golpe de derecha" / "golpe de revés"); solo los entrenamientos cuentan como días entrenados.
 - La página usa `<Base app>`: header siempre sólido, sin Lenis y sin botón flotante de WhatsApp.
 
 ## Comandos

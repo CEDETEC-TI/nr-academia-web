@@ -1,3 +1,5 @@
+> **Versión NR Academia (nov 2026):** integrada en `/cuaderno/` y hecha genérica para los alumnos. El plan semanal y el horario ya no son fijos: los carga cada alumno en la Ficha. Se quitó la guía "fútbol → pádel" y el enlace al plan privado. Los estilos usan la paleta NR. El resto de este documento describe el original.
+
 # Cuaderno de Pádel: informe para Claude Code
 
 App de seguimiento de pádel. Registra partidos, torneos, entrenamientos, físico y mental, y muestra el progreso con KPIs y gráficos.

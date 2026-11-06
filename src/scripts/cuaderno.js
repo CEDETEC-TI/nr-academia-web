@@ -2,14 +2,16 @@
 (() => {
 "use strict";
 /* ---------- constantes ---------- */
-const PLAN = {1:"Bandeja",2:"Físico fútbol → pádel + bolas bajas",3:"Víbora y potencia",4:"Paredes, defensa de nevera y mental",5:"Partido"};
+// Plan semanal: lo carga cada alumno en su Ficha (plan1 = lunes … plan5 = viernes).
+const planOf = () => { const p={}; [1,2,3,4,5].forEach(d=>{ const v=String(S.ficha["plan"+d]||"").trim(); if(v) p[d]=v; }); return p; };
+const FOCOS = ["Bandeja","Víbora","Remate","Volea","Bolas bajas","Paredes","Globo","Saque y resto","Defensa","Físico","Partido","Otro"];
 const DIAS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const COLS = ["partidos","torneos","entrenos","fisico","mental"];
 const INSTANCIAS = ["Fase de grupos","32avos","16avos","Octavos","Cuartos","Semifinal","Final","Campeón"];
 const FICHA_DEF = {nombre:"",edad:"",altura:"",posicion:"",categoria:"",objetivo:"",
   estilo:"",origen:"",desafio:"",
-  horario:"Lunes a viernes, 10:00",metaBandejas:"7",metaSplit:"80",metaEnf:"30"};
+  horario:"",plan1:"",plan2:"",plan3:"",plan4:"",plan5:"",metaBandejas:"7",metaSplit:"80",metaEnf:"30"};
 
 const SPECS = {
   partidos:[
@@ -43,7 +45,7 @@ const SPECS = {
   entrenos:[
     {sec:"La sesión"},
     {k:"fecha",label:"Fecha",type:"date"},
-    {k:"foco",label:"Foco del día",type:"select",options:[...Object.values(PLAN),"Otro"]},
+    {k:"foco",label:"Foco del día",type:"select",options:FOCOS},
     {k:"tipo",label:"Tipo",type:"select",options:["Clase","Cancha libre","Partido de práctica","Físico"]},
     {k:"minutos",label:"Minutos",type:"number",min:0,max:600,def:60},
     {sec:"Técnica"},
@@ -100,10 +102,13 @@ const SPECS = {
   ficha:[
     {k:"nombre",label:"Nombre",type:"text"},{k:"edad",label:"Edad",type:"text"},{k:"altura",label:"Altura",type:"text"},
     {k:"posicion",label:"Posición",type:"text"},{k:"categoria",label:"Categoría actual",type:"text"},{k:"objetivo",label:"Objetivo",type:"text"},
-    {k:"origen",label:"Deporte de origen",type:"text"},{k:"horario",label:"Horario de entreno",type:"text"},
+    {k:"origen",label:"Deporte de origen",type:"text"},{k:"horario",label:"Horario de entreno",type:"text",ph:"Ej.: lunes a viernes, 18:00"},
     {k:"estilo",label:"Estilo de juego",type:"textarea"},{k:"desafio",label:"Principal desafío mental",type:"textarea"},
     {k:"metaBandejas",label:"Meta bandejas profundas (de 10)",type:"text"},{k:"metaSplit",label:"Meta split step (%)",type:"text"},
-    {k:"metaEnf",label:"Meta baja de errores no forzados (%)",type:"text"}
+    {k:"metaEnf",label:"Meta baja de errores no forzados (%)",type:"text"},
+    {sec:"Plan semanal (opcional)"},
+    {k:"plan1",label:"Lunes",type:"text",ph:"Ej.: Bandeja"},{k:"plan2",label:"Martes",type:"text",ph:"Ej.: Físico"},{k:"plan3",label:"Miércoles",type:"text",ph:"Ej.: Víbora"},
+    {k:"plan4",label:"Jueves",type:"text",ph:"Ej.: Paredes"},{k:"plan5",label:"Viernes",type:"text",ph:"Ej.: Partido"}
   ]
 };
 const NAMES = {partidos:"Partido",torneos:"Torneo",entrenos:"Entrenamiento",fisico:"Físico",mental:"Mental"};
@@ -280,7 +285,7 @@ function fieldHTML(col,f,val){
 function defaults(col){
   const o={}; SPECS[col].forEach(f=>{ if(f.sec) return; o[f.k]= f.type==="date"?today(): f.type==="checks"?[]: f.def!=null?f.def: f.type==="select"?f.options[0]:""; });
   if(col==="partidos"&&S.ctx){ const t=S.torneos.find(x=>x.id===S.ctx.torneoId); if(t){ o.tipo="Torneo"; o.companero=t.companero||""; const fin=t.fechaFin||t.fecha; o.fecha=o.fecha<t.fecha?t.fecha:o.fecha>fin?fin:o.fecha; } }
-  if(col==="entrenos"){ const w=new Date().getDay(); if(PLAN[w]) o.foco=PLAN[w]; if(w===2) o.tipo="Físico"; }
+  if(col==="entrenos"){ const hoy=planOf()[new Date().getDay()]; const f=hoy&&FOCOS.find(x=>x.toLowerCase()===hoy.toLowerCase()); if(f) o.foco=f; if(hoy&&/f[ií]sico/i.test(hoy)) o.tipo="Físico"; }
   return o;
 }
 function formHTML(col){
@@ -354,15 +359,15 @@ function rendimiento(p){ const parts=[]; const n=k=>num(p[k]);
   CONTEOS.forEach(([k])=>{ if(n(k)!=null) parts.push(n(k)/10); });
   return parts.length?Math.round(avg(parts)*100):null; }
 function weekStrip(m){
-  const w=new Date().getDay(); const mon=monday(new Date());
-  const days=[1,2,3,4,5].map(d=>{ const st=m.doneDays.has(d)?"done":m.matchDays.has(d)?"match":""; const tip=PLAN[d]+(st==="done"?" · entrenado":st==="match"?" · partido":"");
+  const w=new Date().getDay(); const mon=monday(new Date()); const PLAN=planOf();
+  const days=[1,2,3,4,5].map(d=>{ const st=m.doneDays.has(d)?"done":m.matchDays.has(d)?"match":""; const tip=(PLAN[d]||"Sin plan")+(st==="done"?" · entrenado":st==="match"?" · partido":"");
     return `<button type="button" class="wd ${st}${d===w?" today":""}${S.day===d?" sel":""}" data-act="day" data-d="${d}" aria-pressed="${S.day===d}" title="${esc(tip)}"><span class="wl">${DIAS[d]}</span><span class="dot"></span></button>`; }).join("");
   const hoy=PLAN[w]?`<p class="wtoday">Hoy: ${esc(PLAN[w])}</p>`:"";
   let panel="";
   if(S.day){ const dt=new Date(mon); dt.setDate(dt.getDate()+S.day-1); const ds=iso(dt); const f=fmtD(ds);
     const rows=["entrenos","partidos","fisico","mental"].flatMap(c=>S[c].filter(r=>r.fecha===ds).map(r=>({col:c,r})));
     const largo=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][S.day];
-    panel=`<div class="wpanel"><div class="wph"><div><b>${largo} ${esc(f.num)}</b><span>Plan: ${esc(PLAN[S.day])}</span></div><button class="btn small" data-act="day" data-d="${S.day}">Cerrar</button></div>
+    panel=`<div class="wpanel"><div class="wph"><div><b>${largo} ${esc(f.num)}</b><span>${PLAN[S.day]?"Plan: "+esc(PLAN[S.day]):"Sin plan para este día"}</span></div><button class="btn small" data-act="day" data-d="${S.day}">Cerrar</button></div>
       ${rows.length?`<div class="list">${rows.map(x=>entryHTML(x.col,x.r,false)).join("")}</div>`:`<p class="wnone">${ds>iso(new Date())?"Todavía no llegó este día.":"No cargaste nada este día."}</p>`}</div>`; }
   return `<div class="wkbox"><div class="wk">${days}</div><div class="wfoot">${hoy||"<span></span>"}<div class="wlegend"><span><i class="dot done"></i>Entrenado</span><span><i class="dot match"></i>Partido</span></div></div>${panel}</div>`;
 }
@@ -371,7 +376,8 @@ function vInicio(){
   const metaB=num(F.metaBandejas)||7, metaS=num(F.metaSplit)||80, metaE=num(F.metaEnf)||30;
   const nE=asc("partidos").filter(p=>num(p.enf)!=null).length; let enfNote=nE?`Por partido · últimos ${Math.min(3,nE)}`:"Sin partidos cargados", enfCls="";
   if(m.enfBase!=null&&m.enfRec!=null){ const ch=(m.enfRec-m.enfBase)/m.enfBase*100; enfNote=(ch<=0?"":"+")+Math.round(ch)+"% vs. al inicio"; enfCls=ch<=-metaE?"good":ch<0?"warn":"bad"; }
-  const pend = 5 - [1,2,3,4,5].filter(d=>m.doneDays.has(d)).length;
+  const PLAN=planOf(); const planDias=Object.keys(PLAN).map(Number); const pend=planDias.filter(d=>!m.doneDays.has(d)).length;
+  const lede=!planDias.length?"Cargá tu plan semanal en la Ficha para ver qué toca cada día.":pend>0?`${pend===1?"Queda 1 día":"Quedan "+pend+" días"} del plan${F.horario?" · "+F.horario:""}`:"Semana completa";
   const P=asc("partidos").slice(-15), E=asc("entrenos").filter(e=>num(e.bandejas)!=null).slice(-15), Fi=asc("fisico").slice(-15);
   const enfMax=Math.max(20,...P.map(p=>num(p.enf)||0)); const enfTop=Math.ceil(enfMax/5)*5;
   const c1=lineChart([{values:P.map(p=>num(p.enf))}],{yMax:enfTop,labels:P.map(p=>shortD(p.fecha)),
@@ -385,11 +391,11 @@ function vInicio(){
   const cur=CHS[S.chart]||CHS.rend; const chartBody=(cur[0]?cur[2]:"")+(cur[0]||`<div class="empty">${esc(cur[1])}</div>`);
   return `
   <section class="sechead"><div><h2>Semana del ${m.mon.getDate()} de ${MESES[m.mon.getMonth()]}</h2>
-    <p class="lede">${pend>0?`${pend===1?"Queda 1 día":"Quedan "+pend+" días"} del plan · 10:00`:"Semana completa"}</p></div>
+    <p class="lede">${esc(lede)}</p></div>
     <div class="row"><a class="btn primary" href="#entrenos" data-new="entrenos">+ Entrenamiento</a><a class="btn ball" href="#partidos" data-new="partidos">+ Partido</a></div></section>
   ${weekStrip(m)}
   <section class="kpis">
-    <a class="kpi" href="#entrenos" title="Ver tus entrenamientos"><span class="lab">Esta semana</span><span class="val">${m.weekCount}<small>/5</small></span><span class="note">Días entrenados</span></a>
+    <a class="kpi" href="#entrenos" title="Ver tus entrenamientos"><span class="lab">Esta semana</span><span class="val">${m.weekCount}${planDias.length?`<small>/${planDias.length}</small>`:""}</span><span class="note">Días entrenados</span></a>
     <a class="kpi" href="#partidos" title="Ver tus partidos"><span class="lab">Partidos</span><span class="val">${m.ganados}<small>–${m.jugados-m.ganados}</small></span><span class="note">${m.jugados?Math.round(m.ganados/m.jugados*100)+"% ganados":"Todavía sin partidos"}</span></a>
     <button type="button" class="kpi" data-act="chart" data-c="enf" data-scroll="1" title="Ver la evolución de tus errores"><span class="lab">Errores</span><span class="val">${r1(m.enfRec)}</span><span class="note${enfCls?" "+enfCls:""}">${esc(enfNote)}</span></button>
     <button type="button" class="kpi" data-act="chart" data-c="band" data-scroll="1" title="Ver la evolución de tus bandejas"><span class="lab">Bandejas</span><span class="val">${m.bandRec!=null?Math.round(m.bandRec*10)+"<small>%</small>":"–"}</span><span class="note">Profundas · meta ${metaB*10}%</span></button>
@@ -446,19 +452,19 @@ function vPartidos(){
   const P=sorted("partidos"); let extra="";
   if(P.length){ const best=P.filter(p=>p.funciono).slice(0,1)[0], todo=P.filter(p=>p.mejorar).slice(0,1)[0];
     if(best||todo) extra=`<div class="banner">${todo?`<b>Para el próximo partido:</b> ${esc(todo.mejorar)}`:""}${best&&todo?"<br>":""}${best?`<b>Lo que te viene funcionando:</b> ${esc(best.funciono)}`:""}</div>`; }
-  return listSection("partidos","Diario de partidos","Cargalo apenas termines.","Todavía no cargaste partidos. El viernes es día de partido: tocá <b>+ Nuevo registro</b> al terminar.",extra);
+  return listSection("partidos","Diario de partidos","Cargalo apenas termines.","Todavía no cargaste partidos. Después de jugar, tocá <b>+ Nuevo registro</b> y anotalo.",extra);
 }
 function vEntrenos(){
-  const w=new Date().getDay();
-  const extra=PLAN[w]?`<div class="banner">Hoy toca <b>${esc(PLAN[w])}</b> a las 10:00. Al cargar el entreno, el foco ya viene elegido.</div>`:"";
-  return listSection("entrenos","Bitácora de entrenamiento","Lo que trabajaste en cada clase.","Sin entrenamientos cargados. Después de la clase de las 10:00, anotá el foco, los minutos y cuántas bandejas de 10 quedaron profundas.",extra);
+  const hoy=planOf()[new Date().getDay()]; const F=S.ficha;
+  const extra=hoy?`<div class="banner">Hoy toca <b>${esc(hoy)}</b>${F.horario?" · "+esc(F.horario):""}. Si coincide con un foco, al cargar el entreno ya viene elegido.</div>`:"";
+  return listSection("entrenos","Bitácora de entrenamiento","Lo que trabajaste en cada clase.","Sin entrenamientos cargados. Después de cada clase, anotá el foco, los minutos y cuántas bandejas de 10 quedaron profundas.",extra);
 }
 function vFisico(){
-  const tips=`<details class="guide"><summary>Guía: fútbol → pádel</summary><div class="lib">
+  const tips=`<details class="guide"><summary>Guía: moverte mejor en la cancha</summary><div class="lib">
     <div class="libcard"><span class="k">Split step</span><p style="margin:0;font-size:14px">Saltito de activación justo cuando el rival impacta. Caés con los pies al ancho de hombros y el peso adelante, listo para salir para cualquier lado.</p></div>
-    <div class="libcard"><span class="k">3-4 metros explosivos</span><p style="margin:0;font-size:14px">En pádel no hay piques largos como en el fútbol. Primer paso corto y rápido, frenada en dos apoyos y recuperación al centro.</p></div>
+    <div class="libcard"><span class="k">3-4 metros explosivos</span><p style="margin:0;font-size:14px">En pádel casi no hay piques largos. Primer paso corto y rápido, frenada en dos apoyos y recuperación al centro.</p></div>
     <div class="libcard"><span class="k">Cuidado articular</span><p style="margin:0;font-size:14px">En sintético con arena, desplazamiento lateral con pasos cruzados cortos, sin girar la rodilla con el pie clavado. Si una molestia pasa de 5/10, bajá la carga.</p></div></div></details>`;
-  return listSection("fisico","Adaptación física","Split step, arranques cortos y articulaciones.","Sin registros físicos. El martes es día de físico: anotá tu split step estimado y cómo están las articulaciones.",tips);
+  return listSection("fisico","Adaptación física","Split step, arranques cortos y articulaciones.","Sin registros físicos. Anotá tu split step estimado y cómo están las articulaciones después de entrenar.",tips);
 }
 function vMental(){
   const lib=`<details class="guide"><summary>Biblioteca táctica y mental</summary><div class="lib">
@@ -696,13 +702,13 @@ function vFicha(){
   }
   const cell=(l,v)=>`<div><div class="lab">${esc(l)}</div><div class="v">${esc(v)}</div></div>`;
   return `<section class="sechead"><div><h2>Ficha técnica${F.nombre?" · "+esc(F.nombre):""}</h2><p class="lede">${esc([F.posicion,F.categoria,F.objetivo?"objetivo "+F.objetivo:""].filter(Boolean).join(" · ")||"Completá tu ficha con Editar ficha.")}</p></div><button class="btn" data-act="new" data-col="ficha">Editar ficha</button></section>
-  <div class="fichagrid">${cell("Edad",F.edad+" años")}${cell("Altura",F.altura)}${cell("Posición",F.posicion)}${cell("Categoría",F.categoria)}${cell("Objetivo",F.objetivo)}${cell("Origen",F.origen)}${cell("Horario",F.horario)}${cell("Estilo de juego",F.estilo)}${cell("Desafío mental",F.desafio)}</div>
+  <div class="fichagrid">${cell("Edad",F.edad?F.edad+" años":"")}${cell("Altura",F.altura)}${cell("Posición",F.posicion)}${cell("Categoría",F.categoria)}${cell("Objetivo",F.objetivo)}${cell("Origen",F.origen)}${cell("Horario",F.horario)}${cell("Estilo de juego",F.estilo)}${cell("Desafío mental",F.desafio)}</div>
   <section><h3 style="margin-bottom:12px">Metas a 12 semanas</h3><div class="goals">
     <div class="goal"><span>Bandejas profundas: ${metaB} de 10</span><span class="gv">${r1(m.bandRec)} / ${metaB}</span><div class="bar"><span style="width:${pct(m.bandRec,metaB)}%"></span></div></div>
     <div class="goal"><span>Errores no forzados: −${metaE}%</span><span class="gv">${enfDrop==null?"faltan datos":(enfDrop>=0?"−":"+")+Math.abs(Math.round(enfDrop))+"%"}</span><div class="bar"><span style="width:${pct(enfDrop!=null&&enfDrop>0?enfDrop:0,metaE)}%"></span></div></div>
     <div class="goal"><span>Split step en el ${metaS}% de los golpes rivales</span><span class="gv">${m.splRec==null?"–":Math.round(m.splRec)}% / ${metaS}%</span><div class="bar"><span style="width:${pct(m.splRec,metaS)}%"></span></div></div>
   </div></section>
-  <section><h3 style="margin-bottom:10px">Plan semanal</h3>${weekStrip(m)}</section>`;
+  <section><h3 style="margin-bottom:10px">Plan semanal</h3>${weekStrip(m)}${Object.keys(planOf()).length?"":`<p class="lede" style="margin-top:8px">Cargá qué trabajás cada día con <b>Editar ficha</b>.</p>`}</section>`;
 }
 
 const VIEWS={inicio:vInicio,partidos:vPartidos,torneos:vTorneos,entrenos:vEntrenos,fisico:vFisico,mental:vMental,historial:vHistorial,ficha:vFicha};
