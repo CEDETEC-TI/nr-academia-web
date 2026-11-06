@@ -4,7 +4,7 @@ import { mkdirSync } from 'node:fs';
 const BASE = process.env.BASE_URL ?? 'http://localhost:4321/nr-academia-web/';
 const OUT = process.env.OUT ?? 'tests/shots';
 mkdirSync(OUT, { recursive: true });
-const pages = ['', 'clases/individuales/', 'clases/grupales/', 'clases/para-chicos/', 'clases/competencia/', 'no-existe/'];
+const pages = ['', 'cuaderno/', 'clases/individuales/', 'clases/grupales/', 'clases/para-chicos/', 'clases/competencia/', 'no-existe/'];
 const sizes = [{ n: 'm', width: 390, height: 844, mobile: true }, { n: 'd', width: 1440, height: 900 }];
 const browser = await chromium.launch();
 let fail = 0;

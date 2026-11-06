@@ -22,6 +22,7 @@ import Logo from './Logo.astro';
       <p class="mb-3 font-bold">Contacto</p>
       <ul class="space-y-1">
         <li><a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={waLink()} target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={url('cuaderno/')}>Cuaderno de Pádel</a></li>
         <li><a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={contacto.tiktok.url} target="_blank" rel="noopener">TikTok {contacto.tiktok.usuario}</a></li>
         {contacto.instagram.url && <li><a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={contacto.instagram.url} target="_blank" rel="noopener">Instagram {contacto.instagram.usuario}</a></li>}
         {contacto.youtube.url && <li><a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={contacto.youtube.url} target="_blank" rel="noopener">YouTube {contacto.youtube.usuario}</a></li>}

@@ -6,13 +6,13 @@ import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { academia } from '../data/academia';
 import { url } from '../utils';
 import ogImage from '../assets/img/hero-poster.webp';
-interface Props { title: string; description?: string; waMensaje?: string; noindex?: boolean }
-const { title, description = academia.descripcion, waMensaje, noindex = false } = Astro.props;
+interface Props { title: string; description?: string; waMensaje?: string; noindex?: boolean; app?: boolean }
+const { title, description = academia.descripcion, waMensaje, noindex = false, app = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const og = new URL(ogImage.src, Astro.site).href;
 ---
 <!doctype html>
-<html lang="es-AR">
+<html lang="es-AR" data-app={app ? '' : undefined}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -39,7 +39,7 @@ const og = new URL(ogImage.src, Astro.site).href;
   <Header />
   <main id="contenido"><slot /></main>
   <Footer />
-  <WhatsAppFloat mensaje={waMensaje} />
+  {!app && <WhatsAppFloat mensaje={waMensaje} />}
   <script>import '../scripts/motion';</script>
 </body>
 </html>

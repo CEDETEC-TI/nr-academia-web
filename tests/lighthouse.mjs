@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 const BASE = process.env.BASE_URL ?? 'http://localhost:4321/nr-academia-web/';
 const chrome = await chromeLauncher.launch({ chromePath: chromium.executablePath(), chromeFlags: ['--headless=new', '--no-sandbox'] });
 let fail = 0;
-for (const [name, path] of [['inicio', ''], ['clase', 'clases/individuales/']]) {
+for (const [name, path] of [['inicio', ''], ['clase', 'clases/individuales/'], ['cuaderno', 'cuaderno/']]) {
   for (const preset of ['mobile', 'desktop']) {
     const cfg = preset === 'desktop' ? { extends: 'lighthouse:default', settings: { formFactor: 'desktop', screenEmulation: { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false }, throttling: { rttMs: 40, throughputKbps: 10240, cpuSlowdownMultiplier: 1 } } } : undefined;
     const r = await lighthouse(BASE + path, { port: chrome.port, output: 'json', onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'] }, cfg);

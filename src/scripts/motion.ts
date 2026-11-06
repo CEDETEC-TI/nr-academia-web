@@ -5,13 +5,14 @@ import Lenis from 'lenis';
 gsap.registerPlugin(ScrollTrigger);
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isApp = document.documentElement.hasAttribute('data-app');
 const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(document.querySelectorAll<T>(s));
 
 /* ── Header: sólido al bajar + menú móvil ─────────────────────── */
 const header = document.getElementById('site-header')!;
 const menuBtn = document.getElementById('menu-btn') as HTMLButtonElement;
 const menu = document.getElementById('menu')!;
-const setSolid = () => header.setAttribute('data-solid', String(window.scrollY > 40));
+const setSolid = () => header.setAttribute('data-solid', String(isApp || window.scrollY > 40));
 setSolid();
 window.addEventListener('scroll', setSolid, { passive: true });
 
@@ -36,7 +37,7 @@ window.addEventListener('keydown', (e) => e.key === 'Escape' && toggleMenu(false
 window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => e.matches && toggleMenu(false));
 
 /* ── Scroll suave (Lenis) sólo si el usuario acepta movimiento ── */
-if (!reduced) {
+if (!reduced && !isApp) {
   lenis = new Lenis({ lerp: 0.11 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis!.raf(t * 1000));

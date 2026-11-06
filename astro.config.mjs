@@ -8,5 +8,6 @@ export default defineConfig({
   site: 'https://cedetec-ti.github.io',
   base: '/nr-academia-web',
   trailingSlash: 'always',
-  vite: { plugins: [tailwindcss()] },
+  // lightningcss aplana el CSS anidado del Cuaderno para navegadores viejos (iOS < 17.2)
+  vite: { plugins: [tailwindcss()], build: { cssMinify: 'lightningcss', cssTarget: ['safari14', 'chrome100', 'firefox100'] } },
 });
