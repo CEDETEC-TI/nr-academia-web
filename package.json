@@ -11,11 +11,13 @@
     "preview": "astro preview",
     "astro": "astro",
     "test:e2e": "node tests/e2e.mjs",
-    "lighthouse": "node tests/lighthouse.mjs"
+    "lighthouse": "node tests/lighthouse.mjs",
+    "test:panel": "node tests/panel.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
+    "@supabase/supabase-js": "^2.119.0",
     "@tailwindcss/vite": "^4.3.4",
     "astro": "^7.4.5",
     "gsap": "^3.15.1",

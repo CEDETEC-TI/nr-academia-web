@@ -25,5 +25,10 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 - Reglas: nunca escribir "drive" (usar "golpe de derecha" / "golpe de revés"); solo los entrenamientos cuentan como días entrenados.
 - La página usa `<Base app>`: header siempre sólido, sin Lenis y sin botón flotante de WhatsApp.
 
+## Panel de Nacho (`/panel/`)
+- Agenda privada de turnos ocupados/libres (noindex, fuera del menú). Ver `docs/PANEL.md`.
+- Datos en Supabase con login y Row Level Security (`supabase/schema.sql`); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage).
+- Los turnos salen de `horarios.franjas` en `academia.ts`. Nunca usar ni commitear la `service_role` key.
+
 ## Comandos
-`npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e`
+`npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e` · `npm run test:panel` · `npm run lighthouse`
