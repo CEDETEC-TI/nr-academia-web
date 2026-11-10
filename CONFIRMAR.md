@@ -4,7 +4,7 @@
 - Duración: todas las clases duran 1 hora.
 - Grupos: individual o de 2, 3 o 4 personas como máximo.
 - Dirección: Freitas 768, Le Club Formosa.
-- Logo oficial: `Recurso 2.png` (nav, footer y favicon, sobre pastilla crema).
+- Logo: la web todavía usa `Recurso 2.png` (nav, footer y favicon, sobre pastilla crema). Ya está diseñado el logo nuevo (monograma NR) en `../05 LOGO/kit`, pendiente de aplicar.
 
 ## Sigue sin confirmar (no se muestra como pendiente en la web: se oculta o dice "Consultanos por WhatsApp")
 1. Horarios de sábado y domingo (la web dice "consultanos por WhatsApp").

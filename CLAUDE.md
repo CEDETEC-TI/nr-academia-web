@@ -3,6 +3,9 @@
 Academia de pádel de Ignacio "Nacho" Román en Le Club Formosa (Formosa, Argentina).
 Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pages (repo CEDETEC-TI/nr-academia-web, base `/nr-academia-web`).
 
+> Contexto general del proyecto (marca, logo nuevo, estado actual, pendientes): `../CLAUDE.md` e historial en `../HISTORIAL.md`.
+> Logo nuevo: `../05 LOGO/kit` (todavía no aplicado a esta web).
+
 ## Reglas (respetar siempre)
 1. **Trabajar solo en esta carpeta** (`~/Documents/ACADEMIA NR V1/01 WEB`). No leer ni reutilizar proyectos ni plantillas de CEDETEC.
 2. **Datos en un solo archivo: `src/data/academia.ts`.** Nada de precios, horarios, teléfonos o textos de negocio hardcodeados en componentes.
