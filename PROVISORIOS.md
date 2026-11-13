@@ -1,4 +1,3 @@
 # Imágenes provisorias
-Ver la sección "Imágenes provisorias" de `CONFIRMAR.md`.
-Archivo en `src/assets/img/`: `chicos.webp` (Pexels #8224727). Licencia Pexels: uso libre, sin atribución obligatoria.
-La foto provisoria de Nacho (Pexels #1103829) ya se reemplazó por el video real `nacho-clase` (13/11).
+No quedan imágenes provisorias de stock: todo es material real de Nacho en Le Club.
+Se reemplazaron: foto de Nacho (Pexels #1103829) por el video `nacho-clase` y la de "Para chicos" (Pexels #8224727) por el video `chicos-clip` (13/11).
