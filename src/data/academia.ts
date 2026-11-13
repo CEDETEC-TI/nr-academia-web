@@ -173,6 +173,15 @@ export const clases: Clase[] = [
 ];
 
 /** Utilidades */
-export const pesos = (n: number) => '$' + n.toLocaleString('es-AR');
-export const waLink = (mensaje = 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo.') =>
+export const waLink = (mensaje = 'Hola Nacho! Quiero reservar mi clase de prueba.') =>
   `https://wa.me/${contacto.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+
+/** Reglas del panel privado de Nacho (/panel/). No se muestran en la web pública. */
+export const panel = {
+  /** Lo que cobra Nacho por clase y por alumno: el mismo precio de la web (`precios.claseSuelta`, $10.000). */
+  precioClase: precios.claseSuelta,
+  /** Cupo inicial de un grupo nuevo (4 = una cancha de pádel); se cambia en cada clase. */
+  cupoPorDefecto: 4,
+  /** Si falta sin avisar, ¿se cobra la clase? Sin confirmar con Nacho: por ahora no. */
+  cobraFaltaSinAviso: false,
+};
