@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 4 240 240"><title>Academia NR</title>
+<g><path fill="#F8E900" d="M20 12 H28 V196 Q28 228 60 228 H244 V236 H60 Q20 236 20 196 Z"/>
+  <path fill="#4BAE41" d="M40 16 L232 216 H56 Q40 216 40 200 Z"/>
+  <circle cx="138" cy="100" r="50" fill="#fff"/>
+  <path fill="#F8E900" fill-rule="evenodd" d="M-44 0 A44 44 0 1 0 44 0 A44 44 0 1 0 -44 0 Z M-30 -30 C-14 -13 -14 13 -30 30 L-23 30 C-7 13 -7 -13 -23 -30 Z M30 -30 C14 -13 14 13 30 30 L23 30 C7 13 7 -13 23 -30 Z" transform="translate(138 100)"/>
+  <path d="M62 196 Q64 150 88 128" fill="none" stroke="#F8E900" stroke-width="6" stroke-linecap="round"/></g>
+</svg>
