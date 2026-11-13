@@ -72,6 +72,7 @@ export interface Clase {
   nombre: string;
   corto: string;
   imagen: string; // nombre de archivo en src/assets/img (sin extensión)
+  video?: string; // clip en src/assets/video (sin extensión; hay .mp4 y .webm) y póster `<video>-poster` en src/assets/img
   paraQuien: string[];
   queSeTrabaja: string[];
   comoEs: string[];
@@ -107,6 +108,7 @@ export const clases: Clase[] = [
     nombre: 'Individuales',
     corto: 'Vos y Nacho. Todo el foco en tu juego.',
     imagen: 'individuales',
+    video: 'individuales-clip',
     paraQuien: ['Quien quiere avanzar rápido', 'Quien empieza y prefiere ir a su ritmo', 'Quien necesita corregir un golpe puntual'],
     queSeTrabaja: ['Golpes base: derecha, revés y volea', 'Saque y devolución', 'Posición y movimiento en la cancha', 'Bandeja y víbora'],
     comoEs: ['Clase uno a uno en cancha de Le Club Formosa.', 'Nacho arma el trabajo según tu nivel y tu objetivo.', 'Practicás con corrección en el momento.'],

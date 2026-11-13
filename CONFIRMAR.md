@@ -21,7 +21,6 @@ Para volver a marcar algo como pendiente: usar `PENDIENTE` en `src/data/academia
 
 ## Imágenes provisorias (libres de Pexels)
 Reemplazar por fotos reales cuando existan:
-- Sección "Soy Nacho": foto de jugador de pádel sin cara, Pexels #1103829 — https://www.pexels.com/photo/person-holding-black-and-green-tennis-racket-1103829/
 - Tarjeta y portada de "Para chicos": chico jugando al tenis, Pexels #8224727 — https://www.pexels.com/photo/boy-playing-tennis-8224727/ (es tenis, no pádel; la raqueta casi queda fuera del recorte)
 
 Todo el resto son cuadros de los videos reales de Nacho en Le Club.

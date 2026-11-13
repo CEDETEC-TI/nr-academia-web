@@ -2,10 +2,17 @@
 import Media from './Media.astro';
 import { pesos, precios, type Clase } from '../data/academia';
 import { url } from '../utils';
+const clips = import.meta.glob<string>('../assets/video/*.{mp4,webm}', { eager: true, query: '?url', import: 'default' });
+
 const { clase, class: cls = '' } = Astro.props as { clase: Clase; class?: string };
+const mp4 = clase.video ? clips[`../assets/video/${clase.video}.mp4`] : undefined;
+const webm = clase.video ? clips[`../assets/video/${clase.video}.webm`] : undefined;
 ---
 <a href={url(`clases/${clase.slug}/`)} data-reveal class={`clase-card group relative isolate block aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-bordo-hondo text-crema sm:aspect-[5/6] ${cls}`}>
-  <Media name={clase.imagen} alt="" class="clase-img absolute inset-0 -z-10 size-full object-cover" sizes="(min-width:768px) 45vw, 100vw" />
+  <div class="clase-img absolute inset-0 -z-10">
+    <Media name={mp4 ? `${clase.video}-poster` : clase.imagen} alt="" class="absolute inset-0 size-full object-cover" sizes="(min-width:768px) 45vw, 100vw" />
+    {mp4 && <video data-src={mp4} data-src-webm={webm} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" class="absolute inset-0 size-full object-cover"></video>}
+  </div>
   <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo/90 via-bordo-hondo/20 to-transparent"></div>
   <span class="corner-line" aria-hidden="true"></span>
   <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">

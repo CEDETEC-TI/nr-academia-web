@@ -8,6 +8,8 @@ import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
 import clipRed from '../assets/video/clip-red.mp4';
 import clipBag from '../assets/video/clip-bag.mp4';
+import nachoMp4 from '../assets/video/nacho-clase.mp4';
+import nachoWebm from '../assets/video/nacho-clase.webm';
 import { url } from '../utils';
 import { getImg } from '../imgs';
 
@@ -17,7 +19,7 @@ const galeria = [
   { tipo: 'video', src: clipRed, poster: 'net', alt: 'Cancha roja de Le Club junto a la red' },
   { tipo: 'img', name: 'azul', alt: 'Cancha azul de Le Club Formosa' },
   { tipo: 'img', name: 'red', alt: 'Red con la marca Le Club y pelotas' },
-  { tipo: 'video', src: clipBag, poster: 'nacho', alt: 'Nacho preparando la clase' },
+  { tipo: 'video', src: clipBag, poster: 'bag', alt: 'Nacho preparando la clase' },
   { tipo: 'img', name: 'cancha', alt: 'Vista de las canchas techadas' },
 ] as const;
 ---
@@ -93,7 +95,8 @@ const galeria = [
   <section id="nacho" class="section">
     <div class="wrap grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
       <div data-reveal class="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-crema-oscura shadow-[var(--shadow-lift)]">
-        <Media name="nacho" alt="Jugador de pádel con la paleta en la mano sobre la cancha" class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 40vw, 100vw" />
+        <Media name="nacho-clase-poster" alt="Nacho practicando un golpe en la cancha de Le Club Formosa" class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 40vw, 100vw" widths={[480, 720]} />
+        <video data-src={nachoMp4} data-src-webm={nachoWebm} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" class="absolute inset-0 size-full object-cover"></video>
       </div>
       <div>
         <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
