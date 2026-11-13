@@ -22,13 +22,18 @@ import { url } from '../utils';
     </div>
   </header>
   <main class="pwrap pmain">
-    <p id="demo" class="pdemo" hidden>Modo demo: los datos se guardan solo en este navegador. Cuando se conecte la base de datos, Nacho entra con su usuario y ve lo mismo en el celu y en la compu.</p>
+    <p id="demo" class="pdemo" hidden>Modo demo: los datos se guardan solo en este navegador. Con la base de datos conectada, Nacho entra con su usuario y ve lo mismo en el celu y en la compu.</p>
     <form id="login" class="plogin" hidden>
       <h1 class="display">Entrá a tu agenda</h1>
       <label class="campo"><span>Email</span><input name="email" type="email" autocomplete="username" required /></label>
       <label class="campo"><span>Contraseña</span><input name="clave" type="password" autocomplete="current-password" required /></label>
       <button class="btn-pri" type="submit">Entrar</button>
     </form>
+    <section id="sinacceso" class="plogin" hidden>
+      <h1 class="display">Este panel es de Nacho</h1>
+      <p>La cuenta <strong id="sinacceso-mail"></strong> no tiene acceso. Si sos alumno, tu cuaderno y tu cuenta están en el sitio.</p>
+      <a class="btn-pri" href={url('cuenta/')}>Ir a mi cuenta</a>
+    </section>
     <div id="panel" hidden></div>
   </main>
   <dialog id="hoja" aria-label="Turno"></dialog>

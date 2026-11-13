@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import '../styles/cuaderno.css';
 ---
-<Base title="Cuaderno de Pádel · Academia NR" description="Registrá tus partidos, torneos, entrenamientos, físico y mental, y mirá tu progreso. Se guarda en tu navegador." app>
+<Base title="Cuaderno de Pádel · Academia NR" description="Registrá tus partidos, torneos, entrenamientos, físico y mental, y mirá tu progreso. Se guarda en tu navegador o, si entrás con tu cuenta, en la nube." app>
 <div id="cuaderno">
 <header class="top">
   <div class="wrap">
@@ -24,7 +24,7 @@ import '../styles/cuaderno.css';
   </div>
 </header>
 
-<div class="cdn-main"><div class="wrap" id="view"></div></div>
+<div class="cdn-main"><div class="wrap" id="view"></div><div class="nube" id="nube" hidden></div></div>
 <div class="toast" id="toast" hidden></div>
 </div>
 <script>import '../scripts/cuaderno.js';</script>

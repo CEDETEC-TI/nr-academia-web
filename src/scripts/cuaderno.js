@@ -1,4 +1,7 @@
-// Cuaderno de Pádel: lógica original de index.html (ver docs/CUADERNO.md). Solo se quitó el enlace a un plan privado.
+// Cuaderno de Pádel: lógica original de index.html (ver docs/CUADERNO.md). Guarda en el navegador o, con cuenta, en Supabase por usuario.
+import { hayNube, cliente, sesion } from "./auth";
+import { url } from "../utils";
+
 (() => {
 "use strict";
 /* ---------- constantes ---------- */
@@ -115,7 +118,7 @@ const NAMES = {partidos:"Partido",torneos:"Torneo",entrenos:"Entrenamiento",fisi
 
 /* ---------- estado ---------- */
 const S = {partidos:[],torneos:[],entrenos:[],fisico:[],mental:[],ficha:{...FICHA_DEF},mode:"loading",open:null,editing:null,confirm:null,filter:"todos",loaded:new Set(),opened:new Set(),closed:new Set(),chart:"rend",day:null};
-let db=null;
+let nube=null; // { sb, uid, email, fichaGuardada } cuando hay sesión de Supabase
 
 /* ---------- utilidades ---------- */
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -134,43 +137,105 @@ const asc = col => [...S[col]].sort((a,b)=> (a.fecha||"").localeCompare(b.fecha|
 let toastT; function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2400); }
 function setStatus(m){ document.getElementById("status").textContent=m; }
 
-/* ---------- almacenamiento ---------- */
+/* ---------- almacenamiento ----------
+   Sin cuenta: localStorage, como siempre. Con cuenta (Supabase): una fila por registro en cuaderno_entradas y la ficha en
+   cuaderno_ficha. Las reglas de la base (RLS) hacen que cada usuario vea solo lo suyo. */
 const LS="padel-cuaderno-v1";
-function lsLoad(){ try{ const o=JSON.parse(localStorage.getItem(LS)||"{}"); COLS.forEach(c=>S[c]=o[c]||[]); if(o.ficha) S.ficha={...FICHA_DEF,...o.ficha}; }catch(e){} }
+function lsRead(){ try{ return JSON.parse(localStorage.getItem(LS)||"{}")||{}; }catch(e){ return {}; } }
+function lsLoad(){ const o=lsRead(); COLS.forEach(c=>S[c]=o[c]||[]); if(o.ficha) S.ficha={...FICHA_DEF,...o.ficha}; }
 function lsSave(){ try{ localStorage.setItem(LS,JSON.stringify({partidos:S.partidos,torneos:S.torneos,entrenos:S.entrenos,fisico:S.fisico,mental:S.mental,ficha:S.ficha})); }catch(e){} }
 
 async function saveEntry(col,id,data){
-  if(db){ await db.collection(col).doc(id).set(data); }
-  else { const i=S[col].findIndex(x=>x.id===id); const row={...data,id}; if(i>=0) S[col][i]=row; else S[col].push(row); lsSave(); render(); }
+  if(nube){
+    const {error}=await nube.sb.from("cuaderno_entradas").upsert({owner:nube.uid,coleccion:col,id,data},{onConflict:"owner,coleccion,id"});
+    if(error) throw error;
+  }
+  const i=S[col].findIndex(x=>x.id===id); const row={...data,id}; if(i>=0) S[col][i]=row; else S[col].push(row);
+  if(!nube) lsSave(); render();
 }
 async function deleteEntry(col,id){
-  if(db){ await db.collection(col).doc(id).delete(); }
-  else { S[col]=S[col].filter(x=>x.id!==id); lsSave(); render(); }
+  if(nube){
+    const {error}=await nube.sb.from("cuaderno_entradas").delete().eq("owner",nube.uid).eq("coleccion",col).eq("id",id);
+    if(error) throw error;
+  }
+  S[col]=S[col].filter(x=>x.id!==id); if(!nube) lsSave(); render();
 }
 async function saveFicha(data){
-  if(db){ await db.doc("perfil/ficha").set(data); }
-  else { S.ficha={...FICHA_DEF,...data}; lsSave(); render(); }
+  if(nube){
+    const {error}=await nube.sb.from("cuaderno_ficha").upsert({owner:nube.uid,data,actualizado:new Date().toISOString()},{onConflict:"owner"});
+    if(error) throw error;
+    nube.fichaGuardada=true;
+  }
+  S.ficha={...FICHA_DEF,...data}; if(!nube) lsSave(); render();
+}
+
+// Lee todo lo del usuario (Supabase devuelve hasta 1000 filas por pedido, se pide por páginas).
+async function leerNube(){
+  const filas=[];
+  for(let desde=0;;desde+=1000){
+    const {data,error}=await nube.sb.from("cuaderno_entradas").select("coleccion,id,data").order("creado").order("id").range(desde,desde+999);
+    if(error) throw error; filas.push(...data); if(data.length<1000) break;
+  }
+  COLS.forEach(c=>S[c]=filas.filter(r=>r.coleccion===c).map(r=>({...r.data,id:r.id})));
+  const {data:f,error:ef}=await nube.sb.from("cuaderno_ficha").select("data").maybeSingle();
+  if(ef) throw ef;
+  nube.fichaGuardada=!!f; S.ficha={...FICHA_DEF,...(f?f.data:{})};
+}
+
+// Aviso arriba del cuaderno: invita a entrar, o a subir lo que ya había en este navegador.
+function localParaSubir(){
+  const o=lsRead(); const filas=[];
+  COLS.forEach(c=>(o[c]||[]).forEach(r=>{ if(r&&typeof r.id==="string"&&r.id&&r.id.length<=64){ const {id,...data}=r; filas.push({coleccion:c,id,data}); } }));
+  const f=o.ficha&&Object.values(o.ficha).some(v=>String(v||"").trim()) ? o.ficha : null;
+  return {filas,ficha:f};
+}
+function avisoNube(){
+  const el=document.getElementById("nube"); if(!el) return;
+  const marca=nube?LS+"-subido-"+nube.uid:"";
+  let html="";
+  if(!hayNube){ html=""; }
+  else if(!nube){
+    html=`<span>Sin cuenta, tu Cuaderno se guarda solo en este navegador.</span> <a class="btn small" href="${url("cuenta/")}">Entrar o crear cuenta</a>`;
+  } else {
+    let yaSubido=false; try{ yaSubido=!!localStorage.getItem(marca); }catch(e){}
+    const {filas,ficha}=localParaSubir();
+    if(!yaSubido && (filas.length||ficha)) html=`<span>Tenés ${filas.length} registro${filas.length===1?"":"s"}${ficha?" y tu ficha":""} guardados en este navegador.</span> <button type="button" class="btn small primary" id="subir">Subirlos a mi cuenta</button>`;
+  }
+  el.innerHTML=html; el.hidden=!html;
+  const b=document.getElementById("subir"); if(!b) return;
+  b.onclick=async()=>{
+    b.disabled=true; b.textContent="Subiendo…";
+    try{
+      const {filas,ficha}=localParaSubir();
+      for(let i=0;i<filas.length;i+=200){
+        const lote=filas.slice(i,i+200).map(r=>({owner:nube.uid,...r}));
+        const {error}=await nube.sb.from("cuaderno_entradas").upsert(lote,{onConflict:"owner,coleccion,id"}); if(error) throw error;
+      }
+      // La ficha solo se sube si en la cuenta todavía no hay una: no pisamos lo que ya cargaste desde otro dispositivo.
+      let fichaSubida=false;
+      if(ficha&&!nube.fichaGuardada){ await saveFicha({...FICHA_DEF,...ficha}); fichaSubida=true; }
+      try{ localStorage.setItem(marca,String(Date.now())); }catch(e){}
+      await leerNube(); render(); avisoNube();
+      toast(`Subimos ${filas.length} registro${filas.length===1?"":"s"}${fichaSubida?" y la ficha":""} a tu cuenta`);
+    }catch(err){ b.disabled=false; b.textContent="Subirlos a mi cuenta"; toast("No se pudo subir: "+(err.message||err.code||"error")); }
+  };
 }
 
 async function start(){
-  let timer=setTimeout(()=>{ if(S.mode==="loading"){ setStatus("Sin conexión con tus datos todavía…"); } },10000);
-  let use=null;
-  try{ use = window.claude && window.claude.use ? await window.claude.use("db") : null; }catch(e){ use=null; }
-  if(!use){ clearTimeout(timer); S.mode="local"; lsLoad(); setStatus("Guardado en este navegador"); render(); return; }
-  db=use; S.mode="db"; render();
-  const done = () => { if(S.loaded.size>=COLS.length+1){ clearTimeout(timer); setStatus("Guardado en la nube ✓"); } };
-  COLS.forEach(c=>{
-    db.collection(c).onSnapshot(snap=>{
-      S[c]=snap.docs.map(d=>({...d.data(),id:d.id}));
-      if(!snap.metadata.fromCache){ S.loaded.add(c); done(); }
-      render();
-    },err=>{ setStatus("Error al leer "+c+": "+err.code); });
-  });
-  db.doc("perfil/ficha").onSnapshot(snap=>{
-    S.ficha={...FICHA_DEF,...(snap.exists?snap.data():{})};
-    if(!snap.metadata.fromCache){ S.loaded.add("ficha"); done(); }
-    render();
-  },err=>setStatus("Error al leer la ficha: "+err.code));
+  const timer=setTimeout(()=>{ if(S.mode==="loading") setStatus("Conectando con tu cuenta…"); },8000);
+  const local=()=>{ clearTimeout(timer); S.mode="local"; lsLoad(); setStatus("Guardado en este navegador"); render(); avisoNube(); };
+  if(!hayNube) return local();
+  let ses=null; try{ ses=await sesion(); }catch(e){}
+  if(!ses) return local();
+  try{
+    nube={sb:await cliente(),uid:ses.id,email:ses.email,fichaGuardada:false};
+    S.mode="db"; render();
+    await leerNube();
+  }catch(err){
+    nube=null; clearTimeout(timer); setStatus("No pudimos leer tu cuenta: se muestra lo guardado en este navegador");
+    S.mode="local"; lsLoad(); render(); avisoNube(); return;
+  }
+  clearTimeout(timer); setStatus("Guardado en tu cuenta ✓"); render(); avisoNube();
 }
 
 /* ---------- resultado set por set ---------- */

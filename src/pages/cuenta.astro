@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../utils';
+---
+<Base title="Mi cuenta · Academia NR" description="Entrá o creá tu cuenta de Academia NR para guardar tu Cuaderno de Pádel en la nube." noindex app>
+  <section id="cuenta" class="cuenta">
+    <div class="cwrap">
+      <p id="c-estado" class="c-aviso" role="status" hidden></p>
+
+      <!-- Sin cuenta: entrar / crear -->
+      <div id="c-entrada" hidden>
+        <h1 class="display h-lg">Tu cuenta</h1>
+        <p class="c-lede">Con tu cuenta guardás el Cuaderno de Pádel en la nube y lo ves en el celu y en la compu.</p>
+        <div class="c-tabs" role="tablist">
+          <button type="button" role="tab" id="t-entrar" aria-selected="true" aria-controls="f-entrar">Entrar</button>
+          <button type="button" role="tab" id="t-crear" aria-selected="false" aria-controls="f-crear">Crear cuenta</button>
+        </div>
+        <form id="f-entrar" class="c-form" novalidate>
+          <label class="c-campo"><span>Email</span><input name="email" type="email" autocomplete="username" required /></label>
+          <label class="c-campo"><span>Contraseña</span><input name="clave" type="password" autocomplete="current-password" required /></label>
+          <button class="btn" type="submit">Entrar</button>
+          <button class="c-link" type="button" id="b-olvide">Me olvidé la contraseña</button>
+        </form>
+        <form id="f-crear" class="c-form" novalidate hidden>
+          <label class="c-campo"><span>Email</span><input name="email" type="email" autocomplete="username" required /></label>
+          <label class="c-campo"><span>Contraseña (mínimo 8 caracteres)</span><input name="clave" type="password" autocomplete="new-password" minlength="8" required /></label>
+          <button class="btn" type="submit">Crear mi cuenta</button>
+          <p class="c-nota">Te mandamos un mail para confirmar la cuenta. Si no lo ves, mirá en spam.</p>
+        </form>
+        <form id="f-olvide" class="c-form" novalidate hidden>
+          <p class="c-nota">Escribí tu mail y te mandamos un enlace para elegir una contraseña nueva.</p>
+          <label class="c-campo"><span>Email</span><input name="email" type="email" autocomplete="username" required /></label>
+          <button class="btn" type="submit">Enviar enlace</button>
+          <button class="c-link" type="button" id="b-volver">Volver</button>
+        </form>
+      </div>
+
+      <!-- Elegir contraseña nueva (llegó por el enlace del mail) -->
+      <form id="f-nueva" class="c-form" novalidate hidden>
+        <h1 class="display h-lg">Elegí tu contraseña nueva</h1>
+        <label class="c-campo"><span>Contraseña nueva (mínimo 8 caracteres)</span><input name="clave" type="password" autocomplete="new-password" minlength="8" required /></label>
+        <button class="btn" type="submit">Guardar contraseña</button>
+      </form>
+
+      <!-- Con sesión -->
+      <div id="c-dentro" hidden>
+        <h1 class="display h-lg">Hola 👋</h1>
+        <p class="c-lede">Entraste como <strong id="c-mail"></strong><span id="c-rol"></span>.</p>
+        <div class="c-acciones">
+          <a class="btn" href={url('cuaderno/')}>Ir a mi Cuaderno</a>
+          <a class="btn btn-ghost" id="c-panel" href={url('panel/')} hidden>Abrir el panel</a>
+          <button class="btn btn-ghost" type="button" id="b-cambiar">Cambiar contraseña</button>
+          <button class="btn btn-ghost" type="button" id="b-salir">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <p id="c-off" class="c-lede" hidden>Las cuentas todavía no están activas en este sitio.</p>
+    </div>
+  </section>
+  <script>import '../scripts/cuenta';</script>
+</Base>
+
+<style is:global>
+  .cuenta { min-height: 100svh; padding: 7rem var(--gutter) 4rem; background: var(--color-crema); color: var(--color-tinta); }
+  .cuenta .cwrap { max-width: 26rem; margin: 0 auto; display: grid; gap: 1.1rem; }
+  .cuenta .c-lede { color: var(--color-tinta-suave); }
+  .cuenta .c-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; padding: .3rem; border-radius: 999px; background: rgb(109 26 42 / .08); }
+  .cuenta .c-tabs button { min-height: 2.75rem; border-radius: 999px; font-weight: 700; color: var(--color-bordo); }
+  .cuenta .c-tabs button[aria-selected='true'] { background: var(--color-bordo); color: var(--color-crema); }
+  .cuenta .c-form { display: grid; gap: .9rem; }
+  .cuenta .c-campo { display: grid; gap: .3rem; font-weight: 600; }
+  .cuenta .c-campo input { font-size: 16px; padding: .8rem 1rem; border-radius: .9rem; background: #fff; border: 1.5px solid rgb(109 26 42 / .22); font-weight: 400; }
+  .cuenta .c-campo input:focus { outline: none; border-color: var(--color-bordo); }
+  .cuenta .c-link { justify-self: start; min-height: 2.75rem; text-decoration: underline; text-underline-offset: 3px; color: var(--color-bordo); font-weight: 600; }
+  .cuenta .c-nota { font-size: .9rem; color: var(--color-tinta-suave); }
+  .cuenta .c-aviso { padding: .8rem 1rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; }
+  .cuenta .c-aviso[data-tipo='error'] { background: #fde8e6; color: #8a1a10; }
+  .cuenta .c-aviso[data-tipo='ok'] { background: #e3f3e8; color: #1c5a34; }
+  .cuenta .c-acciones { display: grid; gap: .7rem; margin-top: .6rem; }
+  .cuenta .btn { background: var(--color-bordo); color: var(--color-crema); justify-content: center; }
+  .cuenta .btn-ghost { background: transparent; color: var(--color-bordo); box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .35); }
+  .cuenta button:disabled { opacity: .6; }
+</style>

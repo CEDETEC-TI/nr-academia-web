@@ -1,5 +1,6 @@
 // Dónde se guardan los datos: Supabase (con login) si hay claves configuradas; si no, modo demo en este navegador.
 import { vacio, type Datos } from './modelo';
+import { cliente, entrar as entrarCuenta, rol as rolCuenta, salir as salirCuenta, sesion as sesionCuenta, type Rol } from '../auth';
 
 export type Tabla = keyof Datos;
 const TABLAS: Tabla[] = ['alumnos', 'clases', 'inscripciones', 'suspensiones', 'asistencias', 'pagos'];
@@ -7,6 +8,7 @@ const TABLAS: Tabla[] = ['alumnos', 'clases', 'inscripciones', 'suspensiones', '
 export interface Store {
   modo: 'nube' | 'demo';
   sesion(): Promise<string | null>; // email del usuario logueado
+  rol(): Promise<Rol | null>; // 'nacho' | 'alumno' (en demo siempre 'nacho')
   entrar(email: string, clave: string): Promise<void>;
   salir(): Promise<void>;
   cargar(): Promise<Datos>;
@@ -20,8 +22,7 @@ const KEY_SB = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
 
 export async function crearStore(): Promise<Store> {
   if (URL_SB && KEY_SB) {
-    const { createClient } = await import('@supabase/supabase-js');
-    const sb = createClient(URL_SB, KEY_SB);
+    const sb = await cliente(); // el mismo cliente (y la misma sesión) que /cuenta/ y el Cuaderno
     const fallo = (e: { message: string } | null) => { if (e) throw new Error(e.message); };
     // Supabase devuelve como máximo 1000 filas por pedido: se pide por páginas.
     const todas = async (t: Tabla) => {
@@ -34,9 +35,10 @@ export async function crearStore(): Promise<Store> {
     };
     return {
       modo: 'nube',
-      async sesion() { const { data } = await sb.auth.getSession(); return data.session?.user.email ?? null; },
-      async entrar(email, clave) { const { error } = await sb.auth.signInWithPassword({ email, password: clave }); if (error) throw new Error(error.message); },
-      async salir() { await sb.auth.signOut(); },
+      async sesion() { return (await sesionCuenta())?.email ?? null; },
+      rol: rolCuenta,
+      entrar: entrarCuenta,
+      salir: salirCuenta,
       async cargar() {
         const filas = await Promise.all(TABLAS.map(todas));
         return Object.fromEntries(TABLAS.map((t, i) => [t, filas[i]])) as unknown as Datos;
@@ -54,6 +56,7 @@ export async function crearStore(): Promise<Store> {
   return {
     modo: 'demo',
     async sesion() { return 'demo'; },
+    async rol() { return 'nacho'; },
     async entrar() {},
     async salir() {},
     async cargar() { return leer(); },

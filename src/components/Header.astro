@@ -9,12 +9,17 @@ const links = [
   { href: url('#horarios'), t: 'Horarios' },
   { href: url('cuaderno/'), t: 'Cuaderno' },
 ];
+// Cuenta y Panel: se ajustan según la sesión (ver script al final). El Panel está oculto salvo para Nacho.
+const cuenta = { href: url('cuenta/'), t: 'Entrar' };
+const panel = { href: url('panel/'), t: 'Panel' };
 ---
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] text-crema transition-[background-color,color,box-shadow] duration-300">
   <div class="wrap-in flex h-16 items-center justify-between sm:h-20">
     <a href={url()} class="flex min-h-11 items-center gap-2.5" aria-label="Academia NR, inicio"><Logo size={40} /><span class="display text-2xl sm:text-3xl"><span class="font-medium tracking-normal opacity-80">Academia </span>NR</span></a>
     <nav aria-label="Principal" class="hidden items-center gap-8 md:flex">
       {links.map((l) => <a href={l.href} class="nav-link font-semibold">{l.t}</a>)}
+      <a href={panel.href} class="nav-link font-semibold max-lg:!hidden" data-nav="panel" hidden>{panel.t}</a>
+      <a href={cuenta.href} class="nav-link font-semibold max-lg:!hidden" data-nav="cuenta">{cuenta.t}</a>
       <a href={waLink()} class="btn btn-wa !min-h-11 !px-5" target="_blank" rel="noopener">Reservá tu clase</a>
     </nav>
     <button id="menu-btn" class="grid size-11 place-items-center rounded-full md:hidden" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
@@ -24,11 +29,26 @@ const links = [
   <div id="menu" hidden class="on-dark fixed inset-0 -z-10 flex flex-col justify-end bg-bordo px-[var(--gutter)] pb-10 pt-24 text-crema">
     <nav aria-label="Menú" class="flex flex-col gap-1">
       {links.map((l) => <a href={l.href} class="display h-lg block py-1">{l.t}</a>)}
+      <a href={panel.href} class="display h-lg block py-1" data-nav="panel" hidden>{panel.t}</a>
+      <a href={cuenta.href} class="display h-lg block py-1" data-nav="cuenta">{cuenta.t}</a>
     </nav>
     <a href={waLink()} class="btn mt-8" target="_blank" rel="noopener">Reservá tu clase</a>
   </div>
 </header>
+<script>
+  // Pista guardada al iniciar sesión (ver scripts/auth.ts): solo cambia lo que se ve en el menú.
+  // El acceso real al panel lo deciden Supabase y sus reglas, no este script.
+  const aplicar = () => {
+    let p = null;
+    try { p = JSON.parse(localStorage.getItem('nr-sesion') ?? 'null'); } catch { /* sin storage */ }
+    document.querySelectorAll<HTMLElement>('[data-nav="cuenta"]').forEach((a) => { a.textContent = p ? 'Mi cuenta' : 'Entrar'; });
+    document.querySelectorAll<HTMLElement>('[data-nav="panel"]').forEach((a) => { a.hidden = p?.rol !== 'nacho'; });
+  };
+  aplicar();
+  window.addEventListener('nr-sesion', aplicar);
+</script>
 <style>
+  #site-header [data-nav][hidden] { display: none !important; }
   #site-header[data-solid='true'] { background: rgb(245 235 221 / 0.94); color: var(--color-bordo-hondo); box-shadow: 0 1px 0 rgb(74 16 25 / 0.12); backdrop-filter: blur(10px); }
   #site-header[data-open='true'] { background: transparent; box-shadow: none; backdrop-filter: none; color: var(--color-crema); }
   .nav-link { position: relative; min-height: 2.75rem; display: inline-flex; align-items: center; }

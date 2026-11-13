@@ -482,3 +482,8 @@ nav.tabs a[aria-current="page"]::before{box-shadow:none}
 }
 
 }
+
+/* aviso de cuenta / subir lo guardado en el navegador */
+/* abajo y pegado a la pantalla: aparece después de cargar y no empuja el contenido (sin saltos de layout) */
+#cuaderno .nube{position:sticky;bottom:16px;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 auto 16px;width:min(840px,calc(100% - 32px));box-sizing:border-box;padding:12px 16px;border-radius:14px;border:1px solid var(--line-2);background:var(--panel);box-shadow:var(--shadow-h);font:500 14px var(--body);color:var(--fg)}
+#cuaderno .nube[hidden]{display:none}

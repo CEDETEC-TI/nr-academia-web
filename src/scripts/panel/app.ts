@@ -508,9 +508,17 @@ async function iniciar() {
   }
   const email = await store.sesion();
   if (!email) return mostrarLogin();
-  $('#login').hidden = true; app.hidden = false;
-  if (store.modo === 'nube') { const s = $('#salir'); s.hidden = false; s.onclick = async () => { await store.salir(); location.reload(); }; }
+  if (store.modo === 'nube') {
+    const s = $('#salir'); s.hidden = false; s.onclick = async () => { await store.salir(); location.reload(); };
+    // Solo Nacho (rol 'nacho') entra. Las cuentas de alumnos no ven nada acá (y la base tampoco se los permite).
+    if ((await store.rol()) !== 'nacho') return mostrarSinAcceso(email);
+  }
+  $('#login').hidden = true; $('#sinacceso').hidden = true; app.hidden = false;
   await recargar();
+}
+function mostrarSinAcceso(email: string) {
+  $('#login').hidden = true; app.hidden = true;
+  $('#sinacceso').hidden = false; $('#sinacceso-mail').textContent = email;
 }
 function mostrarLogin() {
   const f = $<HTMLFormElement>('#login'); f.hidden = false; app.hidden = true;
