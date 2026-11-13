@@ -1,6 +1,8 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/bricolage-grotesque/wdth.css';
-@import '@fontsource-variable/figtree/index.css';
+@import '@fontsource/anton/400.css';
+@import '@fontsource/open-sans/400.css';
+@import '@fontsource/open-sans/600.css';
+@import '@fontsource/open-sans/700.css';
 
 /* ── Sistema de diseño Academia NR (ver DESIGN.md) ───────────────── */
 @theme {
@@ -14,8 +16,8 @@
   --color-arcilla: #b5452f; /* solo detalles, nunca texto pequeño ni fondo */
 
   /* Tipografía */
-  --font-display: 'Bricolage Grotesque Variable', 'Arial Narrow', system-ui, sans-serif;
-  --font-sans: 'Figtree Variable', system-ui, sans-serif;
+  --font-display: 'Anton', 'Arial Narrow', Impact, sans-serif;
+  --font-sans: 'Open Sans', system-ui, sans-serif;
 
   /* Radios */
   --radius-card: 2rem;
@@ -65,16 +67,16 @@ html.lenis, html.lenis body { height: auto; }
 /* Títulos */
 .display {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-stretch: 90%;
-  line-height: 0.9;
-  letter-spacing: -0.035em;
+  font-weight: 400; /* Anton tiene un solo peso: nunca bold (se vería falsificado) */
+  text-transform: uppercase;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
   text-wrap: balance;
 }
 .h-mega { font-size: clamp(3.4rem, 15.5vw, 11rem); }
 .h-xl { font-size: clamp(2.6rem, 10vw, 7rem); }
 .h-lg { font-size: clamp(2.1rem, 7vw, 4.5rem); }
-.h-md { font-size: clamp(1.5rem, 4vw, 2.25rem); line-height: 1; }
+.h-md { font-size: clamp(1.5rem, 4vw, 2.25rem); line-height: 1.12; }
 .lede { font-size: clamp(1.1rem, 2.4vw, 1.4rem); max-width: 34rem; line-height: 1.45; text-wrap: pretty; }
 p { text-wrap: pretty; }
 
@@ -86,7 +88,7 @@ p { text-wrap: pretty; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
   min-height: 3.25rem; padding: .5rem 1.75rem; text-align: center; border-radius: var(--radius-pill);
-  font-weight: 700; font-size: 1.0625rem; letter-spacing: -0.01em;
+  font-weight: 700; font-size: 1.0625rem; letter-spacing: 0;
   background: var(--color-crema); color: var(--color-bordo-hondo);
   transition: transform 160ms var(--ease-out-strong), background-color 200ms, color 200ms;
   -webkit-user-select: none; user-select: none; touch-action: manipulation;

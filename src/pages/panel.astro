@@ -81,7 +81,7 @@ import { url } from '../utils';
   #panel .clase { background: #fff; border-radius: 1.25rem; padding: 1rem; box-shadow: var(--shadow-soft); display: grid; gap: .8rem; }
   #panel .clase.susp { opacity: .65; }
   #panel .clase header { display: flex; align-items: center; gap: .75rem; }
-  #panel .ch { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; line-height: 1; letter-spacing: -.02em; }
+  #panel .ch { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.6rem; line-height: 1; letter-spacing: .02em; }
   #panel .ct { font-size: .85rem; color: var(--color-tinta-suave); margin-top: .15rem; }
   .cupo { margin-left: auto; font-weight: 700; font-size: .9rem; padding: .25rem .7rem; border-radius: 999px; background: var(--color-crema-oscura); font-variant-numeric: tabular-nums; }
   .cupo.lleno { background: var(--color-bordo); color: var(--color-crema); }
@@ -104,7 +104,7 @@ import { url } from '../utils';
   #panel .semana { display: flex; align-items: center; gap: .5rem; }
   #panel .nav { width: 2.75rem; height: 2.75rem; border-radius: 999px; background: #fff; font-size: 1.5rem; line-height: 1; box-shadow: var(--shadow-soft); }
   #panel .lbl, .hoja-lbl { font-size: .75rem; color: var(--color-tinta-suave); }
-  #panel .rango { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.02em; min-width: 9.5rem; text-align: center; }
+  #panel .rango { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.35rem; letter-spacing: .02em; min-width: 9.5rem; text-align: center; }
   #panel .hoyb { min-height: 2.75rem; padding: 0 1rem; border-radius: 999px; background: var(--color-crema-oscura); font-weight: 600; }
   #panel .resumen { font-size: 1rem; }
   #panel .resumen b { font-family: var(--font-display); font-size: 1.4rem; }
@@ -115,7 +115,7 @@ import { url } from '../utils';
   #panel .dias { display: grid; gap: 1rem; }
   #panel .dia { display: none; }
   #panel .dia.sel { display: block; }
-  #panel .dia h2 { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; margin-bottom: .6rem; display: flex; gap: .4rem; align-items: baseline; }
+  #panel .dia h2 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; margin-bottom: .6rem; display: flex; gap: .4rem; align-items: baseline; }
   #panel .dia h2 small { margin-left: auto; font-family: var(--font-sans); font-weight: 500; font-size: .8rem; color: var(--color-tinta-suave); }
   #panel .dia.hoy h2 span { color: var(--color-bordo); }
   #panel .slots { display: grid; gap: .45rem; }
@@ -146,7 +146,7 @@ import { url } from '../utils';
   .form { display: grid; gap: 1rem; }
   .hhead { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
   .hhead .lbl { font-size: .75rem; color: var(--color-tinta-suave); }
-  .hhead h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; }
+  .hhead h3 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; letter-spacing: .02em; }
   .x { width: 2.75rem; height: 2.75rem; border-radius: 999px; background: var(--color-crema-oscura); font-size: 1.4rem; }
   .campo { display: grid; gap: .35rem; border: 0; padding: 0; margin: 0; }
   .campo > span, .campo legend { font-weight: 600; font-size: .9rem; margin-bottom: .1rem; }
@@ -160,7 +160,7 @@ import { url } from '../utils';
   .opts input:focus-visible + span { outline: 3px solid var(--color-arcilla); outline-offset: 2px; }
   .seccion { display: grid; gap: .75rem; border-top: 1px solid rgb(109 26 42 / .15); padding-top: 1rem; }
   .seccion.liberar { gap: .5rem; }
-  .seccion h4 { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: .5rem; }
+  .seccion h4 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; display: flex; align-items: center; gap: .5rem; }
   .seccion h4 .cupo { margin-left: 0; }
   .filas { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
   .fila { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 2.75rem; }
@@ -169,8 +169,8 @@ import { url } from '../utils';
   .btn-sec.chico { min-height: 2.75rem; padding: 0 1rem; font-size: .9rem; flex: none; }
   .stepper { display: inline-flex; align-items: center; gap: .75rem; }
   .stepper button { width: 2.75rem; height: 2.75rem; border-radius: 999px; background: #fff; font-size: 1.4rem; line-height: 1; box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .25); }
-  .stepper output { min-width: 2ch; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; }
-  .saldo { font-family: var(--font-display); font-weight: 800; font-size: 2rem; letter-spacing: -.02em; }
+  .stepper output { min-width: 2ch; text-align: center; font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; }
+  .saldo { font-family: var(--font-display); font-weight: 400; font-size: 2rem; letter-spacing: .02em; }
   .saldo.debe { color: #b42318; }
   #hoja .chips { display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: none; }
   #hoja .chip { flex: 1 0 auto; min-height: 2.75rem; padding: 0 .9rem; border-radius: 999px; background: #fff; font-weight: 600; box-shadow: var(--shadow-soft); }

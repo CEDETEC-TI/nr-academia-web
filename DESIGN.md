@@ -20,8 +20,8 @@ Lo memorable (se gasta la audacia en un solo lugar): **el hero**. Video vertical
 El rojo de las canchas de Le Club vive en las fotos; la web no lo imita.
 
 ## Tipografía (autoalojada, sin pedir nada a Google)
-- **Bricolage Grotesque** (variable, con eje de ancho): títulos enormes, muy apretados, peso 700–800. Es una grotesca con carácter deportivo, no una serifa.
-- **Figtree**: texto corrido, claro y legible en celular.
+- **Anton** (solo peso 400, nunca bold): títulos y encabezados en mayúsculas con un poco de letter-spacing (.02em). El logo va aparte.
+- **Open Sans** (400, 600, 700): textos, botones, menú y formularios. Ambas con @fontsource, sin Google Fonts.
 - Escala fluida con `clamp()`: títulos de hasta ~11vw en celular. Líneas de texto < 65 caracteres.
 - Se evita: una palabra en cursiva o color dentro del título, etiquetas en MAYÚSCULAS sobre cada título, numeración 01/02/03 donde no hay secuencia.
 
