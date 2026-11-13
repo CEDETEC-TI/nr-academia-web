@@ -45,12 +45,16 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 3. Auth en `supabase/config.toml` (Site URL, Redirect URLs de GitHub Pages y `localhost:4321`, alta abierta, confirmación por mail, contraseña de 8+): `supabase config push`.
 4. Variables del repo `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY` (públicas por diseño, protege el RLS) cargadas con `gh variable set`. En local van en `01 WEB/.env` (ignorado por git).
 5. **Nunca** usar ni commitear la `service_role` ni la contraseña de la base. Los tests que la necesitan la piden a la CLI en el momento (`tests/real-db.mjs`).
-6. Cambiar la clave temporal de Nacho la primera vez que entre (en `/cuenta/` → "Cambiar contraseña").
+6. **Usuarios con rol `nacho`:** el de **Nacho** (`nracademia121@gmail.com`) y una cuenta de **administración** de Guillermo (alta con la API de administración, con clave temporal). Cada uno cambia su clave la primera vez en `/cuenta/` → "Cambiar contraseña". Para sumar o quitar el rol: crear el usuario con `app_metadata: { "rol": "nacho" }`, o ponerlo en `{ "rol": "alumno" }` y en `perfiles` para quitarlo. Los tests usan la cuenta de administración (`NACHO_EMAIL=<ese mail>`; la clave se lee de `~/.academia-nr-nacho-temp.txt`, fuera del repo).
 
 ## Pruebas
 - `npm run test:panel` → modo demo (compilar con claves vacías).
 - Contra la base real: `PANEL_REAL=1 LIMPIAR_PANEL=si NACHO_EMAIL=… npm run test:panel` (borra los datos del panel al empezar y al terminar: solo mientras la base sea de prueba).
 - `NACHO_EMAIL=… node tests/cuenta.mjs` → cuentas, roles, reglas de acceso y Cuaderno por usuario (crea y borra un alumno de prueba).
 
-## Pendiente: mails de confirmación
-El envío de mails que trae Supabase por defecto **solo llega a miembros del equipo del proyecto** y tiene un tope muy bajo por hora. Para que cualquier alumno reciba el mail de confirmación y el de recuperar contraseña hay que configurar un **SMTP propio** (Resend, Brevo, Gmail con contraseña de aplicación…) en Supabase → Authentication → SMTP Settings. Hasta entonces, los alumnos que no sean del equipo ven un aviso en `/cuenta/`. Nota: el plan gratis pausa el proyecto tras 7 días sin uso.
+## Mails de confirmación y de recuperar contraseña (SMTP)
+Supabase por defecto solo manda mails a miembros del equipo, con un tope muy bajo. Por eso se usa el **SMTP de Gmail** (`smtp.gmail.com`, puerto 465, remitente visible "Academia NR"):
+- La config está en `supabase/config.toml` (`[auth.email.smtp]`), con los textos en castellano en `supabase/templates/` (`confirmacion.html`, `recuperacion.html`). Tope de mails de auth: 60 por hora.
+- **Ni la cuenta de Gmail ni su contraseña de aplicación están en el repo.** Se aplican con `SMTP_USER=cuenta@gmail.com bash supabase/configurar-smtp.sh`, que pide la contraseña de aplicación por la terminal (sin mostrarla) y hace `supabase config push`. La contraseña de aplicación se genera en myaccount.google.com/apppasswords (la cuenta necesita la verificación en 2 pasos).
+- Gmail permite unos 500 mails por día. Hoy se envía desde una cuenta de Gmail de desarrollo; cuando se quiera que el remitente sea `nracademia121@gmail.com`, se corre el mismo script con esa cuenta.
+- Nota: el plan gratis de Supabase pausa el proyecto tras 7 días sin uso.
