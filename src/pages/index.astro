@@ -6,6 +6,8 @@ import Txt from '../components/Txt.astro';
 import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, prueba, pesos, waLink } from '../data/academia';
 import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
+import heroDesktopWebm from '../assets/video/hero-desktop.webm';
+import heroMobileWebm from '../assets/video/hero-mobile.webm';
 import nachoMp4 from '../assets/video/nacho-clase.mp4';
 import nachoWebm from '../assets/video/nacho-clase.webm';
 import { url } from '../utils';
@@ -25,10 +27,10 @@ const galeria = [
   <!-- HERO -->
   <section class="on-dark relative isolate flex min-h-[100svh] items-end overflow-hidden bg-bordo-hondo text-crema" aria-label="Inicio">
     <picture>
-      <source media="(min-width: 768px)" srcset={getImg('hero-poster-d')?.src} width="1280" height="640" />
+      <source media="(min-width: 768px)" srcset={getImg('hero-poster-d')?.src} width="1080" height="608" />
       <Media name="hero-poster" alt="" eager class="absolute inset-0 -z-20 size-full object-cover" widths={[480, 800, 1080]} sizes="100vw" />
     </picture>
-    <video data-src={heroDesktop} data-src-mobile={heroMobile} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+    <video data-src={heroDesktop} data-src-mobile={heroMobile} data-src-webm={heroDesktopWebm} data-src-webm-mobile={heroMobileWebm} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"
       class="hero-video absolute inset-0 -z-20 size-full object-cover"></video>
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo via-bordo-hondo/45 to-bordo-hondo/10"></div>
     <div class="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-bordo-hondo/70 to-transparent"></div>

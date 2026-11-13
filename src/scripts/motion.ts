@@ -80,8 +80,9 @@ const saveData = (navigator as any).connection?.saveData === true;
 const smallScreen = window.matchMedia('(max-width: 767px)').matches;
 $$<HTMLVideoElement>('video[data-src]').forEach((v) => {
   if (reduced || saveData) return; // queda el póster estático
-  const webm = v.dataset.srcWebm && v.canPlayType('video/webm; codecs="vp9"') === 'probably';
-  const src = webm ? v.dataset.srcWebm! : smallScreen && v.dataset.srcMobile ? v.dataset.srcMobile : v.dataset.src!;
+  const webmSrc = smallScreen && v.dataset.srcWebmMobile ? v.dataset.srcWebmMobile : v.dataset.srcWebm;
+  const webm = webmSrc && v.canPlayType('video/webm; codecs="vp9"') === 'probably';
+  const src = webm ? webmSrc! : smallScreen && v.dataset.srcMobile ? v.dataset.srcMobile : v.dataset.src!;
   const start = () => {
     v.src = src;
     v.muted = true;
