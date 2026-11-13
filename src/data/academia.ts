@@ -125,7 +125,7 @@ export const clases: Clase[] = [
     nombre: 'Grupales',
     corto: 'Aprendé jugando con otros.',
     imagen: 'grupales',
-    video: 'principiantes-clip',
+    video: 'grupales-clip',
     paraQuien: ['Quien quiere entrenar con amigos', 'Quien busca un ambiente divertido', 'Quien quiere practicar situaciones de partido'],
     queSeTrabaja: ['Golpes y juego en pareja', 'Ubicación y comunicación con tu compañero', 'Puntos y situaciones reales de partido', 'Ejercicios en equipo'],
     comoEs: ['Grupo reducido en cancha de Le Club Formosa.', 'Ejercicios de a dos y juego de puntos.', 'Nacho corrige y ordena el trabajo de todos.'],
