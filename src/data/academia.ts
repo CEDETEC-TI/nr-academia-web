@@ -15,7 +15,7 @@ export const academia = {
   sede: 'Le Club Formosa',
   ciudad: 'Formosa, Argentina',
   descripcion:
-    'Academia de pádel de Nacho Román en Le Club Formosa. Clases individuales, grupales, para chicos y de competencia. Clase de prueba gratis: solo se paga la cancha.',
+    'Academia de pádel de Nacho Román en Le Club Formosa. Clases individuales, grupales, para chicos y de competencia. Clase de prueba gratis.',
   paraTodos: ['Chicos', 'Mujeres', 'Principiantes', 'Competidores'],
 };
 
@@ -31,16 +31,15 @@ export const contacto = {
 export const precios = {
   claseSuelta: 10000,
   mes8Clases: 80000,
-  canchaHora: 24000,
-  clasePrueba: 'Gratis', // la CLASE es gratis; la cancha se paga igual (corregido 6/11)
+  clasePrueba: 'Gratis',
 };
 
-/** Clase de prueba: la clase de Nacho es gratis, la cancha se paga. Todos los textos salen de acá. */
+/** Clase de prueba gratis. Lo de la cancha NO se publica: lo habla Nacho en persona. Todos los textos salen de acá. */
 export const prueba = {
-  titulo: 'Clase de prueba: la clase es gratis, solo pagás la cancha.',
-  frase: 'La clase de prueba es gratis: solo pagás la cancha.',
-  cierre: 'La primera clase es gratis, solo pagás la cancha.',
-  faq: `No pagás la clase: la de prueba es gratis. Lo único que se paga es la cancha (${pesos(precios.canchaHora)} la hora).`,
+  titulo: 'Clase de prueba gratis.',
+  frase: 'La clase de prueba es gratis.',
+  cierre: 'La primera clase es gratis.',
+  faq: 'No pagás la clase: la de prueba es gratis. Los detalles los coordinás con Nacho.',
 };
 
 export const horarios = {
@@ -52,7 +51,7 @@ export const horarios = {
 export const datos = [
   { valor: 30, prefijo: '+', etiqueta: 'alumnos' },
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
-  { texto: 'Gratis', etiqueta: 'clase de prueba (cancha aparte)' },
+  { texto: 'Gratis', etiqueta: 'clase de prueba' },
 ] as const;
 
 export const diferencial = [

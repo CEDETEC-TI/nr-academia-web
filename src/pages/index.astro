@@ -112,11 +112,10 @@ const galeria = [
     <div class="wrap">
       <h2 class="display h-xl" data-reveal>Precios</h2>
       <p class="lede mt-5" data-reveal>Sin letra chica. {prueba.frase}</p>
-      <div class="mt-12 grid gap-4 md:grid-cols-3">
+      <div class="mt-12 grid gap-4 md:grid-cols-2">
         {[
           { n: 'Clase suelta', p: pesos(precios.claseSuelta), d: 'Una clase, cuando quieras.' },
           { n: 'Mes de 8 clases', p: pesos(precios.mes8Clases), d: 'Para entrenar con continuidad.' },
-          { n: 'Cancha aparte', p: pesos(precios.canchaHora), d: 'Por hora. Se abona aparte de la clase.' },
         ].map((x) => (
           <div data-reveal class="flex flex-col justify-between rounded-[var(--radius-card)] bg-crema p-7 text-tinta sm:p-8">
             <h3 class="font-bold text-bordo">{x.n}</h3>
