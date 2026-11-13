@@ -7,7 +7,7 @@ import Logo from './Logo.astro';
 <footer class="on-dark bg-bordo-hondo px-[var(--gutter)] pb-28 pt-16 text-crema sm:pb-16">
   <div class="wrap grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
     <div>
-      <a href={url()} class="inline-flex items-center gap-3" aria-label="NR Academia, inicio"><Logo size={56} /><span class="display h-lg">NR Academia</span></a>
+      <a href={url()} class="inline-flex items-center gap-3" aria-label="Academia NR, inicio"><Logo size={56} /><span class="display h-lg">Academia NR</span></a>
       <p class="mt-4 max-w-sm opacity-85">Academia de pádel de {academia.profe} en {academia.sede}.</p>
     </div>
     <div>
@@ -30,7 +30,7 @@ import Logo from './Logo.astro';
     </div>
   </div>
   <div class="wrap mt-12 flex flex-col gap-2 border-t border-crema/25 pt-6 text-sm opacity-80 sm:flex-row sm:justify-between">
-    <p>© {new Date().getFullYear()} NR Academia · <Txt value={contacto.direccion} /></p>
+    <p>© {new Date().getFullYear()} Academia NR · <Txt value={contacto.direccion} /></p>
     <p>Sitio por CEDETEC</p>
   </div>
 </footer>

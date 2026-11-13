@@ -1,4 +1,4 @@
-# NR Academia — web oficial
+# Academia NR — web oficial
 
 Academia de pádel de Ignacio "Nacho" Román en Le Club Formosa (Formosa, Argentina).
 Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pages (repo CEDETEC-TI/nr-academia-web, base `/nr-academia-web`).
@@ -26,9 +26,10 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 - La página usa `<Base app>`: header siempre sólido, sin Lenis y sin botón flotante de WhatsApp.
 
 ## Panel de Nacho (`/panel/`)
-- Agenda privada de turnos ocupados/libres (noindex, fuera del menú). Ver `docs/PANEL.md`.
-- Datos en Supabase con login y Row Level Security (`supabase/schema.sql`); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage).
-- Los turnos salen de `horarios.franjas` en `academia.ts`. Nunca usar ni commitear la `service_role` key.
+- Sistema privado de **clases grupales, alumnos, asistencia y cobros** (noindex, fuera del menú). Pantallas: Hoy, Semana, Alumnos, Cobros. Modelo y reglas en `docs/PANEL.md`.
+- Modelo: Alumno ── Inscripción ── Clase (con cupo); Clase + fecha = Sesión con Asistencia; cada clase a la que vino se cobra (`precios.claseSuelta`, $10.000) y los pagos descuentan.
+- Datos en Supabase con login y Row Level Security (`supabase/schema.sql`, 6 tablas); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage). Reglas de negocio (precio, cupo, cobro de faltas) en `panel` de `academia.ts`.
+- Los horarios salen de `horarios.franjas`. Nunca usar ni commitear la `service_role` key.
 
 ## Comandos
 `npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e` · `npm run test:panel` · `npm run lighthouse`

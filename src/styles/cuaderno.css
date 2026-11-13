@@ -460,7 +460,7 @@ a.kpi:hover,button.kpi:hover{box-shadow:var(--shadow-h);transform:translateY(-2p
 a.kpi::after,button.kpi::after{content:"→";position:absolute;top:18px;right:20px;font-size:14px;color:var(--faint);transition:color .2s,transform .2s}
 a.kpi:hover::after,button.kpi:hover::after{color:var(--accent);transform:translateX(2px)}
 
-/* ================= integración en la web de NR Academia ================= */
+/* ================= integración en la web de Academia NR ================= */
 &{font-variant-numeric:tabular-nums;display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-content:start;padding-top:80px;min-height:100svh}
 h2,.tcard .nm,.brand h1{font-family:var(--display);font-weight:800;font-stretch:90%;letter-spacing:-.035em}
 h2{font-size:34px;line-height:1}

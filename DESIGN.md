@@ -1,4 +1,4 @@
-# NR Academia — dirección visual
+# Academia NR — dirección visual
 
 Skill usada: **frontend-design**. Referencia de estructura (no de textos ni imágenes): aforpa.com.ar — video de fondo, mucho aire, estética limpia.
 

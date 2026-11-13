@@ -25,3 +25,8 @@ Reemplazar por fotos reales cuando existan:
 - Tarjeta y portada de "Para chicos": chico jugando al tenis, Pexels #8224727 — https://www.pexels.com/photo/boy-playing-tennis-8224727/ (es tenis, no pádel; la raqueta casi queda fuera del recorte)
 
 Todo el resto son cuadros de los videos reales de Nacho en Le Club.
+
+## Panel de Nacho (sin confirmar)
+- Precio por clase en el panel: usa `precios.claseSuelta` ($10.000 por alumno, lo confirmó Guillermo). Falta confirmar que sea igual para todos los tipos de clase.
+- ¿Se cobra la clase si el alumno falta sin avisar? Hoy el panel no la cobra (`panel.cobraFaltaSinAviso`).
+- ¿Cupo por grupo? El panel arranca en 4 y se cambia clase por clase.
