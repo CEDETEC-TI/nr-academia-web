@@ -1,20 +1,21 @@
 /**
- * TODOS los datos editables de NR Academia viven acá.
+ * TODOS los datos editables de Academia NR viven acá.
  * Lo que no está confirmado dice [CONFIRMAR CON NACHO]: se muestra con un aviso
  * y se busca fácil con Ctrl+F.
  */
 
 export const PENDIENTE = '[CONFIRMAR CON NACHO]';
 export const esPendiente = (v: string) => v.includes(PENDIENTE);
+export const pesos = (n: number) => '$' + n.toLocaleString('es-AR');
 
 export const academia = {
-  nombre: 'NR Academia',
+  nombre: 'Academia NR',
   profe: 'Ignacio "Nacho" Román',
   profeCorto: 'Nacho',
   sede: 'Le Club Formosa',
   ciudad: 'Formosa, Argentina',
   descripcion:
-    'Academia de pádel de Nacho Román en Le Club Formosa. Clases individuales, grupales, para chicos y de competencia. Primera clase sin cargo.',
+    'Academia de pádel de Nacho Román en Le Club Formosa. Clases individuales, grupales, para chicos y de competencia. Clase de prueba gratis: solo se paga la cancha.',
   paraTodos: ['Chicos', 'Mujeres', 'Principiantes', 'Competidores'],
 };
 
@@ -31,7 +32,15 @@ export const precios = {
   claseSuelta: 10000,
   mes8Clases: 80000,
   canchaHora: 24000,
-  clasePrueba: 'Sin cargo',
+  clasePrueba: 'Gratis', // la CLASE es gratis; la cancha se paga igual (corregido 6/11)
+};
+
+/** Clase de prueba: la clase de Nacho es gratis, la cancha se paga. Todos los textos salen de acá. */
+export const prueba = {
+  titulo: 'Clase de prueba: la clase es gratis, solo pagás la cancha.',
+  frase: 'La clase de prueba es gratis: solo pagás la cancha.',
+  cierre: 'La primera clase es gratis, solo pagás la cancha.',
+  faq: `No pagás la clase: la de prueba es gratis. Lo único que se paga es la cancha (${pesos(precios.canchaHora)} la hora).`,
 };
 
 export const horarios = {
@@ -43,7 +52,7 @@ export const horarios = {
 export const datos = [
   { valor: 30, prefijo: '+', etiqueta: 'alumnos' },
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
-  { texto: 'Sin cargo', etiqueta: 'clase de prueba' },
+  { texto: 'Gratis', etiqueta: 'clase de prueba (cancha aparte)' },
 ] as const;
 
 export const diferencial = [
@@ -76,7 +85,7 @@ export interface Clase {
 const faqComun = (nombreClase: string) => [
   {
     p: '¿La primera clase tiene costo?',
-    r: 'No. La clase de prueba es sin cargo, para que conozcas a Nacho y la academia.',
+    r: prueba.faq,
   },
   {
     p: '¿Necesito tener paleta?',
@@ -104,7 +113,7 @@ export const clases: Clase[] = [
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Clase individual, uno a uno.',
     precioNota: '',
-    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel Individual. ¿Qué días y horarios tenés?',
+    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel Individual. ¿Qué días y horarios tenés?',
     faq: [
       { p: '¿Sirve si nunca jugué?', r: 'Sí. Arrancás desde cero y vas a tu ritmo.' },
       ...faqComun('individual'),
@@ -121,7 +130,7 @@ export const clases: Clase[] = [
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
     precioNota: '',
-    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel Grupal. ¿Qué grupos y horarios hay?',
+    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel Grupal. ¿Qué grupos y horarios hay?',
     faq: [
       { p: '¿Puedo ir con amigos?', r: 'Sí, escribinos y armamos el grupo. Los grupos son de 2, 3 o 4 personas como máximo.' },
       ...faqComun('grupal'),
@@ -138,7 +147,7 @@ export const clases: Clase[] = [
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 chicos como máximo.',
     precioNota: '',
-    mensajeWhatsApp: 'Hola Nacho! Quiero reservar una clase de prueba sin cargo de pádel para mi hijo/a. ¿Qué días y horarios tenés?',
+    mensajeWhatsApp: 'Hola Nacho! Quiero reservar una clase de prueba de pádel para mi hijo/a. ¿Qué días y horarios tenés?',
     faq: [
       { p: '¿Desde qué edad pueden venir?', r: 'Consultanos por WhatsApp con la edad de tu hijo/a y te contamos.' },
       ...faqComun('para chicos'),
@@ -155,7 +164,7 @@ export const clases: Clase[] = [
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
     precioNota: '',
-    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba sin cargo de pádel de Competencia. ¿Qué nivel piden y qué horarios hay?',
+    mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel de Competencia. ¿Qué nivel piden y qué horarios hay?',
     faq: [
       { p: '¿Qué nivel necesito?', r: 'Consultanos por WhatsApp y Nacho te orienta según tu nivel.' },
       ...faqComun('de competencia'),

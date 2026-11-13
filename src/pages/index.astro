@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Media from '../components/Media.astro';
 import ClaseCard from '../components/ClaseCard.astro';
 import Txt from '../components/Txt.astro';
-import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, pesos, waLink } from '../data/academia';
+import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, prueba, pesos, waLink } from '../data/academia';
 import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
 import clipRed from '../assets/video/clip-red.mp4';
@@ -21,7 +21,7 @@ const galeria = [
   { tipo: 'img', name: 'cancha', alt: 'Vista de las canchas techadas' },
 ] as const;
 ---
-<Base title="NR Academia · Clases de pádel en Formosa con Nacho Román" waMensaje="Hola Nacho! Quiero reservar mi clase de prueba sin cargo.">
+<Base title="Academia NR · Clases de pádel en Formosa con Nacho Román">
   <!-- HERO -->
   <section class="on-dark relative isolate flex min-h-[100svh] items-end overflow-hidden bg-bordo-hondo text-crema" aria-label="Inicio">
     <picture>
@@ -63,7 +63,7 @@ const galeria = [
   <section id="clases" class="section">
     <div class="wrap">
       <h2 class="display h-xl" data-reveal>Elegí tu clase</h2>
-      <p class="lede mt-5" data-reveal>Cuatro formas de entrenar. La primera clase es de prueba, sin cargo.</p>
+      <p class="lede mt-5" data-reveal>Cuatro formas de entrenar. {prueba.cierre}</p>
       <div class="mt-12 grid gap-5 md:grid-cols-2 md:gap-6">
         {clases.map((c) => <ClaseCard clase={c} />)}
       </div>
@@ -74,7 +74,7 @@ const galeria = [
   <section id="porque" class="section bg-crema-oscura">
     <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
       <div>
-        <h2 class="display h-xl" data-reveal>Por qué NR Academia</h2>
+        <h2 class="display h-xl" data-reveal>Por qué Academia NR</h2>
         <p class="lede mt-6" data-reveal>Para todos: {academia.paraTodos.map((p) => p.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' y $1')}.</p>
       </div>
       <ul class="grid gap-0">
@@ -108,7 +108,7 @@ const galeria = [
   <section id="precios" class="section on-dark bg-bordo text-crema">
     <div class="wrap">
       <h2 class="display h-xl" data-reveal>Precios</h2>
-      <p class="lede mt-5" data-reveal>Sin letra chica. La clase de prueba es sin cargo.</p>
+      <p class="lede mt-5" data-reveal>Sin letra chica. {prueba.frase}</p>
       <div class="mt-12 grid gap-4 md:grid-cols-3">
         {[
           { n: 'Clase suelta', p: pesos(precios.claseSuelta), d: 'Una clase, cuando quieras.' },
@@ -123,7 +123,7 @@ const galeria = [
         ))}
       </div>
       <div data-reveal class="mt-4 flex flex-col items-start justify-between gap-5 rounded-[var(--radius-card)] border-2 border-crema/40 p-7 sm:flex-row sm:items-center sm:p-8">
-        <p class="display h-md">Clase de prueba: sin cargo.</p>
+        <p class="display h-md">{prueba.titulo}</p>
         <a href={waLink()} target="_blank" rel="noopener" class="btn">Reservá tu clase</a>
       </div>
     </div>
@@ -168,7 +168,7 @@ const galeria = [
         </div>
       </div>
       <div data-reveal class="aspect-[4/5] overflow-hidden rounded-[var(--radius-media)] bg-crema shadow-[var(--shadow-soft)] sm:aspect-[4/3] lg:aspect-auto lg:min-h-[28rem]">
-        <iframe title="Mapa de NR Academia en Le Club Formosa" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="size-full border-0"></iframe>
+        <iframe title="Mapa de Academia NR en Le Club Formosa" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="size-full border-0"></iframe>
       </div>
     </div>
   </section>
@@ -188,7 +188,7 @@ const galeria = [
   <section class="section on-dark bg-bordo-hondo text-center text-crema">
     <div class="wrap">
       <h2 class="display h-xl mx-auto max-w-4xl" data-reveal>¿Probamos una clase?</h2>
-      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho por WhatsApp. La primera es sin cargo.</p>
+      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho por WhatsApp. {prueba.cierre}</p>
       <a data-reveal href={waLink()} target="_blank" rel="noopener" class="btn btn-wa mt-10 !min-h-14 !px-9 !text-xl">Reservá por WhatsApp</a>
     </div>
   </section>

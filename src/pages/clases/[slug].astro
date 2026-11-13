@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Media from '../../components/Media.astro';
 import Txt from '../../components/Txt.astro';
-import { clases, horarios, precios, pesos, waLink, academia } from '../../data/academia';
+import { clases, horarios, precios, prueba, pesos, waLink, academia } from '../../data/academia';
 import { url } from '../../utils';
 
 export function getStaticPaths() {
@@ -13,7 +13,7 @@ const otras = clases.filter((c) => c.slug !== clase.slug);
 const wa = waLink(clase.mensajeWhatsApp);
 const lista = (items: string[]) => items;
 ---
-<Base title={`Clases de pádel ${clase.nombre} en Formosa · NR Academia`} description={`${clase.corto} Clases de pádel ${clase.nombre.toLowerCase()} con Nacho Román en Le Club Formosa. Primera clase sin cargo.`} waMensaje={clase.mensajeWhatsApp}>
+<Base title={`Clases de pádel ${clase.nombre} en Formosa · Academia NR`} description={`${clase.corto} Clases de pádel ${clase.nombre.toLowerCase()} con Nacho Román en Le Club Formosa. ${prueba.frase}`} waMensaje={clase.mensajeWhatsApp}>
   <section class="on-dark relative isolate flex min-h-[78svh] items-end overflow-hidden bg-bordo-hondo text-crema">
     <Media name={clase.imagen} alt="" eager class="absolute inset-0 -z-20 size-full object-cover" sizes="100vw" />
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo via-bordo/55 to-bordo/30"></div>
@@ -58,7 +58,7 @@ const lista = (items: string[]) => items;
         <p class="mt-1 opacity-90">por clase suelta</p>
         <p class="mt-4">Mes de 8 clases: <strong>{pesos(precios.mes8Clases)}</strong></p>
         <p>Cancha aparte: <strong>{pesos(precios.canchaHora)}</strong> la hora</p>
-        <p class="mt-4 rounded-2xl bg-crema/15 px-4 py-3 font-semibold">Clase de prueba: sin cargo.</p>
+        <p class="mt-4 rounded-2xl bg-crema/15 px-4 py-3 font-semibold">{prueba.titulo}</p>
         {clase.precioNota && <p class="mt-4 text-sm opacity-90"><Txt value={clase.precioNota} /></p>}
       </div>
     </div>
@@ -93,7 +93,7 @@ const lista = (items: string[]) => items;
   <section class="section on-dark bg-bordo-hondo text-center text-crema">
     <div class="wrap">
       <h2 class="display h-xl mx-auto max-w-4xl" data-reveal>Probá la clase {clase.nombre.toLowerCase()}</h2>
-      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho. La primera es sin cargo.</p>
+      <p class="lede mx-auto mt-6" data-reveal>Escribile a Nacho. {prueba.cierre}</p>
       <a data-reveal href={wa} target="_blank" rel="noopener" class="btn btn-wa mt-10 !min-h-14 !px-9 !text-xl">Reservá por WhatsApp</a>
       <ul class="mt-14 flex flex-wrap justify-center gap-3" aria-label="Otras clases">
         {otras.map((o) => <li><a class="btn btn-ghost" href={url(`clases/${o.slug}/`)}>{o.nombre}</a></li>)}
