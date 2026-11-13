@@ -26,24 +26,31 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 - **Suspender** una fecha puntual, o **terminar** la clase desde un día (se conserva todo lo anterior).
 
 ## Código
-`src/pages/panel.astro` (página y estilos) · `src/scripts/panel/modelo.ts` (tipos y lógica pura) · `store.ts` (Supabase o demo) · `app.ts` (interfaz). Reglas de negocio (precio, cupo inicial, cobro de faltas) en `panel` de `src/data/academia.ts`. Prueba: `npm run test:panel` (con `npm run preview` corriendo).
+`src/pages/panel.astro` (página y estilos) · `src/scripts/panel/modelo.ts` (tipos y lógica pura) · `store.ts` (Supabase o demo; usa `src/scripts/auth.ts`) · `app.ts` (interfaz). Reglas de negocio (precio, cupo inicial, cobro de faltas) en `panel` de `src/data/academia.ts`. Prueba: `npm run test:panel` (con `npm run preview` corriendo).
 
 ## Modo demo vs. modo con login
-- **Sin claves de Supabase** → modo demo: los datos se guardan solo en ese navegador. Hay un botón **"Cargar datos de ejemplo"** para ver cómo queda con alumnos, clases y deudas.
-- **Con claves** → Nacho entra con email y contraseña, y ve lo mismo en todos sus dispositivos. Los datos están en la nube con copia de seguridad, y nadie más los puede ver: Row Level Security, cada fila es de su dueño.
+- **Sin claves de Supabase** → modo demo: los datos se guardan solo en ese navegador. Hay un botón **"Cargar datos de ejemplo"**. Para probarlo en local con el `.env` real: `PUBLIC_SUPABASE_URL= PUBLIC_SUPABASE_ANON_KEY= npm run build`.
+- **Con claves** (como está hoy en producción) → Nacho entra con email y contraseña y ve lo mismo en todos sus dispositivos. Solo entra una cuenta con **rol `nacho`**: las cuentas de alumnos ven "Este panel es de Nacho". La base lo refuerza con Row Level Security (cada tabla exige ser el dueño **y** tener rol `nacho`), así que aunque alguien llame a la API directo no ve nada.
 
-## Cómo conectar Supabase (una sola vez, ~10 minutos)
-1. Crear una cuenta gratis en https://supabase.com y un proyecto nuevo (región: São Paulo, la más cercana). Guardar la contraseña de la base en un lugar seguro.
-2. **SQL Editor → New query**: pegar todo `supabase/schema.sql` y tocar **Run**. Crea las tablas `alumnos`, `clases`, `inscripciones`, `suspensiones`, `asistencias` y `pagos`, cada una con su seguridad. (Si antes se corrió una versión vieja con la tabla `turnos`, ya no se usa: se puede borrar.)
-3. **Authentication → Sign In / Providers → Email**: dejar Email activado y **desactivar "Allow new users to sign up"**, para que nadie más pueda crearse una cuenta.
-4. **Authentication → Users → Add user → Create new user**: el email de Nacho y una contraseña. Marcar "Auto Confirm User".
-5. **Project Settings → API**: copiar la **Project URL** y la **anon public key**. La anon key es pública por diseño: va en la web y la protege el RLS. **Nunca** usar ni pegar la `service_role` key.
-6. En GitHub, en el repo `CEDETEC-TI/nr-academia-web`: **Settings → Secrets and variables → Actions → Variables**, crear `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY` con esos valores.
-7. Para probar en local, crear `01 WEB/.env` (está en `.gitignore`) con:
-   ```
-   PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-   PUBLIC_SUPABASE_ANON_KEY=eyJ...
-   ```
-8. Publicar (push a `main`). El panel pide login y Nacho entra con el usuario del paso 4.
+## Cuentas y roles (Supabase)
+- Proyecto `academia-nr` (ref `yifcvcijwiafahrjtqbs`, São Paulo), organización "Academia NR" (plan gratuito).
+- **Alta abierta:** cualquiera se registra en `/cuenta/` con mail y contraseña, con confirmación por mail. Todo usuario nuevo es `alumno` (tabla `perfiles`, trigger `crear_perfil`). Nadie puede cambiarse el rol desde la web: `perfiles` no tiene permisos de escritura para `anon` ni `authenticated`.
+- **Rol `nacho`:** solo se asigna creando el usuario con la API de administración y `app_metadata: { "rol": "nacho" }` (un alumno no puede escribir `app_metadata`). Ver `supabase/migrations/20261113000200_rol_desde_app_metadata.sql`.
+- **Cuaderno por usuario:** tablas `cuaderno_entradas` y `cuaderno_ficha` con RLS por dueño. Sin sesión el Cuaderno sigue guardando en el navegador.
+- **Menú:** "Entrar" / "Mi cuenta" para todos y "Panel" solo si la cuenta es de Nacho (es una pista visual guardada en `localStorage`; el acceso real lo decide la base). `/panel/` y `/cuenta/` siguen en `noindex` y fuera del sitemap: son privadas.
 
-Plan gratis de Supabase: alcanza de sobra. Ojo: pausa el proyecto si pasa 7 días sin uso; se reactiva desde el panel de Supabase. **Nota:** el modo con Supabase todavía no se probó contra una base real (solo el modo demo).
+## Cómo está conectado (todo por CLI, ya hecho)
+1. Proyecto y organización creados con `supabase orgs create` / `supabase projects create`, vinculado con `supabase link`.
+2. Esquema en `supabase/migrations/` (se aplica con `supabase db push --remote`). **Ya no existe `schema.sql`**: las migraciones son la fuente de verdad.
+3. Auth en `supabase/config.toml` (Site URL, Redirect URLs de GitHub Pages y `localhost:4321`, alta abierta, confirmación por mail, contraseña de 8+): `supabase config push`.
+4. Variables del repo `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY` (públicas por diseño, protege el RLS) cargadas con `gh variable set`. En local van en `01 WEB/.env` (ignorado por git).
+5. **Nunca** usar ni commitear la `service_role` ni la contraseña de la base. Los tests que la necesitan la piden a la CLI en el momento (`tests/real-db.mjs`).
+6. Cambiar la clave temporal de Nacho la primera vez que entre (en `/cuenta/` → "Cambiar contraseña").
+
+## Pruebas
+- `npm run test:panel` → modo demo (compilar con claves vacías).
+- Contra la base real: `PANEL_REAL=1 LIMPIAR_PANEL=si NACHO_EMAIL=… npm run test:panel` (borra los datos del panel al empezar y al terminar: solo mientras la base sea de prueba).
+- `NACHO_EMAIL=… node tests/cuenta.mjs` → cuentas, roles, reglas de acceso y Cuaderno por usuario (crea y borra un alumno de prueba).
+
+## Pendiente: mails de confirmación
+El envío de mails que trae Supabase por defecto **solo llega a miembros del equipo del proyecto** y tiene un tope muy bajo por hora. Para que cualquier alumno reciba el mail de confirmación y el de recuperar contraseña hay que configurar un **SMTP propio** (Resend, Brevo, Gmail con contraseña de aplicación…) en Supabase → Authentication → SMTP Settings. Hasta entonces, los alumnos que no sean del equipo ven un aviso en `/cuenta/`. Nota: el plan gratis pausa el proyecto tras 7 días sin uso.

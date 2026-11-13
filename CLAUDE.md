@@ -20,16 +20,19 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 
 ## Cuaderno de Pádel (`/cuaderno/`)
 - App de seguimiento de pádel integrada como página propia. Lógica en `src/scripts/cuaderno.js` (vanilla JS del original), estilos en `src/styles/cuaderno.css` acotados a `#cuaderno` con los tokens NR. Documentación original en `docs/CUADERNO.md`.
-- Guarda en `localStorage` (`padel-cuaderno-v1`): cada persona ve solo sus datos, en su navegador.
+- Guarda en `localStorage` (`padel-cuaderno-v1`) si no hay sesión; con cuenta (`/cuenta/`) guarda en Supabase por usuario (RLS) y ofrece subir lo que había en el navegador. Cada persona ve solo lo suyo.
 - Es para **cualquier alumno** de NR: nada personalizado a un jugador. El plan semanal y el horario los carga cada alumno en la Ficha (`plan1`…`plan5`, `horario`).
 - Reglas: nunca escribir "drive" (usar "golpe de derecha" / "golpe de revés"); solo los entrenamientos cuentan como días entrenados.
 - La página usa `<Base app>`: header siempre sólido, sin Lenis y sin botón flotante de WhatsApp.
 
 ## Panel de Nacho (`/panel/`)
-- Sistema privado de **clases grupales, alumnos, asistencia y cobros** (noindex, fuera del menú). Pantallas: Hoy, Semana, Alumnos, Cobros. Modelo y reglas en `docs/PANEL.md`.
+- Sistema privado de **clases grupales, alumnos, asistencia y cobros** (noindex; el enlace del menú aparece solo si la cuenta es de Nacho). Pantallas: Hoy, Semana, Alumnos, Cobros. Modelo y reglas en `docs/PANEL.md`.
 - Modelo: Alumno ── Inscripción ── Clase (con cupo); Clase + fecha = Sesión con Asistencia; cada clase a la que vino se cobra (`precios.claseSuelta`, $10.000) y los pagos descuentan.
-- Datos en Supabase con login y Row Level Security (`supabase/schema.sql`, 6 tablas); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage). Reglas de negocio (precio, cupo, cobro de faltas) en `panel` de `academia.ts`.
-- Los horarios salen de `horarios.franjas`. Nunca usar ni commitear la `service_role` key.
+- Solo entra la cuenta con rol `nacho`. Datos en Supabase con Row Level Security (`supabase/migrations/`, tablas del panel + `perfiles` + cuaderno); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage). Reglas de negocio (precio, cupo, cobro de faltas) en `panel` de `academia.ts`.
+- Los horarios salen de `horarios.franjas`. Nunca usar ni commitear la `service_role` key. Conexión, roles y pruebas: `docs/PANEL.md`.
+
+## Cuentas (`/cuenta/`)
+- Registro de alumnos con mail y contraseña (confirmación por mail), login, recuperar y cambiar contraseña. Lógica en `src/scripts/auth.ts` y `cuenta.ts`. Todo usuario nuevo es `alumno`; `nacho` solo lo asigna la API de administración. `/cuenta/` y `/panel/` son noindex.
 
 ## Comandos
-`npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e` · `npm run test:panel` · `npm run lighthouse`
+`npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e` · `npm run test:panel` · `node tests/cuenta.mjs` (base real) · `npm run lighthouse`

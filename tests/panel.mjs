@@ -1,14 +1,20 @@
 // Prueba del panel de Nacho (modo demo): clases, inscripciones, asistencia, cuenta, cupo, suspensión y búsqueda de horario libre.
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
+// PANEL_REAL=1 prueba contra la base real (con login de Nacho; ver tests/real-db.mjs). Sin eso, modo demo: compilar con las claves vacías.
+const REAL = !!process.env.PANEL_REAL;
+const { limpiarPanel, nacho } = REAL ? await import('./real-db.mjs') : {};
 const B = process.env.B ?? 'http://localhost:4321/nr-academia-web/panel/'; const OUT = process.argv[2] ?? 'tests/shots'; mkdirSync(OUT, { recursive: true });
 const b = await chromium.launch(); let fallos = 0;
 const ok = (c, m) => { if (!c) { fallos++; console.error('FALLO:', m); } else console.log('ok:', m); };
 for (const [n, w, h, m] of [['m', 390, 844, true], ['d', 1440, 900, false]]) {
   const c = await b.newContext({ viewport: { width: w, height: h }, isMobile: m, hasTouch: m });
   const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(String(e))); p.on('console', x => x.type() === 'error' && errs.push(x.text()));
+  if (REAL) await limpiarPanel();
   await p.goto(B, { waitUntil: 'networkidle' });
-  const wait = () => p.waitForTimeout(150);
+  if (REAL) { const u = nacho(); await p.fill('#login input[name=email]', u.email); await p.fill('#login input[name=clave]', u.clave); await p.click('#login button'); await p.waitForSelector('#panel:not([hidden])'); await p.waitForLoadState('networkidle'); }
+  // En la base real cada acción es una ida y vuelta por la red: se espera a que termine antes de mirar.
+  const wait = REAL ? async () => { await p.waitForTimeout(300); await p.waitForLoadState('networkidle'); await p.waitForTimeout(900); } : () => p.waitForTimeout(150);
   const vista = async (v) => { await p.click(`[data-a=vista][data-v=${v}]`); await wait(); };
   const dia = async (d) => { if (m) { await p.click(`.chip[data-d="${d}"]`); await wait(); } };
   ok(await p.locator('.vacio').count() === 1, `${n}: Hoy vacío al empezar`);
@@ -91,8 +97,8 @@ for (const [n, w, h, m] of [['m', 390, 844, true], ['d', 1440, 900, false]]) {
   ok(errs.length === 0, `${n}: consola limpia ${errs.join(' | ')}`);
   await c.close();
 }
-// ── Datos de ejemplo ──
-{
+// ── Datos de ejemplo (solo demo) ──
+if (!REAL) {
   const c = await b.newContext({ viewport: { width: 1440, height: 900 } }); const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(String(e)));
   await p.goto(B, { waitUntil: 'networkidle' });
   await p.click('#seed'); await p.waitForTimeout(400);
@@ -104,5 +110,6 @@ for (const [n, w, h, m] of [['m', 390, 844, true], ['d', 1440, 900, false]]) {
   await c.close();
 }
 await b.close();
+if (REAL) await limpiarPanel();
 function sumarSemana(f) { const d = new Date(f + 'T00:00:00'); d.setDate(d.getDate() + 7); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 process.exit(fallos ? 1 : 0);

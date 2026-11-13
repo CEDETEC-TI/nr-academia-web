@@ -1,3 +1,5 @@
+> **Guardado (13/11/2026):** sin cuenta guarda en `localStorage`; con cuenta, en Supabase por usuario (`cuaderno_entradas`, `cuaderno_ficha`), con botón para subir lo que ya había en el navegador. Ya no hay restos de `window.claude.use("db")`. Lo de abajo describe el original.
+>
 > **Versión Academia NR (nov 2026):** integrada en `/cuaderno/` y hecha genérica para los alumnos. El plan semanal y el horario ya no son fijos: los carga cada alumno en la Ficha. Se quitó la guía "fútbol → pádel" y el enlace al plan privado. Los estilos usan la paleta NR. El resto de este documento describe el original.
 
 # Cuaderno de Pádel: informe para Claude Code
