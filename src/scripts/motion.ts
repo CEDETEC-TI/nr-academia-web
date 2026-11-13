@@ -89,7 +89,13 @@ $$<HTMLVideoElement>('video[data-src]').forEach((v) => {
     const io = new IntersectionObserver(([e]) => (e.isIntersecting ? v.play().catch(() => {}) : v.pause()), { threshold: 0.15 });
     io.observe(v);
   };
-  'requestIdleCallback' in window ? (window as any).requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300);
+  // Los clips de la galería y las tarjetas solo se descargan cuando están cerca de la pantalla; el hero, apenas el navegador está libre.
+  if (v.closest('.hero-video, section[aria-label="Inicio"]')) {
+    'requestIdleCallback' in window ? (window as any).requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300);
+  } else {
+    const near = new IntersectionObserver(([e]) => { if (e.isIntersecting) { near.disconnect(); start(); } }, { rootMargin: '300px' });
+    near.observe(v);
+  }
 });
 
 window.addEventListener('load', () => ScrollTrigger.refresh());

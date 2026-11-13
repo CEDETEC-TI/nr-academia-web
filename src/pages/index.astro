@@ -6,22 +6,20 @@ import Txt from '../components/Txt.astro';
 import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, prueba, pesos, waLink } from '../data/academia';
 import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
-import clipRed from '../assets/video/clip-red.mp4';
-import clipBag from '../assets/video/clip-bag.mp4';
 import nachoMp4 from '../assets/video/nacho-clase.mp4';
 import nachoWebm from '../assets/video/nacho-clase.webm';
 import { url } from '../utils';
 import { getImg } from '../imgs';
 
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(contacto.direccionMapa)}&output=embed`;
+const clips = import.meta.glob<string>('../assets/video/*.{mp4,webm}', { eager: true, query: '?url', import: 'default' });
 const galeria = [
-  { tipo: 'img', name: 'accion', alt: 'Nacho en la cancha de Le Club Formosa' },
-  { tipo: 'video', src: clipRed, poster: 'net', alt: 'Cancha roja de Le Club junto a la red' },
-  { tipo: 'img', name: 'azul', alt: 'Cancha azul de Le Club Formosa' },
-  { tipo: 'img', name: 'red', alt: 'Red con la marca Le Club y pelotas' },
-  { tipo: 'video', src: clipBag, poster: 'bag', alt: 'Nacho preparando la clase' },
-  { tipo: 'img', name: 'cancha', alt: 'Vista de las canchas techadas' },
-] as const;
+  { clip: 'nacho-clase', alt: 'Nacho practicando un golpe en la cancha' },
+  { clip: 'individuales-clip', alt: 'Clase individual con Nacho' },
+  { clip: 'grupales-clip', alt: 'Clase grupal en Le Club Formosa' },
+  { clip: 'principiantes-clip', alt: 'Entrenamiento de posición y golpe' },
+  { clip: 'chicos-clip', alt: 'Clase para chicos con Nacho' },
+].map((g) => ({ ...g, mp4: clips[`../assets/video/${g.clip}.mp4`], webm: clips[`../assets/video/${g.clip}.webm`], poster: `${g.clip === 'nacho-clase' ? 'nacho-clase' : g.clip}-poster` }));
 ---
 <Base title="Academia NR · Clases de pádel en Formosa con Nacho Román">
   <!-- HERO -->
@@ -140,12 +138,8 @@ const galeria = [
       {galeria.map((g) => (
         <li class="w-[72vw] shrink-0 snap-center sm:w-[34vw] lg:w-[22vw]">
           <figure class="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-media)] bg-bordo-hondo">
-            {g.tipo === 'img'
-              ? <Media name={g.name} alt={g.alt} class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 22vw, 72vw" widths={[480, 800]} />
-              : <>
-                  <Media name={g.poster} alt={g.alt} class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 22vw, 72vw" widths={[480, 800]} />
-                  <video data-src={g.src} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" class="vid absolute inset-0 size-full object-cover"></video>
-                </>}
+            <Media name={g.poster} alt={g.alt} class="absolute inset-0 size-full object-cover" sizes="(min-width:1024px) 22vw, 72vw" widths={[480, 720]} />
+            <video data-src={g.mp4} data-src-webm={g.webm} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" class="vid absolute inset-0 size-full object-cover"></video>
           </figure>
         </li>
       ))}
