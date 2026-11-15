@@ -219,7 +219,8 @@ export const clases: Clase[] = [
     slug: 'competencia',
     nombre: 'Competencia',
     corto: 'Entrená para ganar partidos.',
-    imagen: 'competencia',
+    imagen: 'competencia-clip-poster',
+    video: 'competencia-clip',
     secciones: [
       {
         titulo: 'Qué se trabaja',

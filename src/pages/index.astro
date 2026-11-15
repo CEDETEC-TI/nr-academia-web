@@ -21,6 +21,7 @@ const galeria = [
   { clip: 'grupales-clip', alt: 'Clase grupal en Le Club Formosa' },
   { clip: 'principiantes-clip', alt: 'Entrenamiento de posición y golpe' },
   { clip: 'chicos-clip', alt: 'Clase para chicos con Nacho' },
+  { clip: 'competencia-clip', alt: 'Entrenamiento de competencia en la red' },
 ].map((g) => ({ ...g, mp4: clips[`../assets/video/${g.clip}.mp4`], webm: clips[`../assets/video/${g.clip}.webm`], poster: `${g.clip === 'nacho-clase' ? 'nacho-clase' : g.clip}-poster` }));
 ---
 <Base title="Academia NR · Clases de pádel en Formosa con Nacho Román">
