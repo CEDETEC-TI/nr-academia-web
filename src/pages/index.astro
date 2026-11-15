@@ -102,7 +102,10 @@ const galeria = [
         <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
         <p class="lede mt-6" data-reveal>{nacho.intro}</p>
         {nacho.parrafos.map((t) => <p class="mt-4 max-w-lg text-tinta-suave" data-reveal>{t}</p>)}
-        <a data-reveal href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo mt-8">TikTok {contacto.tiktok.usuario}</a>
+        <div data-reveal class="mt-8 flex flex-wrap gap-3">
+          <a href={contacto.instagram.url} target="_blank" rel="noopener" class="btn btn-bordo">Instagram {contacto.instagram.usuario}</a>
+          <a href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo">TikTok {contacto.tiktok.usuario}</a>
+        </div>
       </div>
     </div>
   </section>

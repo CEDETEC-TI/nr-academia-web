@@ -9,7 +9,7 @@
 
 ## Sigue sin confirmar (no se muestra como pendiente en la web: se oculta o dice "Consultanos por WhatsApp")
 1. Domingos: Nacho solo mencionó sábados a la mañana (la web dice "Sábados por la mañana.").
-2. Instagram y YouTube (se ocultan del footer hasta cargar la URL en `src/data/academia.ts`).
+2. YouTube (se oculta del footer hasta cargar la URL en `src/data/academia.ts`). Instagram y TikTok de la academia (@academia.nr_) ya cargados el 15/11.
 3. Equipamiento para la clase de prueba (FAQ: "consultanos por WhatsApp").
 4. Política de cancelación (FAQ: "avisanos por WhatsApp").
 5. Precio de cada tipo de clase: hoy todas muestran los precios generales.

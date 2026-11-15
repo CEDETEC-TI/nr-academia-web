@@ -23,8 +23,8 @@ export const contacto = {
   whatsapp: '5493704610720',
   direccion: 'Freitas 768, Le Club Formosa',
   direccionMapa: 'Freitas 768, Formosa, Argentina',
-  tiktok: { usuario: '@NACHOROMAN637', url: 'https://www.tiktok.com/@nachoroman637' },
-  instagram: { usuario: '', url: '' }, // sin confirmar: no se muestra hasta tener URL
+  tiktok: { usuario: '@academia.nr_', url: 'https://www.tiktok.com/@academia.nr_' },
+  instagram: { usuario: '@academia.nr_', url: 'https://www.instagram.com/academia.nr_' },
   youtube: { usuario: '', url: '' }, // sin confirmar: no se muestra hasta tener URL
 };
 
