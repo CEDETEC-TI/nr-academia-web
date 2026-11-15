@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Media from '../components/Media.astro';
 import ClaseCard from '../components/ClaseCard.astro';
 import Txt from '../components/Txt.astro';
-import { academia, contacto, clases, datos, diferencial, horarios, nacho, porQue, precios, prueba, pesos, waLink } from '../data/academia';
+import { academia, contacto, clases, datos, diferencial, horarios, nacho, porQue, precios, preciosIndividual, prueba, pesos, waLink } from '../data/academia';
 import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
 import heroDesktopWebm from '../assets/video/hero-desktop.webm';
@@ -124,8 +124,10 @@ const galeria = [
       <p class="lede mt-5" data-reveal>Sin letra chica. {prueba.frase}</p>
       <div class="mt-12 grid gap-4 md:grid-cols-2">
         {[
-          { n: 'Clase suelta', p: pesos(precios.claseSuelta), d: 'Una clase, cuando quieras.' },
-          { n: 'Mes de 8 clases', p: pesos(precios.mes8Clases), d: 'Para entrenar con continuidad.' },
+          { n: 'Clase individual', p: pesos(preciosIndividual.claseSuelta), d: 'Una clase 1 a 1, cuando quieras.' },
+          { n: '8 clases individuales', p: pesos(preciosIndividual.mes8Clases), d: 'Para entrenar con continuidad, uno a uno.' },
+          { n: 'Clase suelta', p: pesos(precios.claseSuelta), d: 'Grupales, para chicos y competencia.' },
+          { n: 'Mes de 8 clases', p: pesos(precios.mes8Clases), d: 'Grupales, para chicos y competencia.' },
         ].map((x) => (
           <div data-reveal class="flex flex-col justify-between rounded-[var(--radius-card)] bg-crema p-7 text-tinta sm:p-8">
             <h3 class="font-bold text-bordo">{x.n}</h3>

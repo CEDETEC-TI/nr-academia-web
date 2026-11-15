@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Media from '../../components/Media.astro';
 import Txt from '../../components/Txt.astro';
-import { clases, horarios, precios, prueba, pesos, waLink, academia } from '../../data/academia';
+import { clases, horarios, prueba, pesos, waLink, academia } from '../../data/academia';
 import { url } from '../../utils';
 
 export function getStaticPaths() {
@@ -54,9 +54,9 @@ const wa = waLink(clase.mensajeWhatsApp);
       </div>
       <div data-reveal class="rounded-[var(--radius-card)] bg-bordo p-8 text-crema on-dark">
         <h2 class="display h-lg">Precio</h2>
-        <p class="display mt-6 text-[clamp(3rem,10vw,5rem)]">{pesos(precios.claseSuelta)}</p>
+        <p class="display mt-6 text-[clamp(3rem,10vw,5rem)]">{pesos(clase.precios.claseSuelta)}</p>
         <p class="mt-1 opacity-90">por clase suelta</p>
-        <p class="mt-4">Mes de 8 clases: <strong>{pesos(precios.mes8Clases)}</strong></p>
+        <p class="mt-4">Mes de 8 clases: <strong>{pesos(clase.precios.mes8Clases)}</strong></p>
         <p class="mt-4 rounded-2xl bg-crema/15 px-4 py-3 font-semibold">{prueba.titulo}</p>
         {clase.precioNota && <p class="mt-4 text-sm opacity-90"><Txt value={clase.precioNota} /></p>}
       </div>

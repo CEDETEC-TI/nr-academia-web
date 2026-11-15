@@ -28,10 +28,16 @@ export const contacto = {
   youtube: { usuario: '', url: '' }, // sin confirmar: no se muestra hasta tener URL
 };
 
+/** Precios generales (grupales, para chicos y competencia). */
 export const precios = {
   claseSuelta: 10000,
   mes8Clases: 80000,
   clasePrueba: 'Gratis',
+};
+/** Individuales (pedido de Nacho, 15/11): clase suelta y 8 clases. */
+export const preciosIndividual = {
+  claseSuelta: 20000,
+  mes8Clases: 160000,
 };
 
 /** Clase de prueba gratis. Lo de la cancha NO se publica: lo habla Nacho en persona. Todos los textos salen de acá. */
@@ -95,6 +101,8 @@ export interface Clase {
   comoEsNumerado?: boolean;
   duracion: string;
   tamanoGrupo: string;
+  /** Precio de esta clase (si no se indica, el general). */
+  precios: { claseSuelta: number; mes8Clases: number };
   precioNota: string;
   mensajeWhatsApp: string;
   faq: { p: string; r: string }[];
@@ -152,6 +160,7 @@ export const clases: Clase[] = [
     comoEsNumerado: true,
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Clase individual, uno a uno.',
+    precios: { claseSuelta: preciosIndividual.claseSuelta, mes8Clases: preciosIndividual.mes8Clases },
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel Individual. ¿Qué días y horarios tenés?',
     faq: [
@@ -186,6 +195,7 @@ export const clases: Clase[] = [
     ],
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
+    precios: { claseSuelta: precios.claseSuelta, mes8Clases: precios.mes8Clases },
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel Grupal. ¿Qué grupos y horarios hay?',
     faq: [
@@ -208,6 +218,7 @@ export const clases: Clase[] = [
     ],
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Cupos reducidos para una mejor atención.',
+    precios: { claseSuelta: precios.claseSuelta, mes8Clases: precios.mes8Clases },
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar una clase de prueba de pádel para mi hijo/a. ¿Qué días y horarios tenés?',
     faq: [
@@ -249,6 +260,7 @@ export const clases: Clase[] = [
     ],
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
+    precios: { claseSuelta: precios.claseSuelta, mes8Clases: precios.mes8Clases },
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel de Competencia. ¿Qué nivel piden y qué horarios hay?',
     faq: [
@@ -264,7 +276,7 @@ export const waLink = (mensaje = 'Hola Nacho! Quiero reservar mi clase de prueba
 
 /** Reglas del panel privado de Nacho (/panel/). No se muestran en la web pública. */
 export const panel = {
-  /** Lo que cobra Nacho por clase y por alumno: el mismo precio de la web (`precios.claseSuelta`, $10.000). */
+  /** Lo que cobra Nacho por clase y por alumno: el mismo precio de la web (`precios.claseSuelta`, $10.000; las individuales cuestan $20.000 en la web, el panel es de clases grupales). */
   precioClase: precios.claseSuelta,
   /** Cupo inicial de un grupo nuevo (4 = una cancha de pádel); se cambia en cada clase. */
   cupoPorDefecto: 4,

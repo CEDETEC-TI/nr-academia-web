@@ -1,6 +1,6 @@
 ---
 import Media from './Media.astro';
-import { pesos, precios, type Clase } from '../data/academia';
+import { pesos, type Clase } from '../data/academia';
 import { url } from '../utils';
 const clips = import.meta.glob<string>('../assets/video/*.{mp4,webm}', { eager: true, query: '?url', import: 'default' });
 
@@ -18,7 +18,7 @@ const webm = clase.video ? clips[`../assets/video/${clase.video}.webm`] : undefi
   <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">
     <h3 class="display h-xl break-safe !text-[clamp(2.4rem,9vw,5rem)]">{clase.nombre}</h3>
     <p class="mt-3 max-w-xs text-lg opacity-95">{clase.corto}</p>
-    <p class="mt-5 inline-flex min-h-11 items-center rounded-full bg-crema px-5 font-bold text-bordo-hondo">Ver clase · {pesos(precios.claseSuelta)}</p>
+    <p class="mt-5 inline-flex min-h-11 items-center rounded-full bg-crema px-5 font-bold text-bordo-hondo">Ver clase · {pesos(clase.precios.claseSuelta)}</p>
   </div>
 </a>
 <style>

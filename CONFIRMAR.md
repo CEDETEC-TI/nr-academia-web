@@ -12,7 +12,7 @@
 2. YouTube (se oculta del footer hasta cargar la URL en `src/data/academia.ts`). Instagram y TikTok de la academia (@academia.nr_) ya cargados el 15/11.
 3. Equipamiento para la clase de prueba (FAQ: "consultanos por WhatsApp").
 4. Política de cancelación (FAQ: "avisanos por WhatsApp").
-5. Precio de cada tipo de clase: hoy todas muestran los precios generales.
+5. Precios: Individuales $20.000 la clase y $160.000 las 8 (pedido de Nacho, 15/11). Grupales, chicos y competencia siguen con $10.000 y $80.000: falta confirmar con Nacho.
 6. Edades de "Para chicos" (se pide consultar por WhatsApp).
 7. Nivel requerido en Competencia (se pide consultar por WhatsApp).
 8. Textos de las clases, "Por qué Academia NR" y "Soy Nacho": los redactó Nacho (15/11) y están aplicados tal cual, con ortografía corregida. En "Para chicos" no mandó "para quién es" ni "qué se trabaja": se sacaron.
