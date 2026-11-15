@@ -44,8 +44,8 @@ export const prueba = {
 
 export const horarios = {
   dias: 'Lunes a viernes',
-  franjas: ['8 a 12 hs', '14 a 20 hs'],
-  finDeSemana: 'Sábados y domingos: consultanos por WhatsApp.',
+  franjas: ['8 a 12 hs', '14 a 20 hs'], // mañana y tarde
+  finDeSemana: 'Sábados por la mañana.',
 };
 
 export const datos = [
@@ -54,17 +54,33 @@ export const datos = [
   { texto: 'Gratis', etiqueta: 'clase de prueba' },
 ] as const;
 
+/** Texto de "Por qué Academia NR" (encabezado principal). */
+export const porQue = {
+  titulo: 'Por qué Academia NR',
+  intro: 'Para todos: chicos, mujeres, principiantes y competidores. Un espacio diseñado para potenciar tu nivel sin importar dónde arranques.',
+};
+
 export const diferencial = [
-  { titulo: 'Disponibilidad', texto: 'Nacho está para vos: de lunes a viernes, mañana y tarde.' },
-  { titulo: 'Ganas', texto: 'Cada clase se prepara y se da con energía, juegues como juegues.' },
-  { titulo: 'Responsabilidad', texto: 'Puntualidad, seguimiento y compromiso con tu progreso.' },
-  { titulo: 'Valores', texto: 'Respeto, esfuerzo y compañerismo dentro y fuera de la cancha.' },
+  { titulo: 'Metodología y táctica', texto: 'No solo mejoramos tus golpes: te enseñamos a leer la dificultad de cada pelota para tomar siempre la decisión correcta en el partido.' },
+  { titulo: 'Disponibilidad', texto: 'Nacho está para vos de lunes a viernes, mañana y tarde, y sábados a la mañana, adaptándose a tus horarios para que no te quedes sin entrenar.' },
+  { titulo: 'Ganas', texto: 'Cada clase se prepara y se da con la misma energía, juegues como juegues. Entrenamientos dinámicos donde combinamos técnica, táctica y objetivos claros.' },
+  { titulo: 'Responsabilidad', texto: 'Puntualidad, seguimiento constante y compromiso absoluto con tu progreso y evolución en la cancha.' },
+  { titulo: 'Valores', texto: 'Respeto, esfuerzo y compañerismo dentro y fuera de la cancha. Formamos mejores jugadores y mejores personas.' },
 ];
 
 export const nacho = {
-  intro: 'Soy Nacho, profe de pádel en Le Club Formosa. Enseño para que juegues mejor y disfrutes cada partido.',
-  trayectoria: '', // sin confirmar: la sección no muestra nada si está vacío
+  intro:
+    'Soy Nacho, profe de pádel en Le Club Formosa. Jugador competitivo de 3ª categoría con más de 10 años de trayectoria en las canchas y más de 5 años formando jugadores. Cuento con el profesorado licenciado por la APA (Asociación de Pádel Argentino).',
+  parrafos: [
+    'Dar clases y enseñar es mi verdadera pasión y lo que mejor se me da. Soy una persona de observar demasiado cada detalle, corregir con constancia y tenerle la paciencia necesaria a cada alumno para que avance seguro.',
+    'Mi objetivo es simple: enseñarte a leer el juego, potenciar tu técnica y llevar tu nivel al máximo para que disfrutes y ganes cada partido.',
+  ],
 };
+
+/** Un ítem de lista: con título en negrita (`t`) y texto (`d`), o solo texto. */
+export type Item = { t?: string; d: string };
+/** Bloque de una página de clase (título + lista y/o párrafo). */
+export interface Seccion { titulo: string; items?: Item[]; texto?: string }
 
 export interface Clase {
   slug: string;
@@ -72,9 +88,11 @@ export interface Clase {
   corto: string;
   imagen: string; // nombre de archivo en src/assets/img (sin extensión)
   video?: string; // clip en src/assets/video (sin extensión; hay .mp4 y .webm) y póster `<video>-poster` en src/assets/img
-  paraQuien: string[];
-  queSeTrabaja: string[];
-  comoEs: string[];
+  /** Bloques antes de "Cómo es la clase" (Para quién es, Qué se trabaja, etc.). Pueden no existir. */
+  secciones: Seccion[];
+  comoEs: Item[];
+  /** Si es true, "Cómo es la clase" se muestra como pasos numerados. */
+  comoEsNumerado?: boolean;
   duracion: string;
   tamanoGrupo: string;
   precioNota: string;
@@ -105,12 +123,33 @@ export const clases: Clase[] = [
   {
     slug: 'individuales',
     nombre: 'Individuales',
-    corto: 'Vos y Nacho. Todo el foco en tu juego.',
+    corto: 'Atención 100% personalizada para acelerar tu evolución en la cancha.',
     imagen: 'individuales',
     video: 'individuales-clip',
-    paraQuien: ['Quien quiere avanzar rápido', 'Quien empieza y prefiere ir a su ritmo', 'Quien necesita corregir un golpe puntual'],
-    queSeTrabaja: ['Golpes base: derecha, revés y volea', 'Saque y devolución', 'Posición y movimiento en la cancha', 'Bandeja y víbora'],
-    comoEs: ['Clase uno a uno en cancha de Le Club Formosa.', 'Nacho arma el trabajo según tu nivel y tu objetivo.', 'Practicás con corrección en el momento.'],
+    secciones: [
+      {
+        titulo: 'Para quién es',
+        items: [
+          { t: 'Quien quiere avanzar rápido', d: 'Sin depender del ritmo de una clase grupal, enfocados netamente en tus objetivos.' },
+          { t: 'Quien empieza y prefiere ir a su ritmo', d: 'Ideal para ganar confianza desde cero con un seguimiento exclusivo.' },
+          { t: 'Quien necesita corregir un golpe puntual', d: '¿No te sale la bandeja, la víbora o sufrís con la pared de fondo? Lo trabajamos de raíz.' },
+        ],
+      },
+      {
+        titulo: 'Por qué elegir una clase 1 a 1',
+        items: [
+          { t: 'Más impacto de pelota', d: 'Al ser individual, tocás la pelota muchísimas más veces que en un grupo.' },
+          { t: 'Corrección al instante', d: 'Cada error de postura o empuñadura se corrige en el momento para no fijar vicios malos.' },
+          { t: 'Plan a tu medida', d: 'La clase se arma 100% en base a tus fortalezas y debilidades.' },
+        ],
+      },
+    ],
+    comoEs: [
+      { t: 'Diagnóstico inicial', d: 'Analizamos qué necesitás corregir o potenciar.' },
+      { t: 'Bloque técnico / táctico', d: 'Ejercicios específicos con cubos de pelotas y situaciones reales de partido.' },
+      { t: 'Feedback final', d: 'Resumen de lo trabajado y objetivos para la siguiente clase.' },
+    ],
+    comoEsNumerado: true,
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Clase individual, uno a uno.',
     precioNota: '',
@@ -123,32 +162,52 @@ export const clases: Clase[] = [
   {
     slug: 'grupales',
     nombre: 'Grupales',
-    corto: 'Aprendé jugando con otros.',
+    corto: 'Clases dinámicas enfocadas en situaciones reales de juego.',
     imagen: 'grupales',
     video: 'grupales-clip',
-    paraQuien: ['Quien quiere entrenar con amigos', 'Quien busca un ambiente divertido', 'Quien quiere practicar situaciones de partido'],
-    queSeTrabaja: ['Golpes y juego en pareja', 'Ubicación y comunicación con tu compañero', 'Puntos y situaciones reales de partido', 'Ejercicios en equipo'],
-    comoEs: ['Grupo reducido en cancha de Le Club Formosa.', 'Ejercicios de a dos y juego de puntos.', 'Nacho corrige y ordena el trabajo de todos.'],
+    secciones: [
+      {
+        titulo: 'De qué se trata',
+        items: [
+          { d: 'Armado de grupos según niveles compatibles para que todos compitan y evolucionen a la par.' },
+          { d: 'Combinación de ejercicios tácticos con puntos en situación real.' },
+        ],
+      },
+      {
+        titulo: '¿Cómo armamos los grupos?',
+        texto: 'Podés venir con tu pareja o grupo armado, o te sumamos a un grupo que se adapte perfectamente a tu nivel de juego.',
+      },
+    ],
+    comoEs: [
+      { d: 'Grupo reducido en cancha de Le Club Formosa.' },
+      { t: 'Trabajo técnico y táctico', d: 'Combinamos ejercicios de a dos y juego de puntos orientados a situaciones reales.' },
+      { t: 'Toma de decisiones', d: 'Te enseñamos a leer la dificultad de cada pelota que te viene para elegir el golpe y el objetivo correcto (definir, construir el punto o jugar con margen).' },
+      { d: 'Nacho corrige la técnica al instante y ordena el trabajo de todo el grupo.' },
+    ],
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar mi clase de prueba de pádel Grupal. ¿Qué grupos y horarios hay?',
     faq: [
-      { p: '¿Puedo ir con amigos?', r: 'Sí, escribinos y armamos el grupo. Los grupos son de 2, 3 o 4 personas como máximo.' },
+      { p: '¿Puedo ir con amigos?', r: 'Sí, podés venir con tu pareja o grupo armado. Escribinos y lo coordinamos.' },
       ...faqComun('grupal'),
     ],
   },
   {
     slug: 'para-chicos',
     nombre: 'Para chicos',
-    corto: 'Pádel con alegría, cuidado y valores.',
+    corto: 'Clases dinámicas y divertidas, con cuidado y valores.',
     imagen: 'chicos-clip-poster',
     video: 'chicos-clip',
-    paraQuien: ['Chicos que se inician en el pádel', 'Familias que buscan deporte y valores', 'Consultanos por WhatsApp según la edad de tu hijo/a'],
-    queSeTrabaja: ['Coordinación y primeros golpes', 'Respeto, esfuerzo y compañerismo', 'Juego en equipo', 'Gusto por el deporte'],
-    comoEs: ['Clase pensada para chicos, en cancha de Le Club Formosa.', 'Ejercicios de a poco y con juego.', 'Nacho cuida el ritmo y el clima de la clase.'],
+    secciones: [],
+    comoEs: [
+      { d: 'Clases dinámicas y divertidas en cancha de Le Club Formosa.' },
+      { t: 'Aprendizaje con objetivos', d: 'Combinamos coordinación y técnica básica con juegos tácticos adaptados a su edad.' },
+      { t: 'Toma de decisiones temprana', d: 'Les enseñamos a leer la pelota para que entiendan cómo jugar y a dónde dirigirla según la situación.' },
+      { d: 'Seguimiento personalizado de Nacho para que avancen seguros y motivados.' },
+    ],
     duracion: 'Cada clase dura 1 hora.',
-    tamanoGrupo: 'Grupos de 2, 3 o 4 chicos como máximo.',
+    tamanoGrupo: 'Cupos reducidos para una mejor atención.',
     precioNota: '',
     mensajeWhatsApp: 'Hola Nacho! Quiero reservar una clase de prueba de pádel para mi hijo/a. ¿Qué días y horarios tenés?',
     faq: [
@@ -161,9 +220,32 @@ export const clases: Clase[] = [
     nombre: 'Competencia',
     corto: 'Entrená para ganar partidos.',
     imagen: 'competencia',
-    paraQuien: ['Quien juega torneos', 'Quien quiere subir de categoría', 'Quien busca más intensidad'],
-    queSeTrabaja: ['Táctica y lectura de juego', 'Golpes de definición', 'Preparación mental para partidos', 'Trabajo de situaciones de torneo'],
-    comoEs: ['Entrenamiento exigente en cancha de Le Club Formosa.', 'Foco en tus puntos débiles y en tu estrategia.', 'Trabajo con objetivos claros.'],
+    secciones: [
+      {
+        titulo: 'Qué se trabaja',
+        items: [
+          { d: 'Técnica, táctica y lectura de juego (orientado a la dificultad de la pelota y el posicionamiento).' },
+          { d: 'Golpes de definición y construcción del punto.' },
+          { d: 'Preparación mental para partidos y manejo de la presión.' },
+          { d: 'Trabajo de situaciones reales de torneo.' },
+        ],
+      },
+      {
+        titulo: 'Para quién es',
+        items: [
+          { d: 'Quien juega torneos y busca un salto de calidad en su juego.' },
+          { d: 'Quien quiere subir de categoría y necesita corregir errores finos.' },
+          { d: 'Quien busca alta intensidad física y mental en cada entrenamiento.' },
+          { d: 'Jugadores que quieren aprender a leer mejor los partidos y tomar decisiones correctas bajo presión.' },
+        ],
+      },
+    ],
+    comoEs: [
+      { d: 'Entrenamiento exigente en cancha de Le Club Formosa.' },
+      { t: 'Foco', d: 'En tus puntos débiles y en tu estrategia personal de juego.' },
+      { t: 'Trabajo con objetivos claros', d: 'Aprendés a leer la dificultad de cada pelota para tomar la decisión correcta (cuándo apretar, cuándo construir y cuándo defender).' },
+      { t: 'Simulación de presión', d: 'Situaciones reales de torneo y preparación mental para partidos.' },
+    ],
     duracion: 'Cada clase dura 1 hora.',
     tamanoGrupo: 'Grupos de 2, 3 o 4 personas como máximo.',
     precioNota: '',

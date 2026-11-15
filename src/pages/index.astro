@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Media from '../components/Media.astro';
 import ClaseCard from '../components/ClaseCard.astro';
 import Txt from '../components/Txt.astro';
-import { academia, contacto, clases, datos, diferencial, horarios, nacho, precios, prueba, pesos, waLink } from '../data/academia';
+import { academia, contacto, clases, datos, diferencial, horarios, nacho, porQue, precios, prueba, pesos, waLink } from '../data/academia';
 import heroDesktop from '../assets/video/hero-desktop.mp4';
 import heroMobile from '../assets/video/hero-mobile.mp4';
 import heroDesktopWebm from '../assets/video/hero-desktop.webm';
@@ -76,8 +76,8 @@ const galeria = [
   <section id="porque" class="section bg-crema-oscura">
     <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
       <div>
-        <h2 class="display h-xl" data-reveal>Por qué Academia NR</h2>
-        <p class="lede mt-6" data-reveal>Para todos: {academia.paraTodos.map((p) => p.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' y $1')}.</p>
+        <h2 class="display h-xl" data-reveal>{porQue.titulo}</h2>
+        <p class="lede mt-6" data-reveal>{porQue.intro}</p>
       </div>
       <ul class="grid gap-0">
         {diferencial.map((d) => (
@@ -101,7 +101,7 @@ const galeria = [
       <div>
         <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
         <p class="lede mt-6" data-reveal>{nacho.intro}</p>
-        {nacho.trayectoria && <p class="mt-4 max-w-lg text-tinta-suave" data-reveal><Txt value={nacho.trayectoria} /></p>}
+        {nacho.parrafos.map((t) => <p class="mt-4 max-w-lg text-tinta-suave" data-reveal>{t}</p>)}
         <a data-reveal href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo mt-8">TikTok {contacto.tiktok.usuario}</a>
       </div>
     </div>

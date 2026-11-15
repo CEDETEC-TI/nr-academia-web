@@ -11,7 +11,6 @@ export function getStaticPaths() {
 const { clase } = Astro.props;
 const otras = clases.filter((c) => c.slug !== clase.slug);
 const wa = waLink(clase.mensajeWhatsApp);
-const lista = (items: string[]) => items;
 ---
 <Base title={`Clases de pádel ${clase.nombre} en Formosa · Academia NR`} description={`${clase.corto} Clases de pádel ${clase.nombre.toLowerCase()} con Nacho Román en Le Club Formosa. ${prueba.frase}`} waMensaje={clase.mensajeWhatsApp}>
   <section class="on-dark relative isolate flex min-h-[78svh] items-end overflow-hidden bg-bordo-hondo text-crema">
@@ -25,30 +24,31 @@ const lista = (items: string[]) => items;
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap grid gap-14 md:grid-cols-2 md:gap-20">
-      <div data-reveal>
-        <h2 class="display h-lg">Para quién es</h2>
-        <ul class="mt-6 space-y-3 text-lg">
-          {lista(clase.paraQuien).map((t) => <li class="flex gap-3"><span class="mt-[0.7em] size-2 shrink-0 rounded-full bg-bordo" aria-hidden="true"></span><span><Txt value={t} /></span></li>)}
-        </ul>
+  {clase.secciones.length > 0 && (
+    <section class="section">
+      <div class="wrap grid gap-14 md:grid-cols-2 md:gap-x-20">
+        {clase.secciones.map((sec) => (
+          <div data-reveal>
+            <h2 class="display h-lg break-safe">{sec.titulo}</h2>
+            {sec.texto && <p class="mt-6 text-lg">{sec.texto}</p>}
+            {sec.items && (
+              <ul class="mt-6 space-y-4 text-lg">
+                {sec.items.map((it) => <li class="flex gap-3"><span class="mt-[0.7em] size-2 shrink-0 rounded-full bg-bordo" aria-hidden="true"></span><span>{it.t && <strong>{it.t}: </strong>}{it.d}</span></li>)}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
-      <div data-reveal>
-        <h2 class="display h-lg">Qué se trabaja</h2>
-        <ul class="mt-6 space-y-3 text-lg">
-          {clase.queSeTrabaja.map((t) => <li class="flex gap-3"><span class="mt-[0.7em] size-2 shrink-0 rounded-full bg-bordo" aria-hidden="true"></span><span>{t}</span></li>)}
-        </ul>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="section bg-crema-oscura">
     <div class="wrap grid gap-14 md:grid-cols-2 md:gap-20">
       <div data-reveal>
         <h2 class="display h-lg">Cómo es la clase</h2>
-        <ul class="mt-6 space-y-3 text-lg">
-          {clase.comoEs.map((t) => <li>{t}</li>)}
-        </ul>
+        {clase.comoEsNumerado
+          ? <ol class="mt-6 space-y-4 text-lg">{clase.comoEs.map((it, n) => <li class="flex gap-3"><span class="display mt-0.5 w-6 shrink-0 text-bordo" aria-hidden="true">{n + 1}</span><span>{it.t && <strong>{it.t}: </strong>}{it.d}</span></li>)}</ol>
+          : <ul class="mt-6 space-y-4 text-lg">{clase.comoEs.map((it) => <li>{it.t && <strong>{it.t}: </strong>}{it.d}</li>)}</ul>}
         <p class="mt-6 text-tinta-suave"><Txt value={clase.duracion} /></p>
         <p class="mt-2 text-tinta-suave"><Txt value={clase.tamanoGrupo} /></p>
       </div>
