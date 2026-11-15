@@ -102,6 +102,12 @@ const galeria = [
         <h2 class="display h-xl" data-reveal>Soy Nacho</h2>
         <p class="lede mt-6" data-reveal>{nacho.intro}</p>
         {nacho.parrafos.map((t) => <p class="mt-4 max-w-lg text-tinta-suave" data-reveal>{t}</p>)}
+        <figure data-reveal class="mt-8 max-w-lg">
+          <a href={getImg('certificado-apa')?.src} target="_blank" rel="noopener" class="block overflow-hidden rounded-[var(--radius-card)] border border-bordo/20 bg-white shadow-[var(--shadow-soft)]" aria-label="Ver el certificado de Profesor oficial APA Nivel 1 en tamaño completo">
+            <Media name="certificado-apa" alt="Certificado de homologación de la Asociación Padel Argentino: Ignacio Román, Profesor oficial de APA Nivel 1, julio de 2023" class="block h-auto w-full" sizes="(min-width:1024px) 32rem, 100vw" widths={[480, 800, 1200]} />
+          </a>
+          <figcaption class="mt-3 text-sm text-tinta-suave">Profesor oficial APA Nivel 1 · Asociación Padel Argentino, julio 2023.</figcaption>
+        </figure>
         <div data-reveal class="mt-8 flex flex-wrap gap-3">
           <a href={contacto.instagram.url} target="_blank" rel="noopener" class="btn btn-bordo">Instagram {contacto.instagram.usuario}</a>
           <a href={contacto.tiktok.url} target="_blank" rel="noopener" class="btn btn-bordo">TikTok {contacto.tiktok.usuario}</a>
