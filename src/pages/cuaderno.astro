@@ -33,23 +33,24 @@ import { url } from '../utils';
 </Base>
 
 <style is:global>
-  .cuaderno { min-height: 100svh; padding: 7rem var(--gutter) 4rem; background: var(--color-crema); color: var(--color-tinta); }
-  .cuaderno .cwrap { max-width: 40rem; margin: 0 auto; display: grid; gap: 1.1rem; }
+  .cuaderno { min-height: 100svh; padding: clamp(7rem, 22vw, 8.5rem) var(--gutter) calc(7rem + env(safe-area-inset-bottom)); background: var(--color-crema); color: var(--color-tinta); }
+  .cuaderno .cwrap { max-width: 40rem; margin: 0 auto; display: grid; gap: 1.5rem; }
+  .cuaderno h1 { line-height: 1.02; }
   .cuaderno .c-lede { color: var(--color-tinta-suave); }
   .cuaderno .c-estado { font-size: .85rem; color: var(--color-tinta-suave); }
   .cuaderno .c-aviso { padding: .8rem 1rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
-  .cuaderno .c-form { display: grid; gap: 1rem; padding: 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); }
-  .cuaderno .c-campo { display: grid; gap: .3rem; font-weight: 600; }
+  .cuaderno .c-form { display: grid; gap: 1.25rem; padding: 1.5rem 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); }
+  .cuaderno .c-campo { display: grid; gap: .45rem; font-weight: 600; }
   .cuaderno input[type='date'], .cuaderno textarea { font: inherit; font-size: 16px; font-weight: 400; padding: .8rem 1rem; border-radius: .9rem; background: var(--color-crema); border: 1.5px solid rgb(109 26 42 / .22); width: 100%; min-height: 2.75rem; }
   .cuaderno textarea { resize: vertical; min-height: 5.5rem; }
   .cuaderno input:focus-visible, .cuaderno textarea:focus-visible { outline: none; border-color: var(--color-bordo); }
-  .cuaderno .c-fila { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .cuaderno .c-fila { display: flex; flex-wrap: wrap; gap: .8rem; }
   .cuaderno .c-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 1.4rem; border-radius: 999px; background: var(--color-bordo); color: var(--color-crema); font-weight: 700; touch-action: manipulation; transition: transform 160ms var(--ease-out-strong); }
   .cuaderno .c-btn:active { transform: scale(.97); }
   .cuaderno .c-btn:disabled { opacity: .6; }
   .cuaderno .c-sec { background: transparent; color: var(--color-bordo); box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .35); }
-  .cuaderno .c-sub { margin-top: 1rem; }
-  .cuaderno .c-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+  .cuaderno .c-sub { margin-top: 1.5rem; }
+  .cuaderno .c-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
   .cuaderno .c-nota { padding: 1.1rem 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); display: grid; gap: .7rem; }
   .cuaderno .c-fecha { font-family: var(--font-display); text-transform: uppercase; font-size: 1.35rem; letter-spacing: .02em; color: var(--color-bordo); }
   .cuaderno .c-nota dt { font-size: .8rem; font-weight: 700; color: var(--color-tinta-suave); text-transform: uppercase; letter-spacing: .04em; }

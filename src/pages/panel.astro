@@ -78,7 +78,17 @@ import { url } from '../utils';
   #hoja .f-dl { display: grid; gap: .6rem; margin: 0; }
   #hoja .f-dl dt { font-size: .75rem; font-weight: 700; color: var(--color-tinta-suave); text-transform: uppercase; letter-spacing: .04em; }
   #hoja .f-dl dd { margin: .1rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-  #hoja .f-sub { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; margin-top: 1rem; }
+  #hoja .f-resumen { display: grid; gap: 1rem; }
+  #hoja .f-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  #hoja .f-chip { display: inline-flex; align-items: center; min-height: 2.25rem; padding: 0 .95rem; border-radius: 999px; background: var(--color-bordo); color: var(--color-crema); font-weight: 700; font-size: .95rem; }
+  #hoja .f-tarjetas { display: grid; gap: .75rem; }
+  #hoja .f-tarjeta { display: grid; gap: .45rem; padding: 1rem 1.1rem; border-radius: 1rem; background: #fff; box-shadow: var(--shadow-soft); }
+  #hoja .f-tarjeta h4 { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-tinta-suave); }
+  #hoja .f-tarjeta p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+  #hoja .f-tarjeta .vacio-c { color: var(--color-tinta-suave); font-style: italic; }
+  #hoja .f-golpes { display: flex; flex-wrap: wrap; gap: .4rem; }
+  #hoja .f-golpes span { padding: .3rem .75rem; border-radius: 999px; background: rgb(109 26 42 / .08); color: var(--color-bordo); font-weight: 600; font-size: .9rem; }
+  #hoja .f-sub { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; margin-top: 1.5rem; }
   #hoja .f-notas { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; overflow-y: auto; max-height: 40svh; }
   #hoja .f-notas li { background: #fff; border-radius: 1rem; padding: .75rem .9rem; box-shadow: var(--shadow-soft); }
   #hoja .f-fecha { font-family: var(--font-display); text-transform: uppercase; color: var(--color-bordo); margin-bottom: .3rem; }
