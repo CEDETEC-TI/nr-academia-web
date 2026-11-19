@@ -134,3 +134,10 @@ p { text-wrap: pretty; }
 
 /* Texto largo y datos extremos */
 .break-safe { overflow-wrap: anywhere; hyphens: auto; }
+
+/* iOS Safari: los input de fecha/hora ignoran el ancho y se salen de su caja. Se los iguala a los demás campos. */
+input[type='date'], input[type='time'], input[type='datetime-local'], select {
+  box-sizing: border-box; max-width: 100%; min-width: 0; -webkit-appearance: none; appearance: none;
+}
+input[type='date']::-webkit-date-and-time-value, input[type='time']::-webkit-date-and-time-value { text-align: left; margin: 0; }
+input[type='date']::-webkit-datetime-edit, input[type='time']::-webkit-datetime-edit { padding: 0; }

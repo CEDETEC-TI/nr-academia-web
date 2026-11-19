@@ -41,7 +41,7 @@ import { url } from '../utils';
   .cuaderno .c-aviso { padding: .8rem 1rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
   .cuaderno .c-form { display: grid; gap: 1.25rem; padding: 1.5rem 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); }
   .cuaderno .c-campo { display: grid; gap: .45rem; font-weight: 600; }
-  .cuaderno input[type='date'], .cuaderno textarea { font: inherit; font-size: 16px; font-weight: 400; padding: .8rem 1rem; border-radius: .9rem; background: var(--color-crema); border: 1.5px solid rgb(109 26 42 / .22); width: 100%; min-height: 2.75rem; }
+  .cuaderno input[type='date'], .cuaderno textarea { display: block; box-sizing: border-box; min-width: 0; font: inherit; font-size: 16px; font-weight: 400; padding: .8rem 1rem; border-radius: .9rem; background: var(--color-crema); border: 1.5px solid rgb(109 26 42 / .22); width: 100%; min-height: 3.25rem; }
   .cuaderno textarea { resize: vertical; min-height: 5.5rem; }
   .cuaderno input:focus-visible, .cuaderno textarea:focus-visible { outline: none; border-color: var(--color-bordo); }
   .cuaderno .c-fila { display: flex; flex-wrap: wrap; gap: .8rem; }
