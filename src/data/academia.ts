@@ -21,6 +21,7 @@ export const academia = {
 
 export const contacto = {
   whatsapp: '5493704610720',
+  telefono: '+54 370 461 0720', // para Google (datos estructurados); el botón de WhatsApp usa `whatsapp`
   direccion: 'Freitas 768, Le Club Formosa',
   direccionMapa: 'Freitas 768, Formosa, Argentina',
   tiktok: { usuario: '@academia.nr_', url: 'https://www.tiktok.com/@academia.nr_' },
@@ -45,6 +46,8 @@ export const prueba = {
   titulo: 'Clase de prueba gratis.',
   frase: 'La clase de prueba es gratis.',
   cierre: 'La primera clase es gratis.',
+  etiquetaHero: 'Primera clase gratis · Formosa',
+  botonHero: 'Reservá tu clase gratis por WhatsApp',
   faq: 'No pagás la clase: la de prueba es gratis. Los detalles los coordinás con Nacho.',
 };
 
@@ -54,8 +57,15 @@ export const horarios = {
   finDeSemana: 'Sábados por la mañana.',
 };
 
+/** Los mismos horarios en formato de Google (schema.org). Sábado: la franja de la mañana (8 a 12), igual que lunes a viernes. */
+export const horariosSchema = [
+  { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '08:00', cierra: '12:00' },
+  { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '14:00', cierra: '20:00' },
+  { dias: ['Saturday'], abre: '08:00', cierra: '12:00' },
+];
+
 export const datos = [
-  { valor: 30, prefijo: '+', etiqueta: 'alumnos' },
+  { valor: 33, prefijo: '', etiqueta: 'alumnos' }, // confirmado por Guillermo (19/11)
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
   { texto: 'Gratis', etiqueta: 'clase de prueba' },
 ] as const;
