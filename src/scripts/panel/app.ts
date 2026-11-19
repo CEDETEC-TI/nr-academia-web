@@ -614,9 +614,9 @@ async function iniciar() {
   $('#login').hidden = true; $('#sinacceso').hidden = true; app.hidden = false;
   await recargar();
 }
-function mostrarSinAcceso(email: string) {
-  $('#login').hidden = true; app.hidden = true;
-  $('#sinacceso').hidden = false; $('#sinacceso-mail').textContent = email;
+function mostrarSinAcceso(_email: string) {
+  // Un alumno no tiene nada que ver acá (la base tampoco le muestra datos): vuelve a su cuenta.
+  location.replace(url('cuenta/'));
 }
 function mostrarLogin() {
   const f = $<HTMLFormElement>('#login'); f.hidden = false; app.hidden = true;
