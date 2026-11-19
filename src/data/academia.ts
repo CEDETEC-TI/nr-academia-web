@@ -46,8 +46,8 @@ export const prueba = {
   titulo: 'Clase de prueba gratis.',
   frase: 'La clase de prueba es gratis.',
   cierre: 'La primera clase es gratis.',
-  etiquetaHero: 'Primera clase gratis · Formosa',
-  botonHero: 'Reservá tu clase gratis por WhatsApp',
+  etiquetaHero: 'Le Club Formosa',
+  botonHero: 'Reservá tu clase gratis',
   faq: 'No pagás la clase: la de prueba es gratis. Los detalles los coordinás con Nacho.',
 };
 
@@ -67,7 +67,7 @@ export const horariosSchema = [
 export const datos = [
   { valor: 30, prefijo: 'Más de ', etiqueta: 'alumnos' }, // "Más de 30 alumnos" (decidido por Guillermo, 19/11)
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
-  { texto: 'Gratis', etiqueta: 'clase de prueba' },
+  { valor: 6, prefijo: '', etiqueta: 'días por semana' }, // lunes a sábado (sale de `horarios`)
 ] as const;
 
 /** Texto de "Por qué Academia NR" (encabezado principal). */

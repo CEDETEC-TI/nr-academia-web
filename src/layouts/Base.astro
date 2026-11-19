@@ -5,8 +5,8 @@ import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import { academia } from '../data/academia';
 import { url } from '../utils';
-interface Props { title: string; description?: string; waMensaje?: string; noindex?: boolean; app?: boolean }
-const { title, description = academia.descripcion, waMensaje, noindex = false, app = false } = Astro.props;
+interface Props { title: string; description?: string; waMensaje?: string; noindex?: boolean; app?: boolean; waTarde?: boolean }
+const { title, description = academia.descripcion, waMensaje, noindex = false, app = false, waTarde = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const og = new URL(url('og-image.png'), Astro.site).href;
 ---
@@ -41,7 +41,7 @@ const og = new URL(url('og-image.png'), Astro.site).href;
   <Header />
   <main id="contenido"><slot /></main>
   <Footer />
-  {!app && <WhatsAppFloat mensaje={waMensaje} />}
+  {!app && <WhatsAppFloat mensaje={waMensaje} tarde={waTarde} />}
   <script>import '../scripts/motion';</script>
 </body>
 </html>
