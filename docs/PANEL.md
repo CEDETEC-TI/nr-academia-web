@@ -34,7 +34,7 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 - **Con claves** (como está hoy en producción) → Nacho entra con email y contraseña y ve lo mismo en todos sus dispositivos. Solo entra una cuenta con **rol `nacho`**: las cuentas de alumnos ven "Este panel es de Nacho". La base lo refuerza con Row Level Security (cada tabla exige ser el dueño **y** tener rol `nacho`), así que aunque alguien llame a la API directo no ve nada.
 
 ## Cuentas y roles (Supabase)
-- Proyecto `academia-nr` (ref `yifcvcijwiafahrjtqbs`, São Paulo), organización "Academia NR" (plan gratuito).
+- Proyecto `academia-nr` (ref `qnrtorqseuvgrancjkgm`, São Paulo), organización "CEDETEC" de la cuenta de Supabase de administración (plan gratuito; migrado el 19/11/2026).
 - **Alta abierta:** cualquiera se registra en `/cuenta/` con mail y contraseña, con confirmación por mail. Todo usuario nuevo es `alumno` (tabla `perfiles`, trigger `crear_perfil`). Nadie puede cambiarse el rol desde la web: `perfiles` no tiene permisos de escritura para `anon` ni `authenticated`.
 - **Rol `nacho`:** solo se asigna creando el usuario con la API de administración y `app_metadata: { "rol": "nacho" }` (un alumno no puede escribir `app_metadata`). Ver `supabase/migrations/20261113000200_rol_desde_app_metadata.sql`.
 - **Ficha técnica y Cuaderno por usuario** (migración `20261119000000_fichas_y_cuaderno_simple.sql`): tablas `fichas` (una por usuario) y `cuaderno_notas` (fecha, "qué trabajé", "qué me costó", "qué practico para la próxima"). RLS: el alumno ve y edita solo lo suyo; el rol `nacho` **solo lee** todas las fichas y notas (no puede escribir ni borrar las de nadie). Sin sesión el Cuaderno sigue guardando en el navegador. Las tablas del cuaderno anterior (`cuaderno_entradas`, `cuaderno_ficha`) **no se borran**: quedan como archivo y la migración copia sus registros a `cuaderno_notas` (ids `mig-<colección>-<id>`, se puede correr de nuevo sin duplicar).
@@ -65,7 +65,7 @@ Supabase por defecto solo manda mails a miembros del equipo, con un tope muy baj
 1. Google Cloud Console → crear (o elegir) un proyecto → **APIs y servicios → Pantalla de consentimiento de OAuth**: tipo *Externo*, nombre "Academia NR", mail de soporte, y en "Dominios autorizados" agregar `supabase.co`. Publicar la app (de lo contrario solo entran los usuarios de prueba).
 2. **Credenciales → Crear credenciales → ID de cliente de OAuth → Aplicación web.**
    - *Orígenes autorizados de JavaScript:* `https://cedetec-ti.github.io` y `http://localhost:4321`.
-   - *URI de redireccionamiento autorizados:* `https://yifcvcijwiafahrjtqbs.supabase.co/auth/v1/callback` (es la URL de Supabase, **no** la de la web; sirve para producción y para local).
+   - *URI de redireccionamiento autorizados:* `https://qnrtorqseuvgrancjkgm.supabase.co/auth/v1/callback` (es la URL de Supabase, **no** la de la web; sirve para producción y para local).
 3. Supabase → proyecto `academia-nr` → **Authentication → Providers → Google**: activar, pegar *Client ID* y *Client Secret*, guardar.
 4. Supabase → **Authentication → URL Configuration**: Site URL `https://cedetec-ti.github.io/nr-academia-web/` y en Redirect URLs: `https://cedetec-ti.github.io/nr-academia-web/**` y `http://localhost:4321/nr-academia-web/**` (ya están en `config.toml`).
 5. Listo: el botón aparece solo en `/cuenta/`. El Client Secret no va en el repo. Ver el aviso sobre `supabase config push` en `config.toml`.
