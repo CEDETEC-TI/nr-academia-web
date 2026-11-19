@@ -6,6 +6,8 @@ import {
   type Alumno, type Clase, type Datos, type EstadoAsist, type Sesion,
 } from './modelo';
 import { crearStore, type Store } from './store';
+import { debeCambiarClave } from '../auth';
+import { url } from '../../utils';
 import { cargarFichas, cargarNotas, htmlFicha, htmlLista, type FichaFila } from './fichas';
 
 const TIPOS = tiposClase.map((c) => c.nombre);
@@ -539,6 +541,7 @@ async function iniciar() {
     const s = $('#salir'); s.hidden = false; s.onclick = async () => { await store.salir(); location.reload(); };
     // Solo Nacho (rol 'nacho') entra. Las cuentas de alumnos no ven nada acá (y la base tampoco se los permite).
     if ((await store.rol()) !== 'nacho') return mostrarSinAcceso(email);
+    if (await debeCambiarClave()) { location.href = url('cuenta/'); return; } // clave temporal: primero se cambia en /cuenta/
   }
   $('#login').hidden = true; $('#sinacceso').hidden = true; app.hidden = false;
   await recargar();

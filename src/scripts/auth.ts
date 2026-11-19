@@ -95,8 +95,18 @@ export async function recuperar(email: string): Promise<void> {
 }
 
 export async function nuevaClave(clave: string): Promise<void> {
-  const { error } = await (await cliente()).auth.updateUser({ password: clave });
+  // `cambiar_clave: false` apaga la marca de "clave temporal" (ver debeCambiarClave).
+  const { error } = await (await cliente()).auth.updateUser({ password: clave, data: { cambiar_clave: false } });
   if (error) throw error;
+}
+
+/** ¿Entró con una clave temporal? La marca `cambiar_clave` la pone la administración al crear o resetear la cuenta.
+ *  Supabase no puede obligar el cambio por sí solo: la web lo exige en /cuenta/ y /panel/ (es una guía, no una barrera de seguridad;
+ *  la seguridad real sigue siendo el rol y las reglas RLS). */
+export async function debeCambiarClave(): Promise<boolean> {
+  if (!hayNube) return false;
+  const { data } = await (await cliente()).auth.getSession();
+  return data.session?.user.user_metadata?.cambiar_clave === true;
 }
 
 export async function salir(): Promise<void> {
