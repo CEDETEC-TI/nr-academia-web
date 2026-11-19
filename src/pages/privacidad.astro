@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { academia, waLink } from '../data/academia';
+import { url } from '../utils';
+---
+<Base title="Privacidad · Academia NR" description="Qué datos guarda Academia NR cuando creás tu cuenta y cómo se usan.">
+  <section class="bg-crema px-[var(--gutter)] pb-20 pt-32 text-tinta">
+    <div class="wrap max-w-3xl">
+      <h1 class="display h-lg">Privacidad</h1>
+      <p class="lede mt-5">Corto y claro: qué guardamos cuando usás tu cuenta de Academia NR y para qué.</p>
+
+      <div class="mt-10 space-y-8">
+        <div>
+          <h2 class="display text-3xl">Qué datos guardamos</h2>
+          <ul class="mt-3 list-disc space-y-1 pl-5">
+            <li>Tu mail, para que puedas entrar a tu cuenta. Si entrás con Google, solo recibimos tu mail y tu nombre.</li>
+            <li>Lo que vos cargás en tu ficha técnica (nivel, mano hábil, objetivos, cuidados y disponibilidad).</li>
+            <li>Las notas de tu Cuaderno de Pádel.</li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="display text-3xl">Para qué se usan</h2>
+          <p class="mt-3">Solo para que {academia.profe} prepare tus clases y siga tu progreso. No se venden ni se comparten con nadie, y no se usan para publicidad.</p>
+        </div>
+        <div>
+          <h2 class="display text-3xl">Quién los ve</h2>
+          <p class="mt-3">Vos y {academia.profe}. Los datos se guardan en Supabase (un servicio de bases de datos) con reglas de acceso: cada alumno ve solo lo suyo.</p>
+        </div>
+        <div>
+          <h2 class="display text-3xl">Si querés borrarlos</h2>
+          <p class="mt-3">Escribinos por <a class="underline underline-offset-4" href={waLink('Hola Nacho! Quiero borrar mi cuenta de la web.')} target="_blank" rel="noopener">WhatsApp</a> y borramos tu cuenta con todos sus datos.</p>
+        </div>
+      </div>
+
+      <a href={url()} class="btn mt-12">Volver al inicio</a>
+    </div>
+  </section>
+</Base>
