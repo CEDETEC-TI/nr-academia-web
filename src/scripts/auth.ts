@@ -54,6 +54,8 @@ export function mensajeError(e: unknown): string {
   if (m.includes('rate limit') || m.includes('too many') || m.includes('security purposes')) return 'Hiciste muchos intentos seguidos. Esperá un minuto y probá de nuevo.';
   if (m.includes('valid email') || m.includes('invalid email')) return 'Revisá el mail: no parece válido.';
   if (m.includes('not authorized')) return 'Todavía no podemos mandar mails de confirmación a cualquier dirección. Escribinos por WhatsApp y te ayudamos.';
+  if (m.includes('provider is not enabled') || m.includes('unsupported provider')) return 'El ingreso con Google todavía no está activado.';
+  if (m.includes('access_denied')) return 'Cancelaste el ingreso con Google.';
   if (m.includes('failed to fetch') || m.includes('network')) return 'No hay conexión. Probá de nuevo en un rato.';
   return 'No se pudo completar. Probá de nuevo.';
 }
@@ -69,6 +71,21 @@ export async function entrar(email: string, clave: string): Promise<void> {
 /** Crea la cuenta (siempre como 'alumno'). Supabase manda el mail de confirmación. */
 export async function registrar(email: string, clave: string): Promise<void> {
   const { error } = await (await cliente()).auth.signUp({ email, password: clave, options: { emailRedirectTo: aCuenta() } });
+  if (error) throw error;
+}
+
+/** ¿Está activado el proveedor Google en Supabase? Se lee de los ajustes públicos de Auth: si no, el botón no se muestra. */
+export async function googleActivo(): Promise<boolean> {
+  if (!hayNube) return false;
+  try {
+    const r = await fetch(`${URL_SB}/auth/v1/settings`, { headers: { apikey: KEY_SB! } });
+    return r.ok && Boolean((await r.json())?.external?.google);
+  } catch { return false; }
+}
+
+/** Entra o crea la cuenta con Google (OAuth). Vuelve a /cuenta/ ya con sesión. Quien se crea así queda como 'alumno' (trigger crear_perfil). */
+export async function entrarConGoogle(): Promise<void> {
+  const { error } = await (await cliente()).auth.signInWithOAuth({ provider: 'google', options: { redirectTo: aCuenta() } });
   if (error) throw error;
 }
 

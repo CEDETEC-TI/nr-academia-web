@@ -1,4 +1,4 @@
-// Prueba contra la base REAL de Supabase: cuentas, roles, reglas de acceso (RLS) y Cuaderno por usuario.
+// Prueba contra la base REAL de Supabase: cuentas, roles, reglas de acceso (RLS) y Ficha y Cuaderno por usuario.
 // Uso: compilar con las claves reales (.env), `npm run preview`, y
 //   NACHO_EMAIL=... node tests/cuenta.mjs      (la clave temporal de Nacho se lee de ~/.academia-nr-nacho-temp.txt)
 // Crea un alumno de prueba (qa-…@example.com) y lo borra al terminar, con todo lo suyo.
@@ -24,7 +24,8 @@ try {
   // ── Reglas de acceso con el cliente público, igual que la web ──
   const nuevo = () => createClient(URL_SB, ANON, { auth: { persistSession: false } });
   const anon = nuevo();
-  ok(((await anon.from('cuaderno_entradas').select('*')).data ?? []).length === 0, 'sin sesión no se lee ningún cuaderno');
+  ok(((await anon.from('cuaderno_notas').select('*')).data ?? []).length === 0, 'sin sesión no se lee ningún cuaderno');
+  ok(((await anon.from('fichas').select('*')).data ?? []).length === 0, 'sin sesión no se lee ninguna ficha');
   ok(((await anon.from('alumnos').select('*')).data ?? []).length === 0, 'sin sesión no se leen alumnos del panel');
   ok(!!(await anon.from('alumnos').insert({ nombre: 'x' })).error, 'sin sesión no se puede escribir en el panel');
 
@@ -34,12 +35,20 @@ try {
   await al.from('perfiles').update({ rol: 'nacho' }).eq('user_id', uid);
   ok((await api('GET', `/rest/v1/perfiles?user_id=eq.${uid}&select=rol`)).data?.[0]?.rol === 'alumno', 'el alumno NO puede subirse el rol a "nacho"');
   ok(!!(await al.from('perfiles').insert({ user_id: uid, rol: 'nacho' })).error, 'el alumno NO puede crear su propio perfil');
-  ok(!(await al.from('cuaderno_entradas').insert({ coleccion: 'partidos', id: 'rls1', data: { companero: 'QA' } })).error, 'el alumno guarda en su cuaderno');
-  ok(!!(await al.from('cuaderno_entradas').insert({ owner: '00000000-0000-0000-0000-000000000000', coleccion: 'partidos', id: 'rls2', data: {} })).error, 'el alumno NO puede escribir en el cuaderno de otro usuario');
+  const OTRO = '00000000-0000-0000-0000-000000000000';
+  ok(!(await al.from('cuaderno_notas').insert({ id: 'rls1', fecha: '2026-11-19', trabaje: 'QA' })).error, 'el alumno guarda en su cuaderno');
+  ok(!!(await al.from('cuaderno_notas').insert({ owner: OTRO, id: 'rls2', fecha: '2026-11-19' })).error, 'el alumno NO puede escribir en el cuaderno de otro usuario');
+  ok(!(await al.from('fichas').insert({ nombre: 'Alumno QA', nivel: 'intermedio', mano: 'derecha', lado: 'reves', golpes: ['Bandeja'] })).error, 'el alumno crea su ficha');
+  ok(!!(await al.from('fichas').insert({ owner: OTRO, nombre: 'x' })).error, 'el alumno NO puede crear la ficha de otro');
+  ok(!!(await al.from('fichas').update({ nivel: 'experto' }).eq('owner', uid)).error, 'la ficha rechaza un nivel inválido');
+  ok(((await al.from('fichas').select('*')).data ?? []).length === 1, 'el alumno ve solo su ficha');
 
   const na = nuevo(); ok(!(await na.auth.signInWithPassword({ email: N.email, password: N.clave })).error, 'Nacho entra con su clave temporal');
   ok((await na.from('perfiles').select('rol')).data?.[0]?.rol === 'nacho', 'Nacho tiene rol "nacho"');
-  ok(((await na.from('cuaderno_entradas').select('*')).data ?? []).length === 0, 'Nacho NO ve el cuaderno del alumno');
+  ok(((await na.from('fichas').select('*').eq('owner', uid)).data ?? []).length === 1, 'Nacho SÍ lee la ficha del alumno');
+  ok(((await na.from('cuaderno_notas').select('*').eq('owner', uid)).data ?? []).length === 1, 'Nacho SÍ lee las entradas del cuaderno del alumno');
+  ok(((await na.from('fichas').update({ nombre: 'hack' }).eq('owner', uid).select()).data ?? []).length === 0, 'Nacho NO puede editar la ficha del alumno');
+  ok(((await na.from('cuaderno_notas').delete().eq('owner', uid).select()).data ?? []).length === 0, 'Nacho NO puede borrar entradas del alumno');
   const crea = await na.from('alumnos').insert({ nombre: 'QA rol nacho' }).select('id').single();
   ok(!crea.error, 'Nacho SÍ puede crear alumnos en el panel');
   if (crea.data) await na.from('alumnos').delete().eq('id', crea.data.id);
@@ -50,17 +59,16 @@ try {
   const nuevaPagina = async (ctx) => { const p = await ctx.newPage(); p.on('pageerror', (e) => errs.push(String(e))); p.on('console', (x) => x.type() === 'error' && errs.push(x.text())); return p; };
   const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
   await ctx.addInitScript(() => {
-    if (!localStorage.getItem('padel-cuaderno-v1')) localStorage.setItem('padel-cuaderno-v1', JSON.stringify({ partidos: [
-      { id: 'qa-a1', fecha: '2026-11-01', tipo: 'Amistoso', companero: 'Compañero QA', rivales: 'Rival QA', resultado: '6-4 6-3', gano: 'Ganado', creado: 1 },
-      { id: 'qa-a2', fecha: '2026-11-03', tipo: 'Liga', companero: 'Otro QA', rivales: 'Rival 2', resultado: '3-6 4-6', gano: 'Perdido', creado: 2 }],
-    torneos: [], entrenos: [], fisico: [], mental: [], ficha: { nombre: 'Alumno QA', posicion: 'Revés' } }));
+    if (!localStorage.getItem('nr-cuaderno-v2')) localStorage.setItem('nr-cuaderno-v2', JSON.stringify([
+      { id: 'qa-a1', fecha: '2026-11-01', trabaje: 'Bandeja QA', costo: 'Víbora', proxima: 'Remate' },
+      { id: 'qa-a2', fecha: '2026-11-03', trabaje: 'Globo QA', costo: '', proxima: '' }]));
   });
   const p = await nuevaPagina(ctx);
 
   // Sin sesión: el cuaderno funciona y ofrece entrar
   await p.goto(B + 'cuaderno/', { waitUntil: 'networkidle' });
-  ok(/Sin cuenta/.test(await p.textContent('#nube')), 'cuaderno sin sesión: avisa que guarda en el navegador y ofrece cuenta');
-  ok(/navegador/.test(await p.textContent('#status')), 'cuaderno sin sesión: estado "guardado en este navegador"');
+  ok(/entrás con tu cuenta/.test(await p.textContent('#c-nube')), 'cuaderno sin sesión: ofrece cuenta');
+  ok(/navegador/.test(await p.textContent('#c-estado')), 'cuaderno sin sesión: estado "guardado en este navegador"');
   await p.goto(B + 'panel/', { waitUntil: 'networkidle' });
   ok(await p.isVisible('#login'), 'panel sin sesión: pide login');
   ok(await p.isHidden('#panel'), 'panel sin sesión: no muestra datos');
@@ -88,27 +96,24 @@ try {
 
   // Cuaderno con sesión: subir lo del navegador
   await p.goto(B + 'cuaderno/', { waitUntil: 'networkidle' });
-  await p.waitForSelector('#subir');
-  ok(/2 registros/.test(await p.textContent('#nube')), 'cuaderno con sesión: ofrece subir los 2 registros del navegador');
-  ok(/tu cuenta/.test(await p.textContent('#status')), 'cuaderno con sesión: estado "guardado en tu cuenta"');
-  await p.click('#subir'); await p.waitForFunction(() => document.getElementById('nube').hidden);
-  const filas = (await api('GET', `/rest/v1/cuaderno_entradas?owner=eq.${uid}&select=id,coleccion`)).data;
-  ok(filas.some((f) => f.id === 'qa-a1') && filas.some((f) => f.id === 'qa-a2'), 'los registros del navegador quedaron en la base, a nombre del alumno');
-  ok((await api('GET', `/rest/v1/cuaderno_ficha?owner=eq.${uid}&select=data`)).data?.[0]?.data?.nombre === 'Alumno QA', 'la ficha también se subió');
+  await p.waitForSelector('#c-subir');
+  ok(/2 entradas/.test(await p.textContent('#c-nube')), 'cuaderno con sesión: ofrece subir las 2 entradas del navegador');
+  ok(/tu cuenta/.test(await p.textContent('#c-estado')), 'cuaderno con sesión: estado "guardado en tu cuenta"');
+  await p.click('#c-subir'); await p.waitForFunction(() => document.getElementById('c-nube').hidden);
+  const filas = (await api('GET', `/rest/v1/cuaderno_notas?owner=eq.${uid}&select=id`)).data;
+  ok(filas.some((f) => f.id === 'qa-a1') && filas.some((f) => f.id === 'qa-a2'), 'las entradas del navegador quedaron en la base, a nombre del alumno');
   // Otro dispositivo (contexto limpio): inicia sesión y ve lo mismo
   const ctx2 = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const p2 = await nuevaPagina(ctx2);
   await p2.goto(B + 'cuenta/', { waitUntil: 'networkidle' });
   await p2.fill('#f-entrar input[name=email]', qa.email); await p2.fill('#f-entrar input[name=clave]', qa.clave);
   await p2.click('#f-entrar button[type=submit]'); await p2.waitForSelector('#c-dentro:not([hidden])');
-  await p2.goto(B + 'cuaderno/#historial', { waitUntil: 'networkidle' });
+  await p2.goto(B + 'cuaderno/', { waitUntil: 'networkidle' });
   await p2.waitForTimeout(500);
-  ok(/Compañero QA/.test(await p2.textContent('#view')), 'otro dispositivo: el cuaderno trae los partidos de la nube');
-  ok(await p2.isHidden('#nube'), 'otro dispositivo: sin nada para subir, no molesta');
-  // Guardar y borrar desde la interfaz
-  await p2.goto(B + 'cuaderno/#ficha', { waitUntil: 'networkidle' });
-  ok(/Alumno QA/.test(await p2.textContent('#view')), 'otro dispositivo: la ficha viene de la nube');
-  await p2.click('#tabs a[href="#partidos"]'); await p2.waitForTimeout(300);
+  ok(/Bandeja QA/.test(await p2.textContent('#c-lista')), 'otro dispositivo: el cuaderno trae las entradas de la nube');
+  ok(await p2.isHidden('#c-nube'), 'otro dispositivo: sin nada para subir, no molesta');
+  await p2.goto(B + 'cuenta/ficha/', { waitUntil: 'networkidle' }); await p2.waitForTimeout(500);
+  ok(await p2.inputValue('#f-form input[name=nombre]') === 'Alumno QA', 'otro dispositivo: la ficha viene de la nube');
   // salir
   await p.goto(B + 'cuenta/', { waitUntil: 'networkidle' }); await p.click('#b-salir');
   await p.waitForSelector('#c-entrada:not([hidden])');

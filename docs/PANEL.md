@@ -16,6 +16,7 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 ## Pantallas
 - **Hoy:** las clases del día con sus alumnos y tres botones por alumno (Vino · Faltó · Avisó). "Todos vinieron" marca a los pendientes. Se cambia de día con las flechas o el selector de fecha.
 - **Semana:** la grilla de lunes a viernes (8–12 y 14–20, salen de `horarios.franjas`). Cada horario dice quién va y "2/4", o "Libre". Tocar un horario libre crea una clase; tocar una clase la abre. **Buscar horario libre** responde "¿tenés lugar el martes a tal hora?": lista cada horario del día con "libre las próximas 4 semanas" o "Grupales 2/4, hay 2 lugares".
+- **Fichas** (solo lectura): los alumnos con cuenta que completaron su ficha, con buscador y filtro por nivel. Al abrir uno se ve su ficha y sus últimas 10 entradas del cuaderno. Es distinto de **Alumnos**, que es la gestión de clases y cobros de Nacho.
 - **Alumnos:** lista con buscador, WhatsApp y lo que debe cada uno. La ficha tiene nombre, WhatsApp, nivel, notas, sus clases y su cuenta. Un alumno nuevo también se crea solo al escribir su nombre en una clase.
 - **Cobros:** cuánto hay para cobrar, quién debe, botón "Avisar" por WhatsApp con el mensaje armado y registro de pagos.
 
@@ -36,7 +37,8 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 - Proyecto `academia-nr` (ref `yifcvcijwiafahrjtqbs`, São Paulo), organización "Academia NR" (plan gratuito).
 - **Alta abierta:** cualquiera se registra en `/cuenta/` con mail y contraseña, con confirmación por mail. Todo usuario nuevo es `alumno` (tabla `perfiles`, trigger `crear_perfil`). Nadie puede cambiarse el rol desde la web: `perfiles` no tiene permisos de escritura para `anon` ni `authenticated`.
 - **Rol `nacho`:** solo se asigna creando el usuario con la API de administración y `app_metadata: { "rol": "nacho" }` (un alumno no puede escribir `app_metadata`). Ver `supabase/migrations/20261113000200_rol_desde_app_metadata.sql`.
-- **Cuaderno por usuario:** tablas `cuaderno_entradas` y `cuaderno_ficha` con RLS por dueño. Sin sesión el Cuaderno sigue guardando en el navegador.
+- **Ficha técnica y Cuaderno por usuario** (migración `20261119000000_fichas_y_cuaderno_simple.sql`): tablas `fichas` (una por usuario) y `cuaderno_notas` (fecha, "qué trabajé", "qué me costó", "qué practico para la próxima"). RLS: el alumno ve y edita solo lo suyo; el rol `nacho` **solo lee** todas las fichas y notas (no puede escribir ni borrar las de nadie). Sin sesión el Cuaderno sigue guardando en el navegador. Las tablas del cuaderno anterior (`cuaderno_entradas`, `cuaderno_ficha`) **no se borran**: quedan como archivo y la migración copia sus registros a `cuaderno_notas` (ids `mig-<colección>-<id>`, se puede correr de nuevo sin duplicar).
+- **Ingreso con Google:** `/cuenta/` muestra "Continuar con Google" solo si el proveedor está activo en Supabase (lo lee de `/auth/v1/settings`). Quien entra así queda como `alumno` igual que por mail (trigger `crear_perfil`: solo `app_metadata.rol = 'nacho'` da el rol de Nacho, y Google nunca lo escribe).
 - **Menú:** "Entrar" / "Mi cuenta" para todos y "Panel" solo si la cuenta es de Nacho (es una pista visual guardada en `localStorage`; el acceso real lo decide la base). `/panel/` y `/cuenta/` siguen en `noindex` y fuera del sitemap: son privadas.
 
 ## Cómo está conectado (todo por CLI, ya hecho)
@@ -50,7 +52,7 @@ Cada clase a la que VINO se cobra ($10.000, `precios.claseSuelta`) · los Pagos 
 ## Pruebas
 - `npm run test:panel` → modo demo (compilar con claves vacías).
 - Contra la base real: `PANEL_REAL=1 LIMPIAR_PANEL=si NACHO_EMAIL=… npm run test:panel` (borra los datos del panel al empezar y al terminar: solo mientras la base sea de prueba).
-- `NACHO_EMAIL=… node tests/cuenta.mjs` → cuentas, roles, reglas de acceso y Cuaderno por usuario (crea y borra un alumno de prueba).
+- `NACHO_EMAIL=… node tests/cuenta.mjs` → cuentas, roles, reglas de acceso, fichas y Cuaderno por usuario (crea y borra un alumno de prueba).
 
 ## Mails de confirmación y de recuperar contraseña (SMTP)
 Supabase por defecto solo manda mails a miembros del equipo, con un tope muy bajo. Por eso se usa el **SMTP de Gmail** (`smtp.gmail.com`, puerto 465, remitente visible "Academia NR"):
@@ -58,3 +60,12 @@ Supabase por defecto solo manda mails a miembros del equipo, con un tope muy baj
 - **Ni la cuenta de Gmail ni su contraseña de aplicación están en el repo.** Se aplican con `SMTP_USER=cuenta@gmail.com bash supabase/configurar-smtp.sh`, que pide la contraseña de aplicación por la terminal (sin mostrarla) y hace `supabase config push`. La contraseña de aplicación se genera en myaccount.google.com/apppasswords (la cuenta necesita la verificación en 2 pasos).
 - Gmail permite unos 500 mails por día. Hoy se envía desde una cuenta de Gmail de desarrollo; cuando se quiera que el remitente sea `nracademia121@gmail.com`, se corre el mismo script con esa cuenta.
 - Nota: el plan gratis de Supabase pausa el proyecto tras 7 días sin uso.
+
+## Activar el ingreso con Google (una sola vez)
+1. Google Cloud Console → crear (o elegir) un proyecto → **APIs y servicios → Pantalla de consentimiento de OAuth**: tipo *Externo*, nombre "Academia NR", mail de soporte, y en "Dominios autorizados" agregar `supabase.co`. Publicar la app (de lo contrario solo entran los usuarios de prueba).
+2. **Credenciales → Crear credenciales → ID de cliente de OAuth → Aplicación web.**
+   - *Orígenes autorizados de JavaScript:* `https://cedetec-ti.github.io` y `http://localhost:4321`.
+   - *URI de redireccionamiento autorizados:* `https://yifcvcijwiafahrjtqbs.supabase.co/auth/v1/callback` (es la URL de Supabase, **no** la de la web; sirve para producción y para local).
+3. Supabase → proyecto `academia-nr` → **Authentication → Providers → Google**: activar, pegar *Client ID* y *Client Secret*, guardar.
+4. Supabase → **Authentication → URL Configuration**: Site URL `https://cedetec-ti.github.io/nr-academia-web/` y en Redirect URLs: `https://cedetec-ti.github.io/nr-academia-web/**` y `http://localhost:4321/nr-academia-web/**` (ya están en `config.toml`).
+5. Listo: el botón aparece solo en `/cuenta/`. El Client Secret no va en el repo. Ver el aviso sobre `supabase config push` en `config.toml`.
