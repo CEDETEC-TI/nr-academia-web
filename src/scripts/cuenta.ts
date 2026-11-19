@@ -1,5 +1,5 @@
 // Página /cuenta/: entrar, crear cuenta, recuperar y cambiar contraseña, cerrar sesión.
-import { cliente, entrar, entrarConGoogle, googleActivo, hayNube, mensajeError, nuevaClave, recuperar, registrar, rol, salir, sesion } from './auth';
+import { cliente, debeCambiarClave, entrar, entrarConGoogle, googleActivo, hayNube, mensajeError, nuevaClave, recuperar, registrar, rol, salir, sesion } from './auth';
 
 // El hash trae el aviso de los enlaces de mail; se lee antes de crear el cliente (que lo procesa y lo borra).
 const hash = location.hash;
@@ -36,6 +36,7 @@ async function hacer(f: HTMLFormElement, fn: () => Promise<void>) {
 
 async function pintarDentro() {
   const s = await sesion(); if (!s) return pintarEntrada();
+  if (await debeCambiarClave()) { mostrar('nueva'); aviso('Tu contraseña es temporal. Elegí una nueva para seguir.', 'ok'); return; }
   const r = await rol();
   $('#c-mail').textContent = s.email;
   $('#c-rol').textContent = r === 'nacho' ? ' (cuenta de Nacho)' : '';
