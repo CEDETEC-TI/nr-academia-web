@@ -1,4 +1,4 @@
-// Panel de Nacho (/panel/): Hoy, Semana, Alumnos y Cobros.
+// Panel de Nacho (/panel/): Hoy, Semana, Alumnos, Cobros y Fichas (fichas técnicas de los alumnos con cuenta, solo lectura).
 import { clases as tiposClase, panel as cfg } from '../../data/academia';
 import {
   DIAS_SEMANA, HORAS, NOMBRE_DIA, claseEn, cuenta, diaSemana, dinero, fechasEnRango, finDeMes, horaTxt, inscripcionesVigentes, iso, lunesDe,
@@ -6,6 +6,7 @@ import {
   type Alumno, type Clase, type Datos, type EstadoAsist, type Sesion,
 } from './modelo';
 import { crearStore, type Store } from './store';
+import { cargarFichas, cargarNotas, htmlFicha, htmlLista, type FichaFila } from './fichas';
 
 const TIPOS = tiposClase.map((c) => c.nombre);
 const TIPO_DEF = TIPOS.find((n) => /grupal/i.test(n)) ?? TIPOS[0];
@@ -23,7 +24,7 @@ const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySe
 const app = $('#panel');
 const hoja = $<HTMLDialogElement>('#hoja');
 
-type Vista = 'hoy' | 'semana' | 'alumnos' | 'cobros';
+type Vista = 'hoy' | 'semana' | 'alumnos' | 'cobros' | 'fichas';
 let store: Store;
 let datos: Datos = vacio();
 let vista: Vista = 'hoy';
@@ -32,6 +33,10 @@ let lunes = lunesDe(hoyIso()); // semana que se ve en "Semana"
 let diaSel = Math.min(5, diaSemana(hoyIso()));
 let busca = '';
 let verInactivos = false;
+let fichas: FichaFila[] | null = null; // se cargan al abrir la pestaña Fichas
+let fichasError = '';
+let buscaF = '';
+let nivelF = '';
 
 function aviso(msg: string) {
   const t = $('#aviso'); t.textContent = msg; t.hidden = false;
@@ -53,9 +58,9 @@ const dosToques = (b: HTMLElement, texto: string) => { if (b.dataset.seguro) ret
 
 // ───────────────────────────── Pantallas ─────────────────────────────
 function render() {
-  const tabs = ([['hoy', 'Hoy'], ['semana', 'Semana'], ['alumnos', 'Alumnos'], ['cobros', 'Cobros']] as const)
+  const tabs = ([['hoy', 'Hoy'], ['semana', 'Semana'], ['alumnos', 'Alumnos'], ['cobros', 'Cobros'], ['fichas', 'Fichas']] as const)
     .map(([k, n]) => `<button class="tab" data-a="vista" data-v="${k}" aria-pressed="${vista === k}">${n}</button>`).join('');
-  const cuerpo = { hoy: vistaHoy, semana: vistaSemana, alumnos: vistaAlumnos, cobros: vistaCobros }[vista]();
+  const cuerpo = { hoy: vistaHoy, semana: vistaSemana, alumnos: vistaAlumnos, cobros: vistaCobros, fichas: vistaFichas }[vista]();
   app.innerHTML = `<nav class="tabs" aria-label="Secciones">${tabs}</nav>${cuerpo}`;
   const seed = document.querySelector<HTMLElement>('#seed');
   if (seed) seed.hidden = datos.alumnos.length > 0 || datos.clases.length > 0;
@@ -153,6 +158,25 @@ function vistaAlumnos() {
     <div class="filtros"><input id="busca" type="search" placeholder="Buscar alumno" value="${esc(busca)}" aria-label="Buscar alumno" autocomplete="off">
       <label class="check"><input type="checkbox" id="inact"${verInactivos ? ' checked' : ''}> <span>Ver inactivos</span></label></div>
     ${lista.length ? `<ul class="alus">${filas}</ul>` : `<p class="vacio">${datos.alumnos.length ? 'No hay alumnos con ese nombre.' : 'Todavía no hay alumnos. Se cargan acá o al anotarlos en una clase.'}</p>`}`;
+}
+
+function vistaFichas() {
+  if (store.modo === 'demo') return '<p class="vacio">Las fichas de los alumnos se ven cuando el panel está conectado a la base de datos.</p>';
+  if (fichasError) return `<p class="vacio">${esc(fichasError)}</p>`;
+  if (!fichas) return '<p class="vacio">Cargando fichas…</p>';
+  return htmlLista(fichas, buscaF, nivelF);
+}
+async function cargarVistaFichas() {
+  if (store.modo === 'demo' || fichas) return;
+  try { fichas = await cargarFichas(); fichasError = ''; } catch (e) { fichasError = 'No se pudieron leer las fichas: ' + (e as Error).message; }
+  if (vista === 'fichas') render();
+}
+async function abrirFicha(owner: string) {
+  const f = fichas?.find((x) => x.owner === owner); if (!f) return;
+  mostrar(htmlFicha(f, []).replace('<p class="vacio">Todavía no anotó nada en el cuaderno.</p>', '<p class="vacio">Cargando…</p>'));
+  let notas: Awaited<ReturnType<typeof cargarNotas>> | null = null;
+  try { notas = await cargarNotas(owner); } catch { notas = null; }
+  mostrar(htmlFicha(f, notas));
 }
 
 function vistaCobros() {
@@ -441,7 +465,9 @@ app.addEventListener('click', (ev) => {
   if (!el) return;
   const d = el.dataset;
   switch (d.a) {
-    case 'vista': vista = d.v as Vista; render(); break;
+    case 'vista': vista = d.v as Vista; render(); if (vista === 'fichas') void cargarVistaFichas(); break;
+    case 'ficha': void abrirFicha(d.o!); break;
+    case 'f-nivel': nivelF = d.n ?? ''; render(); break;
     case 'dia-prev': fechaSel = sumarDias(fechaSel, -1); render(); break;
     case 'dia-next': fechaSel = sumarDias(fechaSel, 1); render(); break;
     case 'dia-hoy': fechaSel = hoyIso(); render(); break;
@@ -468,6 +494,7 @@ app.addEventListener('input', (ev) => {
   const el = ev.target as HTMLInputElement;
   if (el.id === 'busca') { busca = el.value; const pos = el.selectionStart; render(); const n = $<HTMLInputElement>('#busca'); n.focus(); n.setSelectionRange(pos, pos); }
   else if (el.id === 'inact') { verInactivos = el.checked; render(); }
+  else if (el.id === 'busca-f') { buscaF = el.value; const pos = el.selectionStart; render(); const n = $<HTMLInputElement>('#busca-f'); n.focus(); n.setSelectionRange(pos, pos); }
 });
 app.addEventListener('change', (ev) => {
   const el = ev.target as HTMLInputElement;

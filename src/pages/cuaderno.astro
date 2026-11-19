@@ -1,31 +1,63 @@
 ---
 import Base from '../layouts/Base.astro';
-import '../styles/cuaderno.css';
+import { url } from '../utils';
 ---
-<Base title="Cuaderno de Pádel · Academia NR" description="Registrá tus partidos, torneos, entrenamientos, físico y mental, y mirá tu progreso. Se guarda en tu navegador o, si entrás con tu cuenta, en la nube." app>
-<div id="cuaderno">
-<header class="top">
-  <div class="wrap">
-    <div class="brand">
-      <h1>Cuaderno<br> de Pádel</h1>
-      <span class="sub">Tu progreso en pádel</span>
-    </div>
-    <nav class="tabs" id="tabs">
-      <a href="#inicio">Inicio</a>
-      <a href="#partidos">Partidos</a>
-      <a href="#torneos">Torneos</a>
-      <a href="#entrenos">Entrenamientos</a>
-      <a href="#fisico">Físico</a>
-      <a href="#mental">Mental</a>
-      <a href="#historial">Historial</a>
-      <a href="#ficha">Ficha</a>
-    </nav>
-    <span class="status" id="status">Conectando…</span>
-  </div>
-</header>
+<Base title="Cuaderno de Pádel · Academia NR" description="Anotá después de cada entrenamiento qué trabajaste, qué te costó y qué practicás para la próxima. Se guarda en tu navegador o, si entrás con tu cuenta, en la nube." app>
+  <section id="cuaderno" class="cuaderno">
+    <div class="cwrap">
+      <h1 class="display h-lg">Cuaderno de pádel</h1>
+      <p class="c-lede">Después de cada entrenamiento, anotá tres cosas. En un mes vas a ver cuánto avanzaste.</p>
+      <p id="c-estado" class="c-estado" role="status">Cargando…</p>
+      <div id="c-nube" class="c-aviso" hidden></div>
 
-<div class="cdn-main"><div class="wrap" id="view"></div><div class="nube" id="nube" hidden></div></div>
-<div class="toast" id="toast" hidden></div>
-</div>
-<script>import '../scripts/cuaderno.js';</script>
+      <form id="c-form" class="c-form" novalidate>
+        <h2 id="c-form-titulo" class="display h-md">Nueva entrada</h2>
+        <label class="c-campo"><span>Fecha</span><input name="fecha" type="date" required /></label>
+        <label class="c-campo"><span>Qué trabajé hoy</span><textarea name="trabaje" rows="3" maxlength="2000"></textarea></label>
+        <label class="c-campo"><span>Qué me costó</span><textarea name="costo" rows="3" maxlength="2000"></textarea></label>
+        <label class="c-campo"><span>Qué practico para la próxima</span><textarea name="proxima" rows="3" maxlength="2000"></textarea></label>
+        <div class="c-fila">
+          <button class="c-btn" type="submit">Guardar entrada</button>
+          <button class="c-btn c-sec" type="button" id="c-cancelar" hidden>Cancelar</button>
+        </div>
+      </form>
+
+      <h2 class="display h-md c-sub">Mis entradas</h2>
+      <ul id="c-lista" class="c-lista"></ul>
+      <p id="c-vacio" class="c-lede" hidden>Todavía no anotaste nada. La primera entrada es la más difícil.</p>
+      <a class="c-link" href={url('cuenta/ficha/')}>Mi ficha técnica</a>
+    </div>
+    <div class="c-toast" id="c-toast" role="status" hidden></div>
+  </section>
+  <script>import '../scripts/cuaderno';</script>
 </Base>
+
+<style is:global>
+  .cuaderno { min-height: 100svh; padding: 7rem var(--gutter) 4rem; background: var(--color-crema); color: var(--color-tinta); }
+  .cuaderno .cwrap { max-width: 40rem; margin: 0 auto; display: grid; gap: 1.1rem; }
+  .cuaderno .c-lede { color: var(--color-tinta-suave); }
+  .cuaderno .c-estado { font-size: .85rem; color: var(--color-tinta-suave); }
+  .cuaderno .c-aviso { padding: .8rem 1rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+  .cuaderno .c-form { display: grid; gap: 1rem; padding: 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); }
+  .cuaderno .c-campo { display: grid; gap: .3rem; font-weight: 600; }
+  .cuaderno input[type='date'], .cuaderno textarea { font: inherit; font-size: 16px; font-weight: 400; padding: .8rem 1rem; border-radius: .9rem; background: var(--color-crema); border: 1.5px solid rgb(109 26 42 / .22); width: 100%; min-height: 2.75rem; }
+  .cuaderno textarea { resize: vertical; min-height: 5.5rem; }
+  .cuaderno input:focus-visible, .cuaderno textarea:focus-visible { outline: none; border-color: var(--color-bordo); }
+  .cuaderno .c-fila { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .cuaderno .c-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 1.4rem; border-radius: 999px; background: var(--color-bordo); color: var(--color-crema); font-weight: 700; touch-action: manipulation; transition: transform 160ms var(--ease-out-strong); }
+  .cuaderno .c-btn:active { transform: scale(.97); }
+  .cuaderno .c-btn:disabled { opacity: .6; }
+  .cuaderno .c-sec { background: transparent; color: var(--color-bordo); box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .35); }
+  .cuaderno .c-sub { margin-top: 1rem; }
+  .cuaderno .c-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+  .cuaderno .c-nota { padding: 1.1rem 1.25rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); display: grid; gap: .7rem; }
+  .cuaderno .c-fecha { font-family: var(--font-display); text-transform: uppercase; font-size: 1.35rem; letter-spacing: .02em; color: var(--color-bordo); }
+  .cuaderno .c-nota dt { font-size: .8rem; font-weight: 700; color: var(--color-tinta-suave); text-transform: uppercase; letter-spacing: .04em; }
+  .cuaderno .c-nota dd { margin: .15rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .cuaderno .c-nota dl { display: grid; gap: .7rem; margin: 0; }
+  .cuaderno .c-acc { display: flex; gap: .5rem; }
+  .cuaderno .c-acc button { min-height: 2.75rem; padding: 0 1rem; border-radius: 999px; font-weight: 600; color: var(--color-bordo); box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .25); }
+  .cuaderno .c-acc button[data-peligro] { background: var(--color-bordo); color: var(--color-crema); box-shadow: none; }
+  .cuaderno .c-link { justify-self: start; min-height: 2.75rem; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 3px; color: var(--color-bordo); font-weight: 600; }
+  .cuaderno .c-toast { position: fixed; left: 50%; bottom: 1.25rem; translate: -50% 0; padding: .7rem 1.2rem; border-radius: 999px; background: var(--color-tinta); color: var(--color-crema); font-weight: 600; max-width: calc(100% - 2rem); text-align: center; }
+</style>

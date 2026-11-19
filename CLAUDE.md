@@ -23,20 +23,22 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 14. Datos confirmados (19/11): **"Más de 30 alumnos"** y **4 canchas** (franja de números del inicio). Sábados de 8 a 12 hs.
 
 ## Cuaderno de Pádel (`/cuaderno/`)
-- App de seguimiento de pádel integrada como página propia. Lógica en `src/scripts/cuaderno.js` (vanilla JS del original), estilos en `src/styles/cuaderno.css` acotados a `#cuaderno` con los tokens NR. Documentación original en `docs/CUADERNO.md`.
-- Guarda en `localStorage` (`padel-cuaderno-v1`) si no hay sesión; con cuenta (`/cuenta/`) guarda en Supabase por usuario (RLS) y ofrece subir lo que había en el navegador. Cada persona ve solo lo suyo.
-- Es para **cualquier alumno** de NR: nada personalizado a un jugador. El plan semanal y el horario los carga cada alumno en la Ficha (`plan1`…`plan5`, `horario`).
-- Reglas: nunca escribir "drive" (usar "golpe de derecha" / "golpe de revés"); solo los entrenamientos cuentan como días entrenados.
+- **Versión simple** (19/11/2026): una entrada por día con fecha, "Qué trabajé hoy", "Qué me costó" y "Qué practico para la próxima". Nada más. Lógica en `src/scripts/cuaderno.ts`; documentación en `docs/CUADERNO.md`.
+- Sin sesión guarda en `localStorage` (`nr-cuaderno-v2`; convierte solo lo del cuaderno anterior `padel-cuaderno-v1` y no lo borra). Con cuenta guarda en Supabase (`cuaderno_notas`, RLS por dueño; Nacho solo lee). Las tablas viejas `cuaderno_entradas` y `cuaderno_ficha` quedan como archivo.
+- Es para **cualquier alumno** de NR. Reglas: nunca escribir "drive" (usar "golpe de derecha" / "golpe de revés").
 - La página usa `<Base app>`: header siempre sólido, sin Lenis y sin botón flotante de WhatsApp.
 
+## Ficha técnica (`/cuenta/ficha/`)
+- Una ficha por alumno (tabla `fichas`): nombre, edad, nivel (principiante / intermedio / avanzado), mano hábil, lado de la cancha (derecha / revés), objetivo, golpes a mejorar, lesiones o cuidados y disponibilidad. Lógica en `src/scripts/ficha.ts`. RLS: el alumno ve y edita la suya; Nacho solo lee todas.
+
 ## Panel de Nacho (`/panel/`)
-- Sistema privado de **clases grupales, alumnos, asistencia y cobros** (noindex; el enlace del menú aparece solo si la cuenta es de Nacho). Pantallas: Hoy, Semana, Alumnos, Cobros. Modelo y reglas en `docs/PANEL.md`.
+- Sistema privado de **clases grupales, alumnos, asistencia y cobros** (noindex; el enlace del menú aparece solo si la cuenta es de Nacho). Pantallas: Hoy, Semana, Alumnos, Cobros y Fichas (fichas técnicas y últimas entradas del cuaderno de los alumnos con cuenta, solo lectura; `src/scripts/panel/fichas.ts`). Modelo y reglas en `docs/PANEL.md`.
 - Modelo: Alumno ── Inscripción ── Clase (con cupo); Clase + fecha = Sesión con Asistencia; cada clase a la que vino se cobra (`precios.claseSuelta`, $10.000) y los pagos descuentan.
 - Solo entra la cuenta con rol `nacho`. Datos en Supabase con Row Level Security (`supabase/migrations/`, tablas del panel + `perfiles` + cuaderno); sin claves (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`) funciona en modo demo (localStorage). Reglas de negocio (precio, cupo, cobro de faltas) en `panel` de `academia.ts`.
 - Los horarios salen de `horarios.franjas`. Nunca usar ni commitear la `service_role` key. Conexión, roles y pruebas: `docs/PANEL.md`.
 
 ## Cuentas (`/cuenta/`)
-- Registro de alumnos con mail y contraseña (confirmación por mail), login, recuperar y cambiar contraseña. Lógica en `src/scripts/auth.ts` y `cuenta.ts`. Todo usuario nuevo es `alumno`; `nacho` solo lo asigna la API de administración. `/cuenta/` y `/panel/` son noindex.
+- Registro de alumnos con mail y contraseña (confirmación por mail) o con **Google** (el botón aparece solo si el proveedor está activo en Supabase; pasos en `docs/PANEL.md`), login, recuperar y cambiar contraseña. Lógica en `src/scripts/auth.ts` y `cuenta.ts`. Todo usuario nuevo es `alumno`; `nacho` solo lo asigna la API de administración. `/cuenta/` y `/panel/` son noindex.
 
 ## Comandos
 `npm run dev` · `npm run build` · `npm run preview` · `npm run test:e2e` · `npm run test:panel` · `node tests/cuenta.mjs` (base real) · `npm run lighthouse`
