@@ -34,7 +34,7 @@ El rojo de las canchas de Le Club vive en las fotos; la web no lo imita.
 ```
 HERO (100svh)            FRANJA            CLASES
 ┌──────────────────┐   ┌─────────────┐   ┌─────┬─────┐
-│ video + bordó    │   │ 33 │ 4 │ $0 │   │ Ind │ Gru │
+│ video + bordó    │   │+30 │ 4 │ $0 │   │ Ind │ Gru │
 │                  │   └─────────────┘   ├─────┼─────┤
 │ Título gigante   │                     │ Chi │ Com │
 │ [Reservá tu clase]                     └─────┴─────┘

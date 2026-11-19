@@ -71,7 +71,7 @@ const galeria = [
         <div data-reveal class="min-w-0">
           <dt class="order-2 mt-2 text-sm leading-tight opacity-90 sm:text-xl">{d.etiqueta}</dt>
           <dd class="display text-[clamp(1.9rem,8vw,6rem)] !leading-[0.95]">
-            {'valor' in d ? <>{d.prefijo}<span data-count={d.valor}>{d.valor}</span></> : d.texto}
+            {'valor' in d ? <>{d.prefijo && <span class="text-[.42em] tracking-wider">{d.prefijo}</span>}<span data-count={d.valor}>{d.valor}</span></> : d.texto}
           </dd>
         </div>
       ))}

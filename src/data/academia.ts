@@ -54,10 +54,10 @@ export const prueba = {
 export const horarios = {
   dias: 'Lunes a viernes',
   franjas: ['8 a 12 hs', '14 a 20 hs'], // mañana y tarde
-  finDeSemana: 'Sábados por la mañana.',
+  finDeSemana: 'Sábados de 8 a 12 hs.',
 };
 
-/** Los mismos horarios en formato de Google (schema.org). Sábado: la franja de la mañana (8 a 12), igual que lunes a viernes. */
+/** Los mismos horarios en formato de Google (schema.org). Tienen que coincidir con `horarios` de arriba. */
 export const horariosSchema = [
   { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '08:00', cierra: '12:00' },
   { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '14:00', cierra: '20:00' },
@@ -65,7 +65,7 @@ export const horariosSchema = [
 ];
 
 export const datos = [
-  { valor: 33, prefijo: '', etiqueta: 'alumnos' }, // confirmado por Guillermo (19/11)
+  { valor: 30, prefijo: 'Más de ', etiqueta: 'alumnos' }, // "Más de 30 alumnos" (decidido por Guillermo, 19/11)
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
   { texto: 'Gratis', etiqueta: 'clase de prueba' },
 ] as const;
@@ -78,7 +78,7 @@ export const porQue = {
 
 export const diferencial = [
   { titulo: 'Metodología y táctica', texto: 'No solo mejoramos tus golpes: te enseñamos a leer la dificultad de cada pelota para tomar siempre la decisión correcta en el partido.' },
-  { titulo: 'Disponibilidad', texto: 'Nacho está para vos de lunes a viernes, mañana y tarde, y sábados a la mañana, adaptándose a tus horarios para que no te quedes sin entrenar.' },
+  { titulo: 'Disponibilidad', texto: 'Nacho está para vos de lunes a viernes, mañana y tarde, y sábados de 8 a 12, adaptándose a tus horarios para que no te quedes sin entrenar.' },
   { titulo: 'Ganas', texto: 'Cada clase se prepara y se da con la misma energía, juegues como juegues. Entrenamientos dinámicos donde combinamos técnica, táctica y objetivos claros.' },
   { titulo: 'Responsabilidad', texto: 'Puntualidad, seguimiento constante y compromiso absoluto con tu progreso y evolución en la cancha.' },
   { titulo: 'Valores', texto: 'Respeto, esfuerzo y compañerismo dentro y fuera de la cancha. Formamos mejores jugadores y mejores personas.' },

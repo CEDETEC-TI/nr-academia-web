@@ -20,7 +20,7 @@ Stack: Astro + Tailwind CSS v4 + GSAP (ScrollTrigger) + Lenis. Deploy: GitHub Pa
 11. **Cancha:** no publicar el precio de la cancha ni decir que la cancha se paga (ni en textos, ni en FAQ, ni en datos estructurados). Lo habla Nacho en persona. Los textos de la clase de prueba salen de `prueba` en `academia.ts`.
 12. **Repo público:** nada de mails personales, claves ni tokens en archivos del repo (los usuarios del panel se nombran por rol, no por mail).
 13. Logo: `public/logo.svg` = `a-fino-cerca.svg`, tal cual, sobre pastilla crema.
-14. Datos confirmados (19/11): **33 alumnos** y **4 canchas** (franja de números del inicio).
+14. Datos confirmados (19/11): **"Más de 30 alumnos"** y **4 canchas** (franja de números del inicio). Sábados de 8 a 12 hs.
 
 ## Cuaderno de Pádel (`/cuaderno/`)
 - App de seguimiento de pádel integrada como página propia. Lógica en `src/scripts/cuaderno.js` (vanilla JS del original), estilos en `src/styles/cuaderno.css` acotados a `#cuaderno` con los tokens NR. Documentación original en `docs/CUADERNO.md`.
