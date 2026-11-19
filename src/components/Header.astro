@@ -16,13 +16,13 @@ const panel = { href: url('panel/'), t: 'Panel' };
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] text-crema transition-[background-color,color,box-shadow] duration-300">
   <div class="wrap-in flex h-16 items-center justify-between sm:h-20">
     <a href={url()} class="flex min-h-11 items-center gap-2.5" aria-label="Academia NR, inicio"><Logo height={48} /></a>
-    <nav aria-label="Principal" class="hidden items-center gap-8 md:flex">
+    <nav aria-label="Principal" class="hidden items-center gap-6 xl:gap-8 lg:flex">
       {links.map((l) => <a href={l.href} class="nav-link font-semibold">{l.t}</a>)}
-      <a href={panel.href} class="nav-link font-semibold max-lg:!hidden" data-nav="panel" hidden>{panel.t}</a>
-      <a href={cuenta.href} class="nav-link font-semibold max-lg:!hidden" data-nav="cuenta">{cuenta.t}</a>
+      <a href={panel.href} class="nav-link font-semibold" data-nav="panel" hidden>{panel.t}</a>
+      <a href={cuenta.href} class="nav-link font-semibold" data-nav="cuenta">{cuenta.t}</a>
       <a href={waLink()} class="btn btn-wa !min-h-11 !px-5" target="_blank" rel="noopener">Reservá tu clase</a>
     </nav>
-    <button id="menu-btn" class="grid size-11 place-items-center rounded-full md:hidden" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+    <button id="menu-btn" class="grid size-11 place-items-center rounded-full lg:hidden" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
       <span class="relative block h-3 w-6" aria-hidden="true"><span class="bar absolute left-0 top-0 h-0.5 w-6 bg-current"></span><span class="bar absolute bottom-0 left-0 h-0.5 w-6 bg-current"></span></span>
     </button>
   </div>

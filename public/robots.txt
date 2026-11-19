@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cedetec-ti.github.io/nr-academia-web/sitemap-index.xml

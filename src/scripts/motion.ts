@@ -34,7 +34,7 @@ function toggleMenu(open: boolean) {
 menuBtn.addEventListener('click', () => toggleMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
 menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => toggleMenu(false)));
 window.addEventListener('keydown', (e) => e.key === 'Escape' && toggleMenu(false));
-window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => e.matches && toggleMenu(false));
+window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => e.matches && toggleMenu(false)); // misma medida que `lg` del menú
 
 /* ── Scroll suave (Lenis) sólo si el usuario acepta movimiento ── */
 if (!reduced && !isApp) {

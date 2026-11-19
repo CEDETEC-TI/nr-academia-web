@@ -21,6 +21,7 @@ export const academia = {
 
 export const contacto = {
   whatsapp: '5493704610720',
+  telefono: '+54 370 461 0720', // para Google (datos estructurados); el botón de WhatsApp usa `whatsapp`
   direccion: 'Freitas 768, Le Club Formosa',
   direccionMapa: 'Freitas 768, Formosa, Argentina',
   tiktok: { usuario: '@academia.nr_', url: 'https://www.tiktok.com/@academia.nr_' },
@@ -45,17 +46,26 @@ export const prueba = {
   titulo: 'Clase de prueba gratis.',
   frase: 'La clase de prueba es gratis.',
   cierre: 'La primera clase es gratis.',
+  etiquetaHero: 'Primera clase gratis · Formosa',
+  botonHero: 'Reservá tu clase gratis por WhatsApp',
   faq: 'No pagás la clase: la de prueba es gratis. Los detalles los coordinás con Nacho.',
 };
 
 export const horarios = {
   dias: 'Lunes a viernes',
   franjas: ['8 a 12 hs', '14 a 20 hs'], // mañana y tarde
-  finDeSemana: 'Sábados por la mañana.',
+  finDeSemana: 'Sábados de 8 a 12 hs.',
 };
 
+/** Los mismos horarios en formato de Google (schema.org). Tienen que coincidir con `horarios` de arriba. */
+export const horariosSchema = [
+  { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '08:00', cierra: '12:00' },
+  { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '14:00', cierra: '20:00' },
+  { dias: ['Saturday'], abre: '08:00', cierra: '12:00' },
+];
+
 export const datos = [
-  { valor: 30, prefijo: '+', etiqueta: 'alumnos' },
+  { valor: 30, prefijo: 'Más de ', etiqueta: 'alumnos' }, // "Más de 30 alumnos" (decidido por Guillermo, 19/11)
   { valor: 4, prefijo: '', etiqueta: 'canchas' },
   { texto: 'Gratis', etiqueta: 'clase de prueba' },
 ] as const;
@@ -68,7 +78,7 @@ export const porQue = {
 
 export const diferencial = [
   { titulo: 'Metodología y táctica', texto: 'No solo mejoramos tus golpes: te enseñamos a leer la dificultad de cada pelota para tomar siempre la decisión correcta en el partido.' },
-  { titulo: 'Disponibilidad', texto: 'Nacho está para vos de lunes a viernes, mañana y tarde, y sábados a la mañana, adaptándose a tus horarios para que no te quedes sin entrenar.' },
+  { titulo: 'Disponibilidad', texto: 'Nacho está para vos de lunes a viernes, mañana y tarde, y sábados de 8 a 12, adaptándose a tus horarios para que no te quedes sin entrenar.' },
   { titulo: 'Ganas', texto: 'Cada clase se prepara y se da con la misma energía, juegues como juegues. Entrenamientos dinámicos donde combinamos técnica, táctica y objetivos claros.' },
   { titulo: 'Responsabilidad', texto: 'Puntualidad, seguimiento constante y compromiso absoluto con tu progreso y evolución en la cancha.' },
   { titulo: 'Valores', texto: 'Respeto, esfuerzo y compañerismo dentro y fuera de la cancha. Formamos mejores jugadores y mejores personas.' },
