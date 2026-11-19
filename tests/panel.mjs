@@ -75,10 +75,16 @@ for (const [n, w, h, m] of [['m', 390, 844, true], ['d', 1440, 900, false]]) {
   ok(/suspendida/.test(await p.textContent('.clase')), `${n}: Hoy muestra la suspensión`);
   await p.click('[data-a=reactivar]'); await wait(); ok(await p.locator('.est').count() === 1 || await p.locator('.roster').count() === 1, `${n}: se reactiva`);
 
-  // ── ¿Tenés libre el lunes? ──
-  await vista('semana'); await p.click('[data-a=libres]'); await p.click('[data-a=libre-dia][data-d="1"]'); await wait();
-  const filas = await p.locator('#hoja .fila').count();
-  ok(filas === 10 && /18:00 · Grupales 3\/3|18:00 · Grupales 2\/3/.test(await p.textContent('#hoja .filas')) && /libre las próximas 4 semanas/.test(await p.textContent('#hoja .filas')), `${n}: la búsqueda lista los 10 horarios (${filas})`);
+  // ── ¿Tengo libre? lunes y miércoles a las 18 (choca o hay lugar) y a las 9 (libre: ofrece crear turno fijo) ──
+  await vista('semana'); await p.click('[data-a=libres]'); await wait();
+  for (const d of await p.locator('#hoja [data-a=tl-dia][aria-pressed=true]').evaluateAll((els) => els.map((e) => e.dataset.d))) await p.click(`#hoja [data-a=tl-dia][data-d="${d}"]`);
+  await p.click('#hoja [data-a=tl-dia][data-d="1"]'); await p.click('#hoja [data-a=tl-dia][data-d="3"]'); await p.click('#hoja [data-a=tl-hora][data-h="18"]'); await wait();
+  const t18 = await p.textContent('#hoja .tl-lista');
+  ok(/Lunes/.test(t18) && /Miércoles/.test(t18) && /(entra en ese grupo|Choca)/.test(t18), `${n}: ¿tengo libre? a las 18 muestra el grupo`);
+  await p.click('#hoja [data-a=tl-hora][data-h="9"]'); await wait();
+  ok(/Libre las próximas 4 semanas/.test(await p.textContent('#hoja .tl-lista')) && await p.locator('#hoja [data-a=tl-crear]').count() === 1, `${n}: a las 9 está libre y ofrece crear turno fijo`);
+  await p.click('#hoja [data-a=tl-dia][data-d="6"]'); await p.click('#hoja [data-a=tl-hora][data-h="16"]'); await wait();
+  ok(/No hay clases los sábado/.test(await p.textContent('#hoja .tl-lista')), `${n}: el sábado a la tarde no hay clases`);
   await p.keyboard.press('Escape');
 
   // ── Alumnos: ficha ──

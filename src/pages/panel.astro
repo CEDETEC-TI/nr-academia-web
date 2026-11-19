@@ -149,7 +149,8 @@ import { url } from '../utils';
   @media (hover: hover) and (pointer: fine) { #panel .slot.libre:hover { background: #fff; } #panel .slot.ocupado:hover { background: var(--color-bordo-hondo); } }
   @media (min-width: 900px) {
     #panel .chips { display: none; }
-    #panel .dias { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .75rem; }
+    #panel .dias { grid-template-columns: repeat(var(--n-dias, 5), minmax(0, 1fr)); gap: .75rem; }
+    #panel .slot.cerrado { display: block; visibility: hidden; }
     #panel .dia { display: block; }
     #panel .slot { grid-template-columns: 1fr; padding: .5rem .7rem; height: 4.75rem; align-content: start; overflow: hidden; }
     #panel .slot .who { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
@@ -215,4 +216,26 @@ import { url } from '../utils';
   .btn-sec { min-height: 3rem; border-radius: 999px; background: #fff; font-weight: 600; box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .25); }
   .btn-sec.peligro { color: #b42318; }
   .paviso { position: fixed; left: 50%; bottom: calc(1rem + env(safe-area-inset-bottom)); translate: -50% 0; z-index: 100; background: var(--color-tinta); color: var(--color-crema); padding: .7rem 1.2rem; border-radius: 999px; font-weight: 600; font-size: .9rem; max-width: calc(100% - 2rem); text-align: center; }
+  #panel .slot.cerrado { display: none; }
+  #panel .dia h2 .dc { display: none; }
+  @media (min-width: 900px) { #panel .dia h2 { white-space: nowrap; } #panel .dia h2 .dl { display: none; } #panel .dia h2 .dc { display: inline; } }
+  #hoja .chips.envolver { flex-wrap: wrap; overflow: visible; gap: .5rem; }
+  #hoja .chips.envolver .chip { flex: 0 0 auto; }
+  .tl-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+  .tl { display: grid; gap: .65rem; padding: 1rem 1.1rem; border-radius: 1rem; background: #fff; box-shadow: inset 4px 0 0 var(--tl-c, var(--color-tinta-suave)); line-height: 1.45; }
+  .tl.libre { --tl-c: #1f6b3f; }
+  .tl.lugar { --tl-c: var(--color-bordo); }
+  .tl.choca { --tl-c: var(--color-tinta); background: var(--color-crema-oscura); }
+  .tl b { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: 1.1rem; margin-right: .35rem; }
+  .tl .cerca { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; font-size: .9rem; color: var(--color-tinta-suave); }
+  .tl .cerca .chip { flex: 0 0 auto; min-height: 2.5rem; }
+  .tl .btn-sec { justify-self: start; }
+  .horas-op { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: .5rem; }
+  .hora-op { display: grid; gap: .15rem; text-align: left; padding: .75rem .9rem; border-radius: 1rem; background: #fff; box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .22); touch-action: manipulation; }
+  .hora-op b { font-variant-numeric: tabular-nums; }
+  .hora-op span { font-size: .8rem; color: var(--color-tinta-suave); }
+  .fila.alu-dia { flex-wrap: wrap; align-items: flex-start; padding: .5rem 0; border-bottom: 1px solid rgb(109 26 42 / .1); }
+  .fila.alu-dia .fn { flex: 1 1 100%; font-weight: 600; }
+  .fila.alu-dia.no-viene .fn { opacity: .6; }
+  .acc-alu { display: flex; flex-wrap: wrap; gap: .4rem; }
 </style>

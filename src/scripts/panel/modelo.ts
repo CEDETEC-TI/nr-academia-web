@@ -20,7 +20,14 @@ export const HORAS: number[] = horarios.franjas.flatMap((f) => {
   const [a, b] = (f.match(/\d+/g) ?? []).map(Number);
   return Array.from({ length: Math.max(0, b - a) }, (_, i) => a + i);
 });
-export const DIAS_SEMANA = [1, 2, 3, 4, 5]; // lunes a viernes, como en academia.ts
+/** Horas del sábado: salen de `horarios.finDeSemana` ("Sábados de 8 a 12 hs." → 8, 9, 10, 11). */
+const HORAS_SABADO: number[] = (() => {
+  const [a, b] = (horarios.finDeSemana.match(/\d+/g) ?? []).map(Number);
+  return a && b ? Array.from({ length: Math.max(0, b - a) }, (_, i) => a + i) : [];
+})();
+export const DIAS_SEMANA = HORAS_SABADO.length ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5]; // lunes a sábado, como en academia.ts
+/** Horas de clase de un día de la semana (1 = lunes … 6 = sábado). */
+export const horasDe = (dia: number) => (dia === 6 ? HORAS_SABADO : HORAS);
 export const NOMBRE_DIA = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -103,3 +110,24 @@ export function waLink(tel: string, texto = ''): string | null {
   const full = dig.startsWith('54') ? dig : dig.length === 10 ? '549' + dig : dig;
   return `https://wa.me/${full}${texto ? '?text=' + encodeURIComponent(texto) : ''}`;
 }
+
+// ── ¿Tengo libre? ─────────────────────────────────────────────────────────
+export type Disponible = { estado: 'libre' } | { estado: 'lugar' | 'lleno'; clase: Clase; fecha: string; anotados: number; nombres: string[] } | { estado: 'cerrado' };
+/** ¿Cómo está ese día de la semana a esa hora en las próximas `semanas`? Libre, hay clase con lugar, o completa. */
+export function disponible(d: Datos, dia: number, hora: number, desde: string, semanas = 4): Disponible {
+  if (!horasDe(dia).includes(hora)) return { estado: 'cerrado' };
+  const fechas = fechasEnRango(desde, sumarDias(desde, semanas * 7 - 1), dia);
+  let peor: Disponible = { estado: 'libre' };
+  for (const f of fechas) {
+    const c = d.clases.find((x) => x.hora === hora && claseEn(x, f));
+    if (!c) continue;
+    const s = sesion(d, c, f);
+    const r: Disponible = { estado: s.integrantes.length >= c.cupo ? 'lleno' : 'lugar', clase: c, fecha: f, anotados: s.integrantes.length, nombres: s.integrantes.map((i) => i.alumno.nombre) };
+    if (r.estado === 'lleno') return r;
+    if (peor.estado === 'libre') peor = r;
+  }
+  return peor;
+}
+/** Horas libres (sin ninguna clase) de ese día, ordenadas por cercanía a `hora`. */
+export const libresCerca = (d: Datos, dia: number, hora: number, desde: string) =>
+  horasDe(dia).filter((h) => h !== hora && disponible(d, dia, h, desde).estado === 'libre').sort((a, b) => Math.abs(a - hora) - Math.abs(b - hora) || a - b);

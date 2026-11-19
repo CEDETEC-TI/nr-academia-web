@@ -1,7 +1,7 @@
-// Panel de Nacho (/panel/): Hoy, Semana, Alumnos, Cobros y Fichas (fichas técnicas de los alumnos con cuenta, solo lectura).
+// Panel de Nacho (/panel/): Hoy, Agenda, Alumnos, Cobros y Fichas (fichas técnicas de los alumnos con cuenta, solo lectura).
 import { clases as tiposClase, panel as cfg } from '../../data/academia';
 import {
-  DIAS_SEMANA, HORAS, NOMBRE_DIA, claseEn, cuenta, diaSemana, dinero, fechasEnRango, finDeMes, horaTxt, inscripcionesVigentes, iso, lunesDe,
+  DIAS_SEMANA, HORAS, NOMBRE_DIA, claseEn, disponible, horasDe, libresCerca, cuenta, diaSemana, dinero, fechasEnRango, finDeMes, horaTxt, inscripcionesVigentes, iso, lunesDe,
   norm, ocupadaEl, parse, precioPor, primeraDesde, sesion, sesionesDelDia, sumarDias, vacio, vigente, waLink,
   type Alumno, type Clase, type Datos, type EstadoAsist, type Sesion,
 } from './modelo';
@@ -31,8 +31,8 @@ let store: Store;
 let datos: Datos = vacio();
 let vista: Vista = 'hoy';
 let fechaSel = hoyIso(); // día que se ve en "Hoy"
-let lunes = lunesDe(hoyIso()); // semana que se ve en "Semana"
-let diaSel = Math.min(5, diaSemana(hoyIso()));
+let lunes = lunesDe(hoyIso()); // semana que se ve en "Agenda"
+let diaSel = Math.min(DIAS_SEMANA.length, diaSemana(hoyIso()));
 let busca = '';
 let verInactivos = false;
 let fichas: FichaFila[] | null = null; // se cargan al abrir la pestaña Fichas
@@ -60,7 +60,7 @@ const dosToques = (b: HTMLElement, texto: string) => { if (b.dataset.seguro) ret
 
 // ───────────────────────────── Pantallas ─────────────────────────────
 function render() {
-  const tabs = ([['hoy', 'Hoy'], ['semana', 'Semana'], ['alumnos', 'Alumnos'], ['cobros', 'Cobros'], ['fichas', 'Fichas']] as const)
+  const tabs = ([['hoy', 'Hoy'], ['semana', 'Agenda'], ['alumnos', 'Alumnos'], ['cobros', 'Cobros'], ['fichas', 'Fichas']] as const)
     .map(([k, n]) => `<button class="tab" data-a="vista" data-v="${k}" aria-pressed="${vista === k}">${n}</button>`).join('');
   const cuerpo = { hoy: vistaHoy, semana: vistaSemana, alumnos: vistaAlumnos, cobros: vistaCobros, fichas: vistaFichas }[vista]();
   app.innerHTML = `<nav class="tabs" aria-label="Secciones">${tabs}</nav>${cuerpo}`;
@@ -83,7 +83,7 @@ function vistaHoy() {
       </div>
       <p class="resumen"><b>${activas.length}</b> ${activas.length === 1 ? 'clase' : 'clases'} · <b>${nAl}</b> ${nAl === 1 ? 'alumno' : 'alumnos'}</p>
     </div>
-    ${ses.length ? `<div class="clases">${ses.map(tarjeta).join('')}</div>` : '<p class="vacio">No hay clases este día.<br>Las creás desde la pestaña Semana.</p>'}`;
+    ${ses.length ? `<div class="clases">${ses.map(tarjeta).join('')}</div>` : '<p class="vacio">No hay clases este día.<br>Las creás desde la pestaña Agenda.</p>'}`;
 }
 
 function tarjeta(s: Sesion) {
@@ -110,31 +110,32 @@ function vistaSemana() {
   const dias = DIAS_SEMANA.map((d) => {
     const fecha = sumarDias(lunes, d - 1);
     const ses = sesionesDelDia(datos, fecha);
-    const celdas = HORAS.map((h) => {
+    const horas = horasDe(d);
+    const celdas = horas.map((h) => {
       const s = ses.find((x) => x.clase.hora === h);
       if (!s) { nLibres++; return `<button class="slot libre" data-a="nueva" data-f="${fecha}" data-h="${h}"><span class="h">${horaTxt(h)}</span><span class="who">Libre</span><span class="plus" aria-hidden="true">+</span></button>`; }
       if (!s.suspendida) nClases++;
       const nombres = s.integrantes.map((i) => i.alumno.nombre.split(' ')[0]);
       const quien = nombres.length ? nombres.slice(0, 3).join(', ') + (nombres.length > 3 ? ` +${nombres.length - 3}` : '') : 'Sin alumnos';
       return `<button class="slot ocupado${s.suspendida ? ' susp' : ''}" data-a="clase" data-c="${s.clase.id}" data-f="${fecha}" data-h="${h}"><span class="h">${horaTxt(h)}</span><span class="who">${esc(quien)}</span><span class="meta">${esc(s.clase.tipo)} · ${s.integrantes.length}/${s.clase.cupo}${s.suspendida ? ' · suspendida' : ''}</span></button>`;
-    }).join('');
-    const libres = HORAS.filter((h) => !ses.some((x) => x.clase.hora === h)).length;
+    }).join('') + HORAS.filter((h) => !horas.includes(h)).map(() => '<div class="slot cerrado" aria-hidden="true"></div>').join(''); // en compu, las filas quedan alineadas
+    const libres = horas.filter((h) => !ses.some((x) => x.clase.hora === h)).length;
     return `<section class="dia${d === diaSel ? ' sel' : ''}${fecha === hoy ? ' hoy' : ''}" aria-label="${NOMBRE_DIA[d]} ${fechaCorta(fecha)}">
-      <h2><span>${NOMBRE_DIA[d]}</span> ${fechaCorta(fecha)} <small>${libres} libres</small></h2><div class="slots">${celdas}</div></section>`;
+      <h2><span><span class="dl">${NOMBRE_DIA[d]}</span><span class="dc">${NOMBRE_DIA[d].slice(0, 3)}</span></span> ${fechaCorta(fecha)} <small>${libres} libres</small></h2><div class="slots">${celdas}</div></section>`;
   }).join('');
   const chips = DIAS_SEMANA.map((d) => `<button class="chip" data-a="dia-chip" data-d="${d}" aria-pressed="${d === diaSel}">${NOMBRE_DIA[d].slice(0, 3)} <b>${parse(sumarDias(lunes, d - 1)).getDate()}</b></button>`).join('');
   return `<div class="top">
       <div class="semana">
         <button class="nav" data-a="sem-prev" aria-label="Semana anterior">‹</button>
-        <div><p class="lbl">Semana</p><p class="rango">${fechaCorta(lunes)} – ${fechaCorta(sumarDias(lunes, 4))}</p></div>
+        <div><p class="lbl">Semana</p><p class="rango">${fechaCorta(lunes)} – ${fechaCorta(sumarDias(lunes, DIAS_SEMANA.length - 1))}</p></div>
         <button class="nav" data-a="sem-next" aria-label="Semana siguiente">›</button>
         ${lunes !== lunesDe(hoy) ? '<button class="hoyb" data-a="sem-hoy">Hoy</button>' : ''}
       </div>
-      <button class="btn-sec chico" data-a="libres">Buscar horario libre</button>
+      <button class="btn-pri chico" data-a="libres">¿Tengo libre?</button>
     </div>
     <p class="resumen sub"><b>${nClases}</b> ${nClases === 1 ? 'clase' : 'clases'} · <b>${nLibres}</b> ${nLibres === 1 ? 'turno libre' : 'turnos libres'}</p>
     <div class="chips" role="group" aria-label="Día">${chips}</div>
-    <div class="dias">${dias}</div>`;
+    <div class="dias" style="--n-dias:${DIAS_SEMANA.length}">${dias}</div>`;
 }
 
 function vistaAlumnos() {
@@ -257,14 +258,14 @@ function selector(root: HTMLElement, excluidos: () => string[] = () => []) {
 }
 
 // ── Nueva clase (horario libre) ──
-function abrirNueva(fecha: string, hora: number) {
+function abrirNueva(fecha: string, hora: number, extra: number[] = []) {
   const dia = diaSemana(fecha);
   const tipoOpts = TIPOS.map((n) => `<label><input type="radio" name="tipo" value="${esc(n)}"${n === TIPO_DEF ? ' checked' : ''}><span>${esc(n)}</span></label>`).join('');
-  const dias = DIAS_SEMANA.map((d) => `<label><input type="checkbox" name="dia" value="${d}"${d === dia ? ' checked disabled' : ''}><span>${NOMBRE_DIA[d].slice(0, 3)}</span></label>`).join('');
+  const dias = DIAS_SEMANA.filter((d) => horasDe(d).includes(hora)).map((d) => `<label><input type="checkbox" name="dia" value="${d}"${d === dia ? ' checked disabled' : extra.includes(d) ? ' checked' : ''}><span>${NOMBRE_DIA[d].slice(0, 3)}</span></label>`).join('');
   const form = mostrar(`<form method="dialog" class="form">
     ${head('Horario libre', `${cuandoTxt(fecha)} · ${horaTxt(hora)}`)}
     <fieldset class="campo"><legend>Se repite</legend><div class="opts"><label><input type="radio" name="rep" value="semanal" checked><span>Todas las semanas</span></label><label><input type="radio" name="rep" value="unica"><span>Solo este día</span></label></div></fieldset>
-    <fieldset class="campo" id="dias-extra"><legend>Otros días a la misma hora</legend><div class="opts">${dias}</div></fieldset>
+    <fieldset class="campo" id="dias-extra"><legend>Días que viene (turno fijo)</legend><div class="opts">${dias}</div></fieldset>
     <fieldset class="campo"><legend>Tipo de clase</legend><div class="opts">${tipoOpts}</div></fieldset>
     <div class="campo"><span>Cupo (alumnos por clase)</span>${stepper(cfg.cupoPorDefecto)}</div>
     <fieldset class="campo"><legend>Alumnos (los podés sumar después)</legend><div id="sel"></div></fieldset>
@@ -311,8 +312,13 @@ function abrirClase(claseId: string, fecha: string) {
   const inscDe = (alId: string) => datos.inscripciones.find((i) => i.clase_id === c.id && i.alumno_id === alId && vigente(i, fecha));
   const filas = s.integrantes.map((i) => {
     const hasta = inscDe(i.alumno.id)?.hasta;
-    const tag = i.visita ? 'solo este día' : hasta ? 'hasta ' + fechaCorta(hasta) : '';
-    return `<li class="fila"><span class="fn">${esc(i.alumno.nombre)}${tag ? ` <small>${tag}</small>` : ''}</span><button type="button" class="btn-sec chico peligro" data-a="quitar" data-al="${i.alumno.id}" aria-label="Quitar a ${esc(i.alumno.nombre)}">Quitar</button></li>`;
+    const noViene = i.estado === 'aviso';
+    const tag = noViene ? 'no viene este día' : i.visita ? 'solo este día' : hasta ? 'hasta ' + fechaCorta(hasta) : '';
+    return `<li class="fila alu-dia${noViene ? ' no-viene' : ''}"><span class="fn">${esc(i.alumno.nombre)}${tag ? ` <small>${tag}</small>` : ''}</span>
+      <div class="acc-alu">${noViene
+        ? `<button type="button" class="btn-sec chico" data-a="vuelve" data-al="${i.alumno.id}">Viene igual</button>`
+        : `<button type="button" class="btn-sec chico" data-a="no-viene" data-al="${i.alumno.id}">No viene el ${fechaCorta(fecha)}</button><button type="button" class="btn-sec chico" data-a="otra-hora" data-al="${i.alumno.id}">Otra hora ese día</button>`}
+      <button type="button" class="btn-sec chico peligro" data-a="quitar" data-al="${i.alumno.id}" aria-label="Quitar a ${esc(i.alumno.nombre)} del turno">Quitar</button></div></li>`;
   }).join('');
   const tipoOpts = TIPOS.map((n) => `<label><input type="radio" name="tipo" value="${esc(n)}"${c.tipo === n ? ' checked' : ''}><span>${esc(n)}</span></label>`).join('');
   const hastaOpts = unica ? '' : `<fieldset class="campo"><legend>¿Hasta cuándo?</legend><div class="opts">
@@ -339,6 +345,16 @@ function abrirClase(claseId: string, fecha: string) {
   form.addEventListener('click', (ev) => {
     const b = (ev.target as HTMLElement).closest<HTMLElement>('[data-a]'); if (!b) return;
     const a = b.dataset.a;
+    if (a === 'no-viene' || a === 'vuelve') {
+      const alId = b.dataset.al!, estado: EstadoAsist = a === 'no-viene' ? 'aviso' : 'anotado';
+      const ex = datos.asistencias.find((x) => x.clase_id === c.id && x.fecha === fecha && x.alumno_id === alId);
+      accion(async () => {
+        if (ex) await store.actualizar('asistencias', ex.id, { estado, precio: precioPor(estado) });
+        else await store.crear('asistencias', { clase_id: c.id, fecha, alumno_id: alId, estado, precio: precioPor(estado) });
+      }, a === 'no-viene' ? `Anotado: no viene el ${fechaCorta(fecha)}. El turno fijo sigue igual.` : 'Listo, viene', reabrir);
+      return;
+    }
+    if (a === 'otra-hora') { abrirOtraHora(c, fecha, b.dataset.al!); return; }
     if (a === 'anotar') {
       sel.pendiente();
       if (!sel.nombres.length) return aviso('Escribí o elegí a quién anotar');
@@ -374,6 +390,38 @@ function abrirClase(claseId: string, fecha: string) {
   });
 }
 
+// ── Excepción: este día viene a otra hora (el turno fijo no cambia) ──
+function abrirOtraHora(c: Clase, fecha: string, alId: string) {
+  const al = datos.alumnos.find((x) => x.id === alId); if (!al) return;
+  const dia = diaSemana(fecha);
+  const opciones = horasDe(dia).filter((h) => h !== c.hora).map((h) => {
+    const otra = datos.clases.find((x) => x.hora === h && claseEn(x, fecha));
+    if (!otra) return `<button type="button" class="hora-op" data-a="mover" data-h="${h}"><b>${horaTxt(h)}</b><span>Libre</span></button>`;
+    const ses = sesion(datos, otra, fecha);
+    const n = ses.integrantes.filter((i) => i.estado !== 'aviso').length;
+    if (ses.suspendida || n >= otra.cupo || ses.integrantes.some((i) => i.alumno.id === alId)) return '';
+    return `<button type="button" class="hora-op" data-a="mover" data-h="${h}"><b>${horaTxt(h)}</b><span>${esc(otra.tipo)} · ${n}/${otra.cupo}</span></button>`;
+  }).join('');
+  const form = mostrar(`<form method="dialog" class="form">${head(`${al.nombre} · solo el ${cuandoTxt(fecha)}`, '¿A qué hora viene?')}
+    <p class="nota">Su turno fijo de las ${horaTxt(c.hora)} sigue igual las otras semanas.</p>
+    ${opciones ? `<div class="horas-op">${opciones}</div>` : '<p class="nota">Ese día no queda otro horario con lugar.</p>'}
+    <button type="button" class="btn-sec" data-a="volver">Volver</button></form>`);
+  form.addEventListener('click', (ev) => {
+    const b = (ev.target as HTMLElement).closest<HTMLElement>('[data-a]'); if (!b) return;
+    if (b.dataset.a === 'volver') return abrirClase(c.id, fecha);
+    if (b.dataset.a !== 'mover') return;
+    const h = +b.dataset.h!;
+    hacer(async () => {
+      const ex = datos.asistencias.find((x) => x.clase_id === c.id && x.fecha === fecha && x.alumno_id === alId);
+      if (ex) await store.actualizar('asistencias', ex.id, { estado: 'aviso', precio: 0 });
+      else await store.crear('asistencias', { clase_id: c.id, fecha, alumno_id: alId, estado: 'aviso', precio: 0 });
+      let destino = datos.clases.find((x) => x.hora === h && claseEn(x, fecha))?.id;
+      if (!destino) destino = await store.crear('clases', { dia_semana: null, hora: h, fecha, desde: null, hasta: null, tipo: c.tipo, cupo: c.cupo });
+      await store.crear('asistencias', { clase_id: destino, fecha, alumno_id: alId, estado: 'anotado', precio: 0 });
+    }, `${al.nombre} viene a las ${horaTxt(h)} el ${fechaCorta(fecha)}`);
+  });
+}
+
 // ── Alumno ──
 function abrirAlumno(a: Alumno | null) {
   const hoy = hoyIso();
@@ -386,7 +434,7 @@ function abrirAlumno(a: Alumno | null) {
     <label class="campo"><span>WhatsApp (opcional)</span><input name="telefono" type="tel" inputmode="tel" maxlength="30" autocomplete="off" value="${esc(a?.telefono ?? '')}" placeholder="Ej.: 3704 123456"></label>
     <fieldset class="campo"><legend>Nivel (opcional)</legend><div class="opts">${niv}</div></fieldset>
     <label class="campo"><span>Notas (opcional)</span><textarea name="notas" rows="3" maxlength="500" placeholder="Ej.: lesión en el hombro, objetivo: competir">${esc(a?.notas ?? '')}</textarea></label>
-    ${a ? `<section class="seccion"><h4>Clases</h4>${insc.length ? `<ul class="filas">${insc.map(({ clase, insc: i }) => `<li class="fila"><button type="button" class="alu-main" data-a="ir-clase" data-c="${clase.id}"><span class="fn">${esc(diaHora(clase))} · ${esc(clase.tipo)}${i.hasta ? ` <small>hasta ${fechaCorta(i.hasta)}</small>` : ''}</span></button></li>`).join('')}</ul>` : '<p class="nota">No está anotado en ninguna clase. Se lo anota desde la clase (pestaña Semana).</p>'}</section>
+    ${a ? `<section class="seccion"><h4>Clases</h4>${insc.length ? `<ul class="filas">${insc.map(({ clase, insc: i }) => `<li class="fila"><button type="button" class="alu-main" data-a="ir-clase" data-c="${clase.id}"><span class="fn">${esc(diaHora(clase))} · ${esc(clase.tipo)}${i.hasta ? ` <small>hasta ${fechaCorta(i.hasta)}</small>` : ''}</span></button></li>`).join('')}</ul>` : '<p class="nota">No está anotado en ninguna clase. Se lo anota desde la clase (pestaña Agenda).</p>'}</section>
       <section class="seccion"><h4>Cuenta</h4><p class="nota">${cu!.clases} ${cu!.clases === 1 ? 'clase' : 'clases'} · pagó ${dinero(cu!.pagado)} · ${cu!.debe > 0 ? `<b>debe ${dinero(cu!.debe)}</b>` : cu!.debe < 0 ? `<b>a favor ${dinero(cu!.debe)}</b>` : '<b>al día</b>'}</p>
         <button type="button" class="btn-sec" data-a="cuenta">Cuenta y pagos</button></section>
       <label class="check"><input type="checkbox" name="activo"${a.activo ? ' checked' : ''}> <span>Alumno activo</span></label>` : ''}
@@ -439,25 +487,45 @@ function abrirPago(alId: string) {
   });
 }
 
-// ── "¿Tenés libre el martes a tal hora?" ──
-function abrirLibres(dia = diaSel) {
+// ── "¿Tengo libre los martes y jueves a las 16?" ──
+const HORAS_TODAS = [...new Set(DIAS_SEMANA.flatMap(horasDe))].sort((a, b) => a - b);
+function abrirLibres(dias: number[] = [diaSel], hora: number | null = null) {
   const hoy = hoyIso();
-  const fechas = fechasEnRango(hoy, sumarDias(hoy, 27), dia); // las próximas 4 semanas
-  const filas = HORAS.map((h) => {
-    const c = datos.clases.find((x) => x.hora === h && fechas.some((f) => claseEn(x, f)));
-    if (!c) return `<li class="fila"><span class="fn"><b>${horaTxt(h)}</b> · libre las próximas 4 semanas</span><button type="button" class="btn-sec chico" data-a="libre-nueva" data-h="${h}" data-f="${fechas[0]}">Crear clase</button></li>`;
-    const f = fechas.find((x) => claseEn(c, x))!;
-    const n = sesion(datos, c, f).integrantes.length;
-    return `<li class="fila"><span class="fn"><b>${horaTxt(h)}</b> · ${esc(c.tipo)} ${n}/${c.cupo} <small>${n < c.cupo ? `hay ${c.cupo - n} ${c.cupo - n === 1 ? 'lugar' : 'lugares'}` : 'completa'}</small></span><button type="button" class="btn-sec chico" data-a="libre-clase" data-c="${c.id}" data-f="${f}">Ver</button></li>`;
-  }).join('');
-  const chips = DIAS_SEMANA.map((d) => `<button type="button" class="chip" data-a="libre-dia" data-d="${d}" aria-pressed="${d === dia}">${NOMBRE_DIA[d].slice(0, 3)}</button>`).join('');
-  const form = mostrar(`<form method="dialog" class="form">${head('Buscar horario', `Los ${NOMBRE_DIA[dia].toLowerCase()}`)}
-    <div class="chips" role="group" aria-label="Día">${chips}</div><ul class="filas">${filas}</ul></form>`);
+  const chipsDias = DIAS_SEMANA.map((d) => `<button type="button" class="chip" data-a="tl-dia" data-d="${d}" aria-pressed="${dias.includes(d)}">${NOMBRE_DIA[d].slice(0, 3)}</button>`).join('');
+  const chipsHoras = HORAS_TODAS.map((h) => `<button type="button" class="chip" data-a="tl-hora" data-h="${h}" aria-pressed="${h === hora}">${horaTxt(h)}</button>`).join('');
+  let resultado = '<p class="nota">Elegí los días y la hora que te piden.</p>';
+  let todoLibre = false;
+  if (dias.length && hora !== null) {
+    const filas = [...dias].sort().map((d) => {
+      const r = disponible(datos, d, hora, hoy);
+      const nom = NOMBRE_DIA[d];
+      let txt = '', cls = '';
+      if (r.estado === 'cerrado') { txt = `No hay clases los ${nom.toLowerCase()} a esa hora.`; cls = 'choca'; }
+      else if (r.estado === 'libre') { txt = 'Libre las próximas 4 semanas.'; cls = 'libre'; }
+      else if (r.estado === 'lugar') { txt = `Hay ${r.clase.tipo.toLowerCase()} con ${r.anotados}/${r.clase.cupo}: entra en ese grupo.`; cls = 'lugar'; }
+      else { txt = `Choca: completa el ${fechaCorta(r.fecha)} (${r.nombres.join(', ')}).`; cls = 'choca'; }
+      const cerca = r.estado === 'libre' || r.estado === 'lugar' ? [] : libresCerca(datos, d, hora, hoy).slice(0, 3);
+      const alt = cerca.length ? `<div class="cerca"><span>Libres cerca:</span>${cerca.map((h) => `<button type="button" class="chip" data-a="tl-cerca" data-d="${d}" data-h="${h}">${horaTxt(h)}</button>`).join('')}</div>` : '';
+      const ver = r.estado === 'lugar' || r.estado === 'lleno' ? `<button type="button" class="btn-sec chico" data-a="libre-clase" data-c="${r.clase.id}" data-f="${r.fecha}">Ver grupo</button>` : '';
+      return `<li class="tl ${cls}"><p><b>${nom}</b> ${txt}</p>${alt}${ver}</li>`;
+    }).join('');
+    todoLibre = dias.every((d) => disponible(datos, d, hora, hoy).estado === 'libre');
+    resultado = `<ul class="tl-lista">${filas}</ul>${todoLibre ? `<button type="button" class="btn-pri" data-a="tl-crear">Crear turno fijo ${dias.length > 1 ? 'esos días' : 'ese día'} a las ${horaTxt(hora)}</button>` : ''}`;
+  }
+  const form = mostrar(`<form method="dialog" class="form">${head('Agenda', '¿Tengo libre?')}
+    <fieldset class="campo"><legend>Días</legend><div class="chips envolver" role="group" aria-label="Días">${chipsDias}</div></fieldset>
+    <fieldset class="campo"><legend>Hora</legend><div class="chips envolver" role="group" aria-label="Hora">${chipsHoras}</div></fieldset>
+    <section class="seccion" aria-live="polite">${resultado}</section></form>`);
   form.addEventListener('click', (ev) => {
     const b = (ev.target as HTMLElement).closest<HTMLElement>('[data-a]'); if (!b) return;
-    if (b.dataset.a === 'libre-dia') abrirLibres(+b.dataset.d!);
-    else if (b.dataset.a === 'libre-nueva') abrirNueva(b.dataset.f!, +b.dataset.h!);
-    else if (b.dataset.a === 'libre-clase') abrirClase(b.dataset.c!, b.dataset.f!);
+    const d = +b.dataset.d!, h = +b.dataset.h!;
+    switch (b.dataset.a) {
+      case 'tl-dia': abrirLibres(dias.includes(d) ? dias.filter((x) => x !== d) : [...dias, d], hora); break;
+      case 'tl-hora': abrirLibres(dias, h); break;
+      case 'tl-cerca': abrirLibres([d], h); break;
+      case 'tl-crear': { const ds = [...dias].sort(); abrirNueva(primeraDesde(hoy, ds[0]), hora!, ds.slice(1)); break; }
+      case 'libre-clase': abrirClase(b.dataset.c!, b.dataset.f!); break;
+    }
   });
 }
 
