@@ -4,7 +4,7 @@ import { cliente } from '../auth';
 import { norm } from './modelo';
 
 export interface FichaFila {
-  owner: string; nombre: string; edad: number | null; nivel: 'principiante' | 'intermedio' | 'avanzado' | null;
+  owner: string; email?: string; nombre: string; edad: number | null; nivel: 'principiante' | 'intermedio' | 'avanzado' | null;
   mano: 'derecha' | 'zurda' | null; lado: 'derecha' | 'reves' | null; objetivo: string; golpes: string[]; lesiones: string; disponibilidad: string;
 }
 export interface NotaFila { id: string; fecha: string; trabaje: string; costo: string; proxima: string }
@@ -19,7 +19,9 @@ export async function cargarFichas(): Promise<FichaFila[]> {
   const sb = await cliente();
   const out: FichaFila[] = [];
   for (let d = 0; ; d += 1000) {
-    const r = await sb.from('fichas').select('owner,nombre,edad,nivel,mano,lado,objetivo,golpes,lesiones,disponibilidad').order('nombre').range(d, d + 999);
+    const campos = 'owner,nombre,edad,nivel,mano,lado,objetivo,golpes,lesiones,disponibilidad';
+    let r = await sb.from('fichas').select(campos + ',email').order('nombre').range(d, d + 999);
+    if (r.error) r = await sb.from('fichas').select(campos).order('nombre').range(d, d + 999); // base sin la columna email todavía
     if (r.error) throw new Error(r.error.message);
     out.push(...(r.data as FichaFila[]));
     if ((r.data ?? []).length < 1000) return out;
@@ -38,6 +40,7 @@ export function htmlLista(fichas: FichaFila[], q: string, nivel: string) {
   const chip = (v: string, t: string) => `<button type="button" class="chip" data-a="f-nivel" data-n="${v}" aria-pressed="${nivel === v}">${t}</button>`;
   const filas = lista.map((f) => `<li class="alu"><button class="alu-main" data-a="ficha" data-o="${esc(f.owner)}">
       <span class="alu-nom">${esc(f.nombre || 'Sin nombre')}</span>
+      ${f.email ? `<span class="alu-mail">${esc(f.email)}</span>` : ''}
       <span class="alu-meta">${esc([f.nivel ? cap(f.nivel) : 'Sin nivel', f.edad ? f.edad + ' años' : ''].filter(Boolean).join(' · '))}</span></button></li>`).join('');
   return `<div class="top"><p class="resumen"><b>${fichas.length}</b> ${fichas.length === 1 ? 'ficha' : 'fichas'}</p></div>
     <div class="filtros"><input id="busca-f" type="search" placeholder="Buscar alumno" value="${esc(q)}" aria-label="Buscar alumno" autocomplete="off"></div>
@@ -56,7 +59,7 @@ export function htmlFicha(f: FichaFila, notas: NotaFila[] | null) {
   const nb = notas === null ? '<p class="vacio">No se pudo cargar el cuaderno.</p>'
     : notas.length ? `<ul class="f-notas">${notas.map((n) => `<li><p class="f-fecha">${esc(fechaCorta(n.fecha))}</p><dl class="f-dl">${dato('Trabajó', n.trabaje)}${dato('Le costó', n.costo)}${dato('Practica para la próxima', n.proxima)}</dl></li>`).join('')}</ul>`
       : '<p class="vacio">Todavía no anotó nada en el cuaderno.</p>';
-  return `<form method="dialog" class="form"><div class="hhead"><div><p class="lbl">Ficha técnica · solo lectura</p><h3>${esc(f.nombre || 'Sin nombre')}</h3></div><button type="button" class="x" data-cerrar aria-label="Cerrar">×</button></div>
+  return `<form method="dialog" class="form"><div class="hhead"><div><p class="lbl">Ficha técnica · solo lectura${f.email ? ` · ${esc(f.email)}` : ''}</p><h3>${esc(f.nombre || 'Sin nombre')}</h3></div><button type="button" class="x" data-cerrar aria-label="Cerrar">×</button></div>
     <div class="f-resumen">${ficha}</div>
     <h4 class="f-sub">Últimas entradas del cuaderno</h4>${nb}</form>`;
 }

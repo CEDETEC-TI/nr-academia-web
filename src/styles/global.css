@@ -25,8 +25,8 @@
   --radius-pill: 999px;
 
   /* Sombras: cálidas, tintadas de bordó, no grises */
-  --shadow-soft: 0 1px 2px rgb(74 16 25 / 0.08), 0 12px 32px -12px rgb(74 16 25 / 0.25);
-  --shadow-lift: 0 2px 4px rgb(74 16 25 / 0.1), 0 24px 48px -16px rgb(74 16 25 / 0.35);
+  --shadow-soft: 0 1px 2px rgb(74 16 25 / 0.05), 0 8px 24px -14px rgb(74 16 25 / 0.18); /* una sola sombra, suave */
+  --shadow-lift: 0 2px 4px rgb(74 16 25 / 0.06), 0 18px 40px -18px rgb(74 16 25 / 0.28);
 
   /* Easing (Emil): ease-out fuerte para entradas, ease-in-out para movimiento en pantalla */
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
