@@ -13,7 +13,8 @@ const valor = (f: HTMLFormElement, n: string) => String(new FormData(f).get(n) ?
 function aviso(msg: string, tipo: 'ok' | 'error' | '' = '') {
   const a = $('#c-estado'); a.textContent = msg; a.dataset.tipo = tipo; a.hidden = !msg;
 }
-function mostrar(que: 'entrada' | 'dentro' | 'nueva' | 'off') {
+function mostrar(que: 'entrada' | 'dentro' | 'nueva' | 'off' | 'continuar') {
+  $('#c-continuar').hidden = que !== 'continuar';
   $('#c-entrada').hidden = que !== 'entrada';
   $('#c-dentro').hidden = que !== 'dentro';
   $('#f-nueva').hidden = que !== 'nueva';
@@ -78,7 +79,26 @@ async function iniciar() {
   $('#b-salir').onclick = async () => { await salir(); aviso('Cerraste la sesión.', 'ok'); pintarEntrada(); };
   $('#b-cambiar').onclick = () => { aviso(''); mostrar('nueva'); };
 
-  // Enlaces de los mails (confirmar cuenta / recuperar): Supabase los procesa solo y avisa por este evento.
+  // Enlaces nuevos de los mails (?token_hash=…&type=…): el enlace NO se usa al abrir la página, sino al tocar
+  // "Continuar". Así los programas que revisan los links del mail (Gmail, antivirus, vistas previas) no lo gastan.
+  const qs = new URLSearchParams(query);
+  const tokenHash = qs.get('token_hash'); const tipo = qs.get('type');
+  if (tokenHash && tipo && ['invite', 'recovery', 'signup', 'email'].includes(tipo)) {
+    history.replaceState(null, '', location.pathname); // no dejar el token en la barra ni en el historial
+    $('#c-continuar-txt').textContent = tipo === 'signup' || tipo === 'email' ? 'Tocá el botón para confirmar tu cuenta.' : 'Tocá el botón para elegir tu contraseña.';
+    mostrar('continuar');
+    $('#b-continuar').onclick = async () => {
+      const b = $<HTMLButtonElement>('#b-continuar'); b.disabled = true;
+      const { error } = await sb.auth.verifyOtp({ token_hash: tokenHash, type: tipo as 'invite' | 'recovery' | 'signup' | 'email' });
+      b.disabled = false;
+      if (error) { pintarEntrada(); aviso('El enlace venció o ya se usó. Pedí uno nuevo desde "Me olvidé la contraseña".', 'error'); return; }
+      if (tipo === 'invite' || tipo === 'recovery') { aviso(''); mostrar('nueva'); return; }
+      await pintarDentro(); aviso('¡Cuenta confirmada! Ya podés usar tu Cuaderno en la nube.', 'ok');
+    };
+    return;
+  }
+
+  // Enlaces viejos de los mails (confirmar cuenta / recuperar): Supabase los procesa solo y avisa por este evento.
   const err = hash + '&' + query;
   let msgErr = '';
   if (/error(_description)?=/.test(err)) {

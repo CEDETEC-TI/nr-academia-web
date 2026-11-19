@@ -8,12 +8,27 @@ const GOLPES = ['Saque', 'Resto', 'Volea', 'Bandeja', 'Víbora', 'Remate', 'Glob
     <div class="fwrap">
       <p id="f-estado" class="f-aviso" role="status" hidden></p>
 
-      <div id="f-sin" hidden>
+      <div id="f-sin" class="f-bloque" hidden>
         <h1 class="display h-lg">Mi ficha</h1>
         <p class="f-lede">Para completar tu ficha técnica primero tenés que entrar a tu cuenta.</p>
         <a class="f-btn" href={url('cuenta/')}>Entrar o crear cuenta</a>
       </div>
       <p id="f-off" class="f-lede" hidden>Las cuentas todavía no están activas en este sitio.</p>
+
+      <!-- Ficha completa: resumen para leer de un vistazo -->
+      <div id="f-resumen" class="f-bloque" hidden>
+        <div class="f-cabeza">
+          <p class="f-eyebrow">Mi ficha técnica</p>
+          <h1 class="display h-lg" id="r-nombre"></h1>
+          <p class="f-lede" id="r-sub"></p>
+        </div>
+        <div class="f-chips" id="r-chips"></div>
+        <div class="f-tarjetas" id="r-tarjetas"></div>
+        <div class="f-acciones">
+          <button class="f-btn" type="button" id="b-editar">Editar mi ficha</button>
+          <a class="f-link" href={url('cuenta/')}>Volver a mi cuenta</a>
+        </div>
+      </div>
 
       <form id="f-form" novalidate hidden>
         <h1 class="display h-lg">Mi ficha</h1>
@@ -51,8 +66,11 @@ const GOLPES = ['Saque', 'Resto', 'Volea', 'Bandeja', 'Víbora', 'Remate', 'Glob
         <label class="f-campo"><span>Lesiones o cuidados</span><textarea name="lesiones" rows="3" maxlength="1000" placeholder="Si no tenés ninguna, dejalo vacío"></textarea></label>
         <label class="f-campo"><span>Días y horarios en los que podés venir</span><textarea name="disponibilidad" rows="3" maxlength="1000" placeholder="Ej: martes y jueves a la tarde"></textarea></label>
 
-        <button class="f-btn" type="submit">Guardar mi ficha</button>
-        <a class="f-link" href={url('cuenta/')}>Volver a mi cuenta</a>
+        <div class="f-acciones">
+          <button class="f-btn" type="submit">Guardar mi ficha</button>
+          <button class="f-link" type="button" id="b-cancelar" hidden>Cancelar</button>
+          <a class="f-link" id="l-volver" href={url('cuenta/')}>Volver a mi cuenta</a>
+        </div>
       </form>
     </div>
   </section>
@@ -60,17 +78,19 @@ const GOLPES = ['Saque', 'Resto', 'Volea', 'Bandeja', 'Víbora', 'Remate', 'Glob
 </Base>
 
 <style is:global>
-  .ficha { min-height: 100svh; padding: 7rem var(--gutter) 4rem; background: var(--color-crema); color: var(--color-tinta); }
-  .ficha .fwrap { max-width: 32rem; margin: 0 auto; display: grid; gap: 1.1rem; }
-  .ficha form { display: grid; gap: 1.2rem; }
+  .ficha { min-height: 100svh; padding: clamp(7rem, 22vw, 8.5rem) var(--gutter) calc(7rem + env(safe-area-inset-bottom)); background: var(--color-crema); color: var(--color-tinta); }
+  .ficha .fwrap { max-width: 32rem; margin: 0 auto; display: grid; gap: 1.75rem; }
+  .ficha .f-bloque:not([hidden]) { display: grid; gap: 1.75rem; justify-items: start; }
+  .ficha h1 { margin-bottom: .25rem; line-height: 1.02; }
+  .ficha form { display: grid; gap: 1.75rem; }
   .ficha .f-lede { color: var(--color-tinta-suave); }
-  .ficha .f-campo { display: grid; gap: .3rem; font-weight: 600; }
+  .ficha .f-campo { display: grid; gap: .45rem; font-weight: 600; }
   .ficha input[type='text'], .ficha input[type='number'], .ficha textarea { font: inherit; font-size: 16px; font-weight: 400; padding: .8rem 1rem; border-radius: .9rem; background: #fff; border: 1.5px solid rgb(109 26 42 / .22); width: 100%; }
   .ficha textarea { resize: vertical; min-height: 5.5rem; }
   .ficha input:focus-visible, .ficha textarea:focus-visible { outline: none; border-color: var(--color-bordo); }
   .ficha .f-grupo { border: 0; padding: 0; margin: 0; display: grid; gap: .5rem; min-width: 0; }
   .ficha legend { font-weight: 600; padding: 0; margin-bottom: .5rem; }
-  .ficha .f-opc { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .ficha .f-opc { display: flex; flex-wrap: wrap; gap: .65rem; }
   .ficha .f-opc label { position: relative; }
   .ficha .f-opc input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
   .ficha .f-opc span { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.1rem; border-radius: 999px; background: #fff; font-weight: 600; box-shadow: inset 0 0 0 1.5px rgb(109 26 42 / .25); transition: background-color 160ms, color 160ms; }
@@ -80,7 +100,20 @@ const GOLPES = ['Saque', 'Resto', 'Volea', 'Bandeja', 'Víbora', 'Remate', 'Glob
   .ficha .f-btn:active { transform: scale(.97); }
   .ficha .f-btn:disabled { opacity: .6; }
   .ficha .f-link { justify-self: start; min-height: 2.75rem; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 3px; color: var(--color-bordo); font-weight: 600; }
-  .ficha .f-aviso { padding: .8rem 1rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; }
-  .ficha .f-aviso[data-tipo='error'] { background: #fde8e6; color: #8a1a10; }
+  .ficha .f-aviso { line-height: 1.5; padding: 1rem 1.15rem; border-radius: 1rem; background: rgb(109 26 42 / .09); font-weight: 600; }
+  .ficha .f-aviso[data-tipo='error'] { background: #fff; color: var(--color-bordo); box-shadow: inset 0 0 0 1.5px var(--color-bordo); }
   .ficha .f-aviso[data-tipo='ok'] { background: #e3f3e8; color: #1c5a34; }
+  .ficha .f-cabeza { display: grid; gap: .6rem; }
+  .ficha .f-eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-bordo); }
+  .ficha .f-chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .ficha .f-chip { display: inline-flex; align-items: center; min-height: 2.5rem; padding: 0 1.1rem; border-radius: 999px; background: var(--color-bordo); color: var(--color-crema); font-weight: 700; }
+  .ficha .f-tarjetas { display: grid; gap: 1rem; width: 100%; }
+  @media (min-width: 768px) { .ficha .f-tarjetas { grid-template-columns: 1fr 1fr; } .ficha .f-tarjeta.ancha { grid-column: 1 / -1; } }
+  .ficha .f-tarjeta { display: grid; gap: .55rem; padding: 1.25rem 1.35rem; border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-soft); }
+  .ficha .f-tarjeta h2 { font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-tinta-suave); }
+  .ficha .f-tarjeta p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; }
+  .ficha .f-tarjeta .vacio { color: var(--color-tinta-suave); font-style: italic; }
+  .ficha .f-tarjeta .f-golpes { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .ficha .f-tarjeta .f-golpes span { padding: .35rem .85rem; border-radius: 999px; background: rgb(109 26 42 / .08); color: var(--color-bordo); font-weight: 600; font-size: .95rem; }
+  .ficha .f-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: .5rem; }
 </style>

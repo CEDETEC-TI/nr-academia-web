@@ -47,15 +47,16 @@ export function htmlLista(fichas: FichaFila[], q: string, nivel: string) {
 
 const dato = (k: string, v: string | null | undefined) => (v && v.trim() ? `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>` : '');
 export function htmlFicha(f: FichaFila, notas: NotaFila[] | null) {
-  const ficha = [
-    dato('Nivel', f.nivel && cap(f.nivel)), dato('Edad', f.edad ? f.edad + ' años' : ''), dato('Mano hábil', f.mano && cap(f.mano)),
-    dato('Lado de la cancha', f.lado === 'reves' ? 'Revés' : f.lado && 'Derecha'), dato('Objetivo', f.objetivo),
-    dato('Golpes a mejorar', f.golpes.join(', ')), dato('Lesiones o cuidados', f.lesiones), dato('Disponibilidad', f.disponibilidad),
-  ].join('');
+  const chips = [f.nivel && cap(f.nivel), f.edad ? f.edad + ' años' : '', f.mano && `Mano ${f.mano === 'zurda' ? 'zurda' : 'derecha'}`, f.lado && `Juega de ${f.lado === 'reves' ? 'revés' : 'derecha'}`]
+    .filter(Boolean).map((c) => `<span class="f-chip">${esc(c)}</span>`).join('');
+  const tarjeta = (t: string, cuerpo: string) => `<section class="f-tarjeta"><h4>${t}</h4>${cuerpo}</section>`;
+  const txt = (v: string | null | undefined) => (v && v.trim() ? `<p>${esc(v)}</p>` : '<p class="vacio-c">Sin completar</p>');
+  const golpes = f.golpes?.length ? `<div class="f-golpes">${f.golpes.map((g) => `<span>${esc(g)}</span>`).join('')}</div>` : '<p class="vacio-c">Sin completar</p>';
+  const ficha = (chips ? `<div class="f-chips">${chips}</div>` : '') + `<div class="f-tarjetas">${tarjeta('Qué quiere lograr', txt(f.objetivo))}${tarjeta('Golpes a mejorar', golpes)}${tarjeta('Lesiones o cuidados', txt(f.lesiones))}${tarjeta('Cuándo puede venir', txt(f.disponibilidad))}</div>`;
   const nb = notas === null ? '<p class="vacio">No se pudo cargar el cuaderno.</p>'
     : notas.length ? `<ul class="f-notas">${notas.map((n) => `<li><p class="f-fecha">${esc(fechaCorta(n.fecha))}</p><dl class="f-dl">${dato('Trabajó', n.trabaje)}${dato('Le costó', n.costo)}${dato('Practica para la próxima', n.proxima)}</dl></li>`).join('')}</ul>`
       : '<p class="vacio">Todavía no anotó nada en el cuaderno.</p>';
   return `<form method="dialog" class="form"><div class="hhead"><div><p class="lbl">Ficha técnica · solo lectura</p><h3>${esc(f.nombre || 'Sin nombre')}</h3></div><button type="button" class="x" data-cerrar aria-label="Cerrar">×</button></div>
-    <dl class="f-dl">${ficha || '<p class="vacio">La ficha está vacía.</p>'}</dl>
+    <div class="f-resumen">${ficha}</div>
     <h4 class="f-sub">Últimas entradas del cuaderno</h4>${nb}</form>`;
 }
