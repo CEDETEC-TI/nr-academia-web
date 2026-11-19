@@ -69,3 +69,10 @@ Supabase por defecto solo manda mails a miembros del equipo, con un tope muy baj
 3. Supabase → proyecto `academia-nr` → **Authentication → Providers → Google**: activar, pegar *Client ID* y *Client Secret*, guardar.
 4. Supabase → **Authentication → URL Configuration**: Site URL `https://cedetec-ti.github.io/nr-academia-web/` y en Redirect URLs: `https://cedetec-ti.github.io/nr-academia-web/**` y `http://localhost:4321/nr-academia-web/**` (ya están en `config.toml`).
 5. Listo: el botón aparece solo en `/cuenta/`. El Client Secret no va en el repo. Ver el aviso sobre `supabase config push` en `config.toml`.
+
+## Agenda (pestaña "Agenda", antes "Semana")
+- Grilla de lunes a sábado (sábado solo a la mañana, sale de `horarios.finDeSemana`), una clase por hora, cupo 4 por defecto.
+- **Turno fijo** = clase semanal + inscripción del alumno (se crea tocando un casillero libre y marcando los días que viene).
+- **Excepciones de un día** sin tocar el turno fijo: "No viene el …" (asistencia `aviso`, no se cobra) y "Otra hora ese día" (`aviso` en su turno + visita en otra clase de ese día; si la hora estaba libre se crea una clase única).
+- **¿Tengo libre?**: días + hora → para las próximas 4 semanas dice si está libre, si hay grupo con lugar o si choca (y con quién), y propone horas libres cercanas. Si todo está libre, ofrece crear el turno fijo.
+- No usa tablas nuevas: todo sale de `clases`, `inscripciones`, `asistencias` y `suspensiones`.
