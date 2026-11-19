@@ -38,7 +38,7 @@ const galeria = [
   { clip: 'competencia-clip', alt: 'Entrenamiento de competencia en la red' },
 ].map((g) => ({ ...g, mp4: clips[`../assets/video/${g.clip}.mp4`], webm: clips[`../assets/video/${g.clip}.webm`], poster: `${g.clip === 'nacho-clase' ? 'nacho-clase' : g.clip}-poster` }));
 ---
-<Base title="Academia NR · Clases de pádel en Formosa con Nacho Román">
+<Base title="Academia NR · Clases de pádel en Formosa con Nacho Román" waTarde>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(negocio)} />
   <!-- HERO -->
   <section class="on-dark relative isolate flex min-h-[100svh] items-end overflow-hidden bg-bordo-hondo text-crema" aria-label="Inicio">
@@ -48,18 +48,19 @@ const galeria = [
     </picture>
     <video data-src={heroDesktop} data-src-mobile={heroMobile} data-src-webm={heroDesktopWebm} data-src-webm-mobile={heroMobileWebm} muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"
       class="hero-video absolute inset-0 -z-20 size-full object-cover"></video>
-    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bordo-hondo via-bordo-hondo/45 to-bordo-hondo/10"></div>
-    <div class="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-bordo-hondo/70 to-transparent"></div>
-    <div class="wrap-in w-full pb-28 pt-32 sm:pb-20">
-      <p class="hero-fade mb-5 inline-flex rounded-full bg-crema/15 px-4 py-1.5 text-sm font-bold uppercase tracking-wider backdrop-blur-sm sm:text-base">{prueba.etiquetaHero}</p>
-      <h1 class="display h-mega">
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-[62%] bg-gradient-to-t from-bordo-hondo via-bordo-hondo/70 to-transparent sm:h-[58%]"></div>
+    <div class="absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-bordo-hondo/60 to-transparent"></div>
+    <div class="absolute inset-y-0 left-0 -z-10 hidden w-[60%] bg-gradient-to-r from-bordo-hondo/60 to-transparent md:block"></div>
+    <div class="wrap-in w-full pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-32 sm:pb-16">
+      <p class="hero-fade mb-4 text-sm font-bold uppercase tracking-[.14em] opacity-90 sm:text-base">{prueba.etiquetaHero}</p>
+      <h1 class="display h-hero">
         <span class="hero-line block overflow-hidden pb-[0.08em]"><span class="block">Pádel</span></span>
         <span class="hero-line block overflow-hidden pb-[0.08em]"><span class="block">con Nacho.</span></span>
       </h1>
-      <p class="hero-fade lede mt-6">Academia en Le Club Formosa. Clases para chicos, mujeres, principiantes y competidores.</p>
-      <div class="hero-fade mt-8 flex flex-wrap gap-3">
+      <p class="hero-fade lede mt-5 max-w-[22rem] sm:max-w-md">Clases para chicos, mujeres, principiantes y competidores.</p>
+      <div class="hero-fade mt-7 flex flex-wrap items-center gap-x-7 gap-y-4">
         <a href={waLink()} target="_blank" rel="noopener" class="btn">{prueba.botonHero}</a>
-        <a href="#clases" class="btn btn-ghost">Ver clases</a>
+        <a href="#clases" class="inline-flex min-h-11 items-center font-bold underline decoration-2 underline-offset-[6px] opacity-90 hover:opacity-100">Ver clases</a>
       </div>
     </div>
   </section>
@@ -68,7 +69,7 @@ const galeria = [
   <section class="on-dark bg-bordo px-[var(--gutter)] py-10 text-crema sm:py-14" aria-label="La academia en números">
     <dl class="wrap grid grid-cols-3 gap-3 sm:gap-8">
       {datos.map((d) => (
-        <div data-reveal class="min-w-0">
+        <div data-reveal class="flex min-w-0 flex-col">
           <dt class="order-2 mt-2 text-sm leading-tight opacity-90 sm:text-xl">{d.etiqueta}</dt>
           <dd class="display text-[clamp(1.9rem,8vw,6rem)] !leading-[0.95]">
             {'valor' in d ? <>{d.prefijo && <span class="text-[.42em] tracking-wider">{d.prefijo}</span>}<span data-count={d.valor}>{d.valor}</span></> : d.texto}
@@ -82,7 +83,7 @@ const galeria = [
   <section id="clases" class="section">
     <div class="wrap">
       <h2 class="display h-xl" data-reveal>Elegí tu clase</h2>
-      <p class="lede mt-5" data-reveal>Cuatro formas de entrenar. {prueba.cierre}</p>
+      <p class="lede mt-5" data-reveal>Cuatro formas de entrenar con Nacho.</p>
       <div class="mt-12 grid gap-5 md:grid-cols-2 md:gap-6">
         {clases.map((c) => <ClaseCard clase={c} />)}
       </div>
@@ -137,7 +138,7 @@ const galeria = [
   <section id="precios" class="section on-dark bg-bordo text-crema">
     <div class="wrap">
       <h2 class="display h-xl" data-reveal>Precios</h2>
-      <p class="lede mt-5" data-reveal>Sin letra chica. {prueba.frase}</p>
+      <p class="lede mt-5" data-reveal>Sin letra chica.</p>
       <div class="mt-12 grid gap-4 md:grid-cols-2">
         {[
           { n: 'Clase individual', p: pesos(preciosIndividual.claseSuelta), d: 'Una clase 1 a 1, cuando quieras.' },
